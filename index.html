@@ -588,7 +588,6 @@
         <button class="btn btn-secondary" onclick="restAtShelter()">REST</button>
         <button class="btn btn-secondary" onclick="sleepTurn()">SLEEP</button>
         <button class="btn btn-secondary" onclick="endTurn()">END TURN</button>
-        <button class="btn btn-secondary" onclick="consumeSelected()">CONSUME SELECTED</button>
         <button class="btn btn-secondary" onclick="startNewGame()">NEW GAME</button>
       </div>
 
@@ -1427,7 +1426,6 @@ function getCraftSelection(recipe, player = getActivePlayer()) {
   if (getMissingStatRequirements(recipe.craftRequirements, player).length) return [];
 
   const selected = getPlayerSelectedCards(player);
-  if (!selected.length) return [];
   if (selected.some(card => !recipe.requires.some(req => cardMatchesRequirement(card, req)))) return [];
 
   const inventory = getPlayerInventory(player);
