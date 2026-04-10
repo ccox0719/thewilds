@@ -1,0 +1,67 @@
+{
+  "zones": [
+    {
+      "id": "forest",
+      "name": "Forest",
+      "emoji": "🌲",
+      "description": "Dense woodland with timber, plants, and forage.",
+      "bestFor": ["shelter", "fire", "food"],
+      "materialIds": [
+        "pine_needles", "berries", "mushrooms", "dry_leaves",
+        "vine", "medicinal_moss", "grubs", "wild_herbs"
+      ],
+      "resourceMaterialIds": [
+        "fallen_branch", "tree_bark", "thick_log", "sap",
+        "straight_sapling", "dry_fungus"
+      ],
+      "drawCount": 2
+    },
+    {
+      "id": "river",
+      "name": "River",
+      "emoji": "🏞️",
+      "description": "A flowing river with water, stone, and aquatic life.",
+      "bestFor": ["hydration", "cooking", "tools"],
+      "materialIds": [
+        "fresh_water", "reeds", "mud", "small_fish", "large_fish",
+        "cattails", "crayfish", "clean_spring_water"
+      ],
+      "resourceMaterialIds": [
+        "river_stone", "sand", "clay", "smooth_stone",
+        "flint", "obsidian_shard"
+      ],
+      "drawCount": 2
+    },
+    {
+      "id": "meadow",
+      "name": "Meadow",
+      "emoji": "🌾",
+      "description": "Open grassland rich in wild plants and insects.",
+      "bestFor": ["food", "medicine", "warmth"],
+      "materialIds": [
+        "wild_grass", "dandelion", "clover", "insects", "dry_soil", "sunlight",
+        "wild_onion", "nettle", "thistle", "beeswax", "feathers",
+        "medicinal_root", "honeycomb", "dry_flower_bundle"
+      ],
+      "resourceMaterialIds": [],
+      "drawCount": 2
+    },
+    {
+      "id": "highground",
+      "name": "High Ground",
+      "emoji": "⛰️",
+      "description": "Elevated terrain with stone, visibility, and rescue potential.",
+      "bestFor": ["tools", "fire-starting", "rescue"],
+      "materialIds": [
+        "lichen", "exposed_root", "wind", "visibility",
+        "dense_shrub", "animal_track"
+      ],
+      "resourceMaterialIds": [
+        "loose_rock", "gravel", "flat_stone", "quartz",
+        "signal_rock_pile", "flint_vein", "cave_entrance", "rescue_signal_site"
+      ],
+      "drawCount": 2,
+      "warmthPenalty": 0
+    }
+  ]
+}

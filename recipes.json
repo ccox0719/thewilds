@@ -1,0 +1,305 @@
+{
+  "design_notes": {
+    "value_system": "Each recipe requires: (1) specific material categories, and (2) a minimum total value from the cards played. Players combine any cards meeting the category requirements whose values sum to the threshold or higher.",
+    "craft_types": {
+      "camp": "Persistent tableau items. Improve long-term survival each round.",
+      "zone_use": "Must be activated in the matching zone to produce value. Stays in hand until used.",
+      "recovery": "Immediate one-time effect. Discarded after use."
+    },
+    "cook_bonus": "Food items with a cookBonus field produce their better effect when consumed with a Campfire or Cooking Setup in tableau."
+  },
+
+  "recipes": [
+
+    {
+      "category": "Shelter",
+      "items": [
+        {
+          "id": "lean_to",
+          "name": "Lean-To",
+          "type": "camp",
+          "requires": { "wood": 2, "fiber": 1 },
+          "valueThreshold": 4,
+          "effect": { "restWarmthBonus": 2 },
+          "description": "Basic shelter. Rest action restores +2 Warmth instead of +1.",
+          "points": 2,
+          "notes": "Minimum wood and fiber. Any value combination reaching 4 works."
+        },
+        {
+          "id": "sturdy_shelter",
+          "name": "Sturdy Shelter",
+          "type": "camp",
+          "requires": { "wood": 3, "fiber": 1, "stone": 1 },
+          "valueThreshold": 8,
+          "effect": { "restWarmthBonus": 3, "hazardReduction": "animal_attack" },
+          "description": "Solid construction. Rest restores +3 Warmth. Reduces Animal Attack morale loss by 1.",
+          "points": 4,
+          "notes": "Needs mix of good materials to reach threshold. Straight Sapling or Thick Log required in practice."
+        },
+        {
+          "id": "debris_hut",
+          "name": "Debris Hut",
+          "type": "camp",
+          "requires": { "wood": 3, "fiber": 2, "plant": 1 },
+          "valueThreshold": 11,
+          "effect": { "restWarmthBonus": 4, "sleepMoraleBonus": 1 },
+          "description": "Expert shelter. Rest restores +4 Warmth. Sleep action grants +1 bonus Morale.",
+          "points": 6,
+          "notes": "Requires a value-3 wood card (Hardwood Bough) to reach threshold realistically."
+        }
+      ]
+    },
+
+    {
+      "category": "Fire",
+      "items": [
+        {
+          "id": "campfire",
+          "name": "Campfire",
+          "type": "camp",
+          "requires": { "wood": 2, "fire_starter": 1 },
+          "valueThreshold": 4,
+          "effect": { "warmthPressureReduction": 1, "enablesCooking": true },
+          "description": "Reduces environment warmth pressure by 1 each round. Enables cooking food for bonus effects.",
+          "points": 2,
+          "notes": "Core camp item. Most food and water crafts depend on this being in tableau."
+        },
+        {
+          "id": "sustained_fire",
+          "name": "Sustained Fire",
+          "type": "camp",
+          "requires": { "wood": 3, "fire_starter": 1, "stone": 1 },
+          "valueThreshold": 7,
+          "effect": { "warmthPressureReduction": 2, "enablesCooking": true, "duration": 4 },
+          "description": "Reduces warmth pressure by 2 each round for 4 rounds. Enables cooking.",
+          "points": 4,
+          "notes": "Stone fire ring extends the burn. Duration tracked in tableau."
+        },
+        {
+          "id": "signal_fire",
+          "name": "Signal Fire",
+          "type": "camp",
+          "requires": { "wood": 3, "fire_starter": 2 },
+          "valueThreshold": 9,
+          "effect": { "warmthPressureReduction": 1, "enablesCooking": true, "rescuePerRound": 1 },
+          "description": "Reduces warmth pressure by 1. Enables cooking. Generates +1 Rescue progress each round.",
+          "points": 5,
+          "notes": "Needs Flint or Dry Fungus to reach threshold. Best fire investment for rescue-focused players."
+        }
+      ]
+    },
+
+    {
+      "category": "Water",
+      "items": [
+        {
+          "id": "boiled_water",
+          "name": "Boiled Water",
+          "type": "recovery",
+          "requires": { "water": 1 },
+          "valueThreshold": 1,
+          "requiresTableau": "campfire",
+          "effect": { "hydration": 4, "safe": true },
+          "description": "Treated water. +4 Hydration. Requires Campfire or Sustained Fire in tableau.",
+          "points": 1,
+          "notes": "The primary safe hydration source. Campfire dependency is intentional."
+        },
+        {
+          "id": "water_filter",
+          "name": "Water Filter",
+          "type": "camp",
+          "requires": { "stone": 2, "fiber": 1 },
+          "valueThreshold": 4,
+          "effect": { "treatsWater": true, "bonusWaterDraw": 1 },
+          "description": "Passive water treatment. Unsafe water consumed counts as safe. Draw 1 extra water card when at River.",
+          "points": 3,
+          "notes": "Alternative to campfire for hydration. Negates Waterborne Illness hazard."
+        },
+        {
+          "id": "water_rig",
+          "name": "Water Collection Rig",
+          "type": "camp",
+          "requires": { "stone": 2, "fiber": 2, "plant": 1 },
+          "valueThreshold": 7,
+          "effect": { "treatsWater": true, "passiveHydration": 1 },
+          "description": "Collects and treats water passively. +1 Hydration per round. Unsafe water counts as safe.",
+          "points": 5,
+          "notes": "Best long-term water solution. Frees up explore actions from water gathering."
+        }
+      ]
+    },
+
+    {
+      "category": "Food Procurement",
+      "items": [
+        {
+          "id": "snare",
+          "name": "Snare",
+          "type": "zone_use",
+          "zone": "meadow",
+          "requires": { "fiber": 2, "wood": 1 },
+          "valueThreshold": 4,
+          "effect": { "hungerOnActivate": 4, "requiresBait": true },
+          "description": "Place at Meadow with Snare Bait. Next turn: draw produces +4 Hunger food catch instead of normal draw.",
+          "points": 2,
+          "notes": "Delayed food source. Requires Snare Bait card to activate. Strong return for fiber investment."
+        },
+        {
+          "id": "fishing_pole",
+          "name": "Fishing Pole",
+          "type": "zone_use",
+          "zone": "river",
+          "requires": { "wood": 1, "fiber": 2 },
+          "valueThreshold": 5,
+          "effect": { "upgradeFishDraws": true, "fishBonus": 2 },
+          "description": "Use at River. All fish drawn this turn add +2 Hunger bonus. Reusable.",
+          "points": 3,
+          "notes": "Straight Sapling (value 2) makes threshold easier. Reusable each visit to River."
+        },
+        {
+          "id": "bow",
+          "name": "Bow",
+          "type": "zone_use",
+          "zone": "forest",
+          "requires": { "wood": 1, "fiber": 2 },
+          "valueThreshold": 7,
+          "effect": { "huntOnActivate": true, "hungerOnSuccess": 6 },
+          "description": "Use in Forest. Draw 1 hunt card — success deals +6 Hunger, failure costs 1 Hunger.",
+          "points": 4,
+          "notes": "Hardwood Bough (value 3) required to reach threshold. High risk, high reward."
+        },
+        {
+          "id": "drying_rack",
+          "name": "Drying Rack",
+          "type": "camp",
+          "requires": { "wood": 2, "fiber": 1 },
+          "valueThreshold": 5,
+          "effect": { "preserveFood": true, "cookedFoodBonus": 1 },
+          "description": "Preserve cooked food. Cooked meals produce +1 extra Hunger. Prevents food spoilage.",
+          "points": 3,
+          "notes": "Pairs with Campfire. Makes cooking loop more efficient."
+        }
+      ]
+    },
+
+    {
+      "category": "Utility Tools",
+      "items": [
+        {
+          "id": "stone_tool",
+          "name": "Stone Tool",
+          "type": "camp",
+          "requires": { "stone": 2 },
+          "valueThreshold": 3,
+          "effect": { "bonusDraw": 1 },
+          "description": "Draw 1 extra card each time you Search a zone.",
+          "points": 2,
+          "notes": "Easiest tool to build. River Stone x2 gets you there. Compounds value fast."
+        },
+        {
+          "id": "cutting_tool",
+          "name": "Cutting Tool",
+          "type": "camp",
+          "requires": { "stone": 1, "wood": 1 },
+          "valueThreshold": 4,
+          "effect": { "bonusDraw": 1, "craftCostReduction": 1 },
+          "description": "Draw 1 extra card when Searching. Reduce value threshold of next craft by 1.",
+          "points": 3,
+          "notes": "Flint or Obsidian Shard makes this much easier. Threshold reduction stacks across turns."
+        },
+        {
+          "id": "climbing_staff",
+          "name": "Climbing Staff",
+          "type": "camp",
+          "requires": { "wood": 1, "fiber": 1 },
+          "valueThreshold": 4,
+          "effect": { "hazardReduction": "rockslide", "moveCostReduction": 1 },
+          "description": "Reduces Rockslide discard from random to player choice. Move action costs 1 less Hydration.",
+          "points": 2,
+          "notes": "Pathfinder synergy. High Ground becomes much safer with this in tableau."
+        }
+      ]
+    },
+
+    {
+      "category": "Medicine",
+      "items": [
+        {
+          "id": "basic_poultice",
+          "name": "Basic Poultice",
+          "type": "recovery",
+          "requires": { "plant": 2 },
+          "valueThreshold": 3,
+          "effect": { "morale": 1, "anyMeter": 1 },
+          "description": "Simple wound care. +1 Morale and +1 to any one meter.",
+          "points": 1,
+          "notes": "Fast to craft. Good morale patch after a hazard hit."
+        },
+        {
+          "id": "medicine",
+          "name": "Medicine",
+          "type": "recovery",
+          "requires": { "plant": 2, "water": 1 },
+          "valueThreshold": 5,
+          "effect": { "morale": 2, "anyMeter": 2 },
+          "description": "Proper treatment. +2 Morale and +2 to any one meter.",
+          "points": 2,
+          "notes": "Medicinal Moss or Medicinal Root needed to reach threshold cleanly."
+        },
+        {
+          "id": "strong_medicine",
+          "name": "Strong Medicine",
+          "type": "recovery",
+          "requires": { "plant": 3, "water": 1 },
+          "valueThreshold": 8,
+          "effect": { "morale": 3, "anyMeter": 4, "clearFlag": true },
+          "description": "Full treatment. +3 Morale, +4 to any one meter, clears all illness flags.",
+          "points": 4,
+          "notes": "Requires Medicinal Root (value 2) and Medicinal Moss (value 2) together in practice."
+        }
+      ]
+    },
+
+    {
+      "category": "Rescue Signaling",
+      "items": [
+        {
+          "id": "signal_mirror",
+          "name": "Signal Mirror",
+          "type": "zone_use",
+          "zone": "highground",
+          "requires": { "stone": 2 },
+          "valueThreshold": 4,
+          "effect": { "rescue": 4 },
+          "description": "Use at High Ground. +4 Rescue progress. Consumed on use.",
+          "points": 3,
+          "notes": "Obsidian Shard (value 2) plus any stone gets there. Best single rescue push."
+        },
+        {
+          "id": "signal_kit",
+          "name": "Signal Kit",
+          "type": "zone_use",
+          "zone": "highground",
+          "requires": { "stone": 2, "fiber": 1, "fire_starter": 1 },
+          "valueThreshold": 7,
+          "effect": { "rescue": 6, "rescuePerRound": 1 },
+          "description": "Use at High Ground with Rescue Signal Site. +6 Rescue immediately, +1 Rescue each round after.",
+          "points": 5,
+          "notes": "Best rescue tool in the game. Pathfinder primary craft. Requires Rescue Signal Site to activate full effect."
+        },
+        {
+          "id": "rescue_cache",
+          "name": "Rescue Cache",
+          "type": "recovery",
+          "requires": { "wood": 1, "stone": 1, "fiber": 1, "food": 1, "water": 1, "fire_starter": 1 },
+          "valueThreshold": 10,
+          "effect": { "rescue": 5, "morale": 2 },
+          "description": "A prepared emergency cache. +5 Rescue, +2 Morale. One of every category required.",
+          "points": 6,
+          "notes": "Hardest craft in the game. Requires one of every category AND high total value. Big payoff."
+        }
+      ]
+    }
+
+  ]
+}

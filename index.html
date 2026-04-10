@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wilds — Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #333;
+    --text: #e8e0d0;
+    --muted: #888;
+    --forest: #4a7c59;
+    --river: #3a6b8a;
+    --meadow: #8a7a3a;
+    --highground: #7a5a3a;
+    --common: #888;
+    --uncommon: #5b9bd5;
+    --rare: #d4a843;
+    --hunger: #e07050;
+    --warmth: #e09050;
+    --hydration: #5090d0;
+    --rescue: #50c080;
+    --morale: #b6a15c;
+    --accent: #c8a060;
+    --danger: #c04040;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 4px;
+    font-size: 2.4rem;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+
+  .game-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr 220px;
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+
+  /* METERS */
+  .meter { margin-bottom: 10px; }
+  .meter-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .meter-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .meter-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+  .meter-fill.hunger { background: var(--hunger); }
+  .meter-fill.warmth { background: var(--warmth); }
+  .meter-fill.hydration { background: var(--hydration); }
+  .meter-fill.morale { background: var(--morale); }
+  .meter-fill.rescue { background: var(--rescue); }
+
+  /* ZONES */
+  .zone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .zone-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+  }
+  .zone-btn:hover { border-color: var(--accent); }
+  .zone-btn.forest { border-color: var(--forest); }
+  .zone-btn.river { border-color: var(--river); }
+  .zone-btn.meadow { border-color: var(--meadow); }
+  .zone-btn.highground { border-color: var(--highground); }
+  .zone-btn .zone-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+  .zone-btn.selected { background: var(--surface); box-shadow: 0 0 0 2px var(--accent); }
+
+  /* HAND */
+  .hand-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hand-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 80px;
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    padding: 10px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 90px;
+    max-width: 120px;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .card.selected { box-shadow: 0 0 0 2px var(--accent); background: #2a2a20; }
+  .card.common { border-top: 2px solid var(--common); }
+  .card.uncommon { border-top: 2px solid var(--uncommon); }
+  .card.rare { border-top: 2px solid var(--rare); }
+
+  .card-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .card-category {
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .card-rarity {
+    font-size: 0.55rem;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .card-rarity.common { color: var(--common); }
+  .card-rarity.uncommon { color: var(--uncommon); }
+  .card-rarity.rare { color: var(--rare); }
+
+  /* ACTION BUTTONS */
+  .action-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #111;
+  }
+  .btn-primary:hover { background: #d8b070; }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-danger {
+    background: var(--danger);
+    color: #fff;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* TABLEAU */
+  .tableau-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tableau-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+  }
+  .tableau-item .item-name { color: var(--accent); font-weight: 600; }
+  .tableau-item .item-effect { color: var(--muted); margin-top: 2px; }
+  .tableau-item.basic { border-left: 3px solid var(--common); }
+  .tableau-item.improved { border-left: 3px solid var(--uncommon); }
+  .tableau-item.expert { border-left: 3px solid var(--rare); }
+
+  /* LOG */
+  .log-area {
+    max-height: 160px;
+    overflow-y: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .log-area .log-entry { margin-bottom: 2px; }
+  .log-area .log-entry.good { color: var(--rescue); }
+  .log-area .log-entry.bad { color: var(--hunger); }
+  .log-area .log-entry.info { color: var(--accent); }
+
+  /* RECIPE PANEL */
+  .recipe-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .recipe-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .recipe-card:hover { border-color: var(--accent); }
+  .recipe-card.craftable { border-color: var(--rescue); }
+  .recipe-card.cant-craft { opacity: 0.45; cursor: not-allowed; }
+
+  .recipe-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .recipe-req {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .recipe-req .met { color: var(--rescue); }
+  .recipe-req .unmet { color: var(--danger); }
+
+  .turn-info {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .turn-info span { color: var(--accent); font-weight: 600; }
+
+  .score-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .active-player-label {
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .phase-indicator {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+
+  .empty-state {
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .player-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  .player-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+  }
+
+  .player-card.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(200, 160, 96, 0.35);
+  }
+
+  .player-card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .player-card-meta {
+    color: var(--muted);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .player-card-tableau {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .player-tag {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 6px;
+    color: var(--muted);
+  }
+
+  .consume-btn {
+    font-size: 0.55rem;
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 4px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .consume-btn:hover { border-color: var(--rescue); color: var(--rescue); }
+
+  @media (max-width: 800px) {
+    .game-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<h1>THE WILDS</h1>
+<div class="subtitle">SURVIVAL CRAFTING PROTOTYPE — TEMPERATE FOREST</div>
+
+<div class="panel" style="margin-bottom:12px">
+  <div class="panel-title">HOW TO PLAY</div>
+  <div style="color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;line-height:1.5">
+    <div>1. Explore a zone for forage cards, or harvest hard resources like wood, stone, and fire starter.</div>
+    <div>2. Craft your character's specialty recipes, then use gear like snares, fishing poles, fires, and shelters.</div>
+    <div>3. Keep hunger, warmth, hydration, and morale above zero while building shared rescue progress.</div>
+    <div>4. Food and water spoil at end of turn. Durable gear moves into stockpile and can be used later.</div>
+  </div>
+</div>
+
+<div class="game-layout">
+
+  <!-- LEFT: METERS + SCORE -->
+  <div>
+    <div class="panel" style="margin-bottom:12px">
+      <div class="panel-title">SURVIVAL</div>
+      <div class="score-display" id="scoreDisplay">0 pts</div>
+      <div class="active-player-label" id="activePlayerLabel">PLAYER 1</div>
+      <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;text-align:center;margin-bottom:12px">SCORE</div>
+
+      <div class="meter">
+        <div class="meter-label"><span>🍖 HUNGER</span><span id="hungerVal">8/10</span></div>
+        <div class="meter-bar"><div class="meter-fill hunger" id="hungerBar" style="width:80%"></div></div>
+      </div>
+      <div class="meter">
+        <div class="meter-label"><span>🔥 WARMTH</span><span id="warmthVal">8/10</span></div>
+        <div class="meter-bar"><div class="meter-fill warmth" id="warmthBar" style="width:80%"></div></div>
+      </div>
+      <div class="meter">
+        <div class="meter-label"><span>💧 HYDRATION</span><span id="hydrationVal">8/10</span></div>
+        <div class="meter-bar"><div class="meter-fill hydration" id="hydrationBar" style="width:80%"></div></div>
+      </div>
+      <div class="meter">
+        <div class="meter-label"><span>🎭 MORALE</span><span id="moraleVal">8/10</span></div>
+        <div class="meter-bar"><div class="meter-fill morale" id="moraleBar" style="width:80%"></div></div>
+      </div>
+      <div class="meter" style="margin-top:14px">
+        <div class="meter-label"><span>🆘 RESCUE</span><span id="rescueVal">0/20</span></div>
+        <div class="meter-bar"><div class="meter-fill rescue" id="rescueBar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">ACTIVE TABLEAU</div>
+      <div class="tableau-items" id="tableauItems">
+        <div class="empty-state">Nothing crafted yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: MAIN PLAY AREA -->
+  <div>
+    <div class="panel" style="margin-bottom:12px">
+      <div class="turn-info">TURN <span id="roundNum">1</span> &nbsp;·&nbsp; ACTIVE PLAYER: <span id="activePlayerName">PLAYER 1</span> &nbsp;·&nbsp; ACTIONS REMAINING: <span id="actionsLeft">2</span></div>
+      <div class="phase-indicator" id="phaseLabel">CHOOSE A ZONE TO EXPLORE OR HARVEST</div>
+      <div style="margin:8px 0 12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em">
+        Zone decks are forage-only. Use HARVEST RESOURCES for wood, stone, and fire starter.
+      </div>
+
+      <div class="zone-grid" id="zoneGrid">
+        <button class="zone-btn forest" onclick="selectZone('forest')">
+          <span class="zone-icon">🌲</span>FOREST
+        </button>
+        <button class="zone-btn river" onclick="selectZone('river')">
+          <span class="zone-icon">🏞️</span>RIVER
+        </button>
+        <button class="zone-btn meadow" onclick="selectZone('meadow')">
+          <span class="zone-icon">🌾</span>MEADOW
+        </button>
+        <button class="zone-btn highground" onclick="selectZone('highground')">
+          <span class="zone-icon">⛰️</span>HIGH GROUND
+        </button>
+      </div>
+
+      <div class="action-row" style="margin-bottom:12px">
+        <button class="btn btn-primary" id="exploreBtn" onclick="explore()" disabled>EXPLORE ZONE</button>
+        <button class="btn btn-secondary" id="harvestBtn" onclick="harvestResources()" disabled>HARVEST RESOURCES</button>
+        <button class="btn btn-secondary" id="stokeBtn" onclick="stokeFire()" disabled>STOKE FIRE</button>
+        <button class="btn btn-secondary" onclick="restAtShelter()">REST</button>
+        <button class="btn btn-secondary" onclick="sleepTurn()">SLEEP</button>
+        <button class="btn btn-secondary" onclick="endTurn()">END TURN</button>
+        <button class="btn btn-secondary" onclick="consumeSelected()">CONSUME SELECTED</button>
+      </div>
+
+      <div class="panel-title">ACTIVE HAND <span style="color:var(--muted);font-size:0.7rem" id="handCount">(0 cards)</span></div>
+      <div class="hand-cards" id="handArea">
+        <div class="empty-state">Explore a zone or harvest hard resources.</div>
+      </div>
+
+      <div class="panel-title" style="margin-top:12px">STOCKPILE <span style="color:var(--muted);font-size:0.7rem" id="stockpileCount">(0 cards)</span></div>
+      <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;margin-bottom:6px">Durable cards move here at end of turn. Food and water spoil.</div>
+      <div class="hand-cards" id="stockpileArea">
+        <div class="empty-state">Durable cards move here at end of turn.</div>
+      </div>
+    </div>
+
+      <div class="panel">
+        <div class="panel-title">GAME LOG</div>
+        <div class="log-area" id="gameLog">
+          <div class="log-entry info">▶ The Wilds prototype loaded. Player 1 begins.</div>
+          <div class="log-entry">Use the How to Play panel for the short version of the loop.</div>
+        </div>
+      </div>
+  </div>
+
+  <!-- RIGHT: RECIPES -->
+  <div class="panel">
+    <div class="panel-title">OTHER PLAYERS</div>
+    <div class="player-sidebar" id="playerSidebar">
+      <div class="empty-state">No other players yet.</div>
+    </div>
+    <div class="panel-title">RECIPES</div>
+    <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;margin-bottom:4px">Grouped by craft family. Value replaces rarity.</div>
+    <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;margin-bottom:8px">Select cards then click a recipe to craft.</div>
+    <div class="recipe-list" id="recipeList"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const DEFAULT_CATEGORIES = {
+  wood: { label: 'Wood', emoji: '🪵' },
+  plant: { label: 'Plant', emoji: '🌿' },
+  stone: { label: 'Stone', emoji: '🪨' },
+  food: { label: 'Food', emoji: '🍖' },
+  water: { label: 'Water', emoji: '💧' },
+  fire_starter: { label: 'Fire Starter', emoji: '🔥' },
+  fiber: { label: 'Fiber', emoji: '🧵' },
+  hazard: { label: 'Hazard', emoji: '⚠️' }
+};
+let CATEGORIES = DEFAULT_CATEGORIES;
+
+const FORAGE_DRAW_CATEGORIES = new Set(['food', 'plant', 'water']);
+const RESOURCE_DRAW_CATEGORIES = new Set(['wood', 'stone', 'fire_starter']);
+
+const DEFAULT_MATERIALS = [
+  { id:'fallen_branch', name:'Fallen Branch', zone:'forest', rarity:'common', category:'wood' },
+  { id:'pine_needles', name:'Pine Needles', zone:'forest', rarity:'common', category:'plant' },
+  { id:'tree_bark', name:'Tree Bark', zone:'forest', rarity:'common', category:'wood' },
+  { id:'berries', name:'Berries', zone:'forest', rarity:'common', category:'food', consumeEffect:{ hunger:2 } },
+  { id:'mushrooms', name:'Mushrooms', zone:'forest', rarity:'common', category:'food', consumeEffect:{ hunger:2 } },
+  { id:'dry_leaves', name:'Dry Leaves', zone:'forest', rarity:'common', category:'plant' },
+  { id:'thick_log', name:'Thick Log', zone:'forest', rarity:'uncommon', category:'wood' },
+  { id:'vine', name:'Vine', zone:'forest', rarity:'uncommon', category:'plant' },
+  { id:'sap', name:'Sap', zone:'forest', rarity:'uncommon', category:'fire_starter' },
+  { id:'medicinal_moss', name:'Medicinal Moss', zone:'forest', rarity:'uncommon', category:'plant' },
+  { id:'grubs', name:'Grubs', zone:'forest', rarity:'uncommon', category:'food', consumeEffect:{ hunger:3 } },
+  { id:'straight_sapling', name:'Straight Sapling', zone:'forest', rarity:'rare', category:'wood' },
+  { id:'dry_fungus', name:'Dry Fungus', zone:'forest', rarity:'rare', category:'fire_starter' },
+  { id:'wild_herbs', name:'Wild Herbs', zone:'forest', rarity:'rare', category:'plant' },
+  { id:'fresh_water', name:'Fresh Water', zone:'river', rarity:'common', category:'water', consumeEffect:{ hydration:2 } },
+  { id:'river_stone', name:'River Stone', zone:'river', rarity:'common', category:'stone' },
+  { id:'reeds', name:'Reeds', zone:'river', rarity:'common', category:'plant' },
+  { id:'mud', name:'Mud', zone:'river', rarity:'common', category:'plant' },
+  { id:'small_fish', name:'Small Fish', zone:'river', rarity:'common', category:'food', consumeEffect:{ hunger:2 } },
+  { id:'sand', name:'Sand', zone:'river', rarity:'common', category:'stone' },
+  { id:'clay', name:'Clay', zone:'river', rarity:'uncommon', category:'stone' },
+  { id:'large_fish', name:'Large Fish', zone:'river', rarity:'uncommon', category:'food', consumeEffect:{ hunger:4 } },
+  { id:'smooth_stone', name:'Smooth Stone', zone:'river', rarity:'uncommon', category:'stone' },
+  { id:'cattails', name:'Cattails', zone:'river', rarity:'uncommon', category:'plant' },
+  { id:'crayfish', name:'Crayfish', zone:'river', rarity:'uncommon', category:'food', consumeEffect:{ hunger:2 } },
+  { id:'flint', name:'Flint', zone:'river', rarity:'rare', category:'fire_starter' },
+  { id:'obsidian_shard', name:'Obsidian Shard', zone:'river', rarity:'rare', category:'stone' },
+  { id:'clean_spring_water', name:'Spring Water', zone:'river', rarity:'rare', category:'water', consumeEffect:{ hydration:5 } },
+  { id:'wild_grass', name:'Wild Grass', zone:'meadow', rarity:'common', category:'plant' },
+  { id:'dandelion', name:'Dandelion', zone:'meadow', rarity:'common', category:'food', consumeEffect:{ hunger:1 } },
+  { id:'clover', name:'Clover', zone:'meadow', rarity:'common', category:'food', consumeEffect:{ hunger:1 } },
+  { id:'insects', name:'Insects', zone:'meadow', rarity:'common', category:'food', consumeEffect:{ hunger:2 } },
+  { id:'dry_soil', name:'Dry Soil', zone:'meadow', rarity:'common', category:'plant' },
+  { id:'sunlight', name:'Sunlight', zone:'meadow', rarity:'common', category:'plant', consumeEffect:{ warmth:2 } },
+  { id:'wild_onion', name:'Wild Onion', zone:'meadow', rarity:'uncommon', category:'food', consumeEffect:{ hunger:2 } },
+  { id:'nettle', name:'Nettle', zone:'meadow', rarity:'uncommon', category:'plant' },
+  { id:'thistle', name:'Thistle', zone:'meadow', rarity:'uncommon', category:'plant' },
+  { id:'beeswax', name:'Beeswax', zone:'meadow', rarity:'uncommon', category:'plant' },
+  { id:'feathers', name:'Feathers', zone:'meadow', rarity:'uncommon', category:'plant' },
+  { id:'medicinal_root', name:'Medicinal Root', zone:'meadow', rarity:'rare', category:'plant' },
+  { id:'honeycomb', name:'Honeycomb', zone:'meadow', rarity:'rare', category:'food', consumeEffect:{ hunger:4, warmth:1 } },
+  { id:'dry_flower_bundle', name:'Flower Bundle', zone:'meadow', rarity:'rare', category:'plant' },
+  { id:'loose_rock', name:'Loose Rock', zone:'highground', rarity:'common', category:'stone' },
+  { id:'gravel', name:'Gravel', zone:'highground', rarity:'common', category:'stone' },
+  { id:'lichen', name:'Lichen', zone:'highground', rarity:'common', category:'plant', consumeEffect:{ hunger:1 } },
+  { id:'exposed_root', name:'Exposed Root', zone:'highground', rarity:'common', category:'plant' },
+  { id:'wind', name:'Wind', zone:'highground', rarity:'common', category:'plant', consumeEffect:{ warmth:-1 } },
+  { id:'visibility', name:'Visibility', zone:'highground', rarity:'common', category:'plant', consumeEffect:{ rescue:1 } },
+  { id:'flat_stone', name:'Flat Stone', zone:'highground', rarity:'uncommon', category:'stone' },
+  { id:'quartz', name:'Quartz', zone:'highground', rarity:'uncommon', category:'fire_starter' },
+  { id:'dense_shrub', name:'Dense Shrub', zone:'highground', rarity:'uncommon', category:'plant' },
+  { id:'animal_track', name:'Animal Track', zone:'highground', rarity:'uncommon', category:'food', consumeEffect:{ foodDrawBonus:1 } },
+  { id:'signal_rock_pile', name:'Signal Rock Pile', zone:'highground', rarity:'uncommon', category:'stone', consumeEffect:{ rescue:2 } },
+  { id:'flint_vein', name:'Flint Vein', zone:'highground', rarity:'rare', category:'fire_starter', consumeEffect:{ bonusFlint:2 } },
+  { id:'cave_entrance', name:'Cave Entrance', zone:'highground', rarity:'rare', category:'wood', consumeEffect:{ grantLeanTo:true } },
+  { id:'rescue_signal_site', name:'Rescue Signal Site', zone:'highground', rarity:'rare', category:'stone', consumeEffect:{ rescue:5 } },
+  { id:'animal_attack', name:'Animal Attack', zone:'forest', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ morale:-2, hungerIfNoShelter:-1 } },
+  { id:'poison_berries', name:'Poison Berries', zone:'forest', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ morale:-2, hunger:-2 } },
+  { id:'flash_flood', name:'Flash Flood', zone:'river', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ discardRandom:1 } },
+  { id:'waterborne_illness', name:'Waterborne Illness', zone:'river', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ pendingWaterPenalty:true } },
+  { id:'bee_sting', name:'Bee Sting', zone:'meadow', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ morale:-1 } },
+  { id:'wrong_plant', name:'Wrong Plant', zone:'meadow', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ morale:-1, hunger:-1 } },
+  { id:'rockslide', name:'Rockslide', zone:'highground', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ morale:-1, discardRandom:1 } },
+  { id:'exposure', name:'Exposure', zone:'highground', rarity:'common', category:'hazard', type:'hazard', hazardEffect:{ warmth:-2 } }
+];
+let MATERIALS = DEFAULT_MATERIALS;
+
+const DEFAULT_ZONES = {
+  forest: { name:'Forest', emoji:'🌲', materials: MATERIALS.filter(m=>m.zone==='forest' && FORAGE_DRAW_CATEGORIES.has(m.category)), resourceMaterials: MATERIALS.filter(m=>m.zone==='forest' && RESOURCE_DRAW_CATEGORIES.has(m.category)), warmthPenalty:0 },
+  river: { name:'River', emoji:'🏞️', materials: MATERIALS.filter(m=>m.zone==='river' && FORAGE_DRAW_CATEGORIES.has(m.category)), resourceMaterials: MATERIALS.filter(m=>m.zone==='river' && RESOURCE_DRAW_CATEGORIES.has(m.category)), warmthPenalty:0 },
+  meadow: { name:'Meadow', emoji:'🌾', materials: MATERIALS.filter(m=>m.zone==='meadow' && FORAGE_DRAW_CATEGORIES.has(m.category)), resourceMaterials: MATERIALS.filter(m=>m.zone==='meadow' && RESOURCE_DRAW_CATEGORIES.has(m.category)), warmthPenalty:0 },
+  highground: { name:'High Ground', emoji:'⛰️', materials: MATERIALS.filter(m=>m.zone==='highground' && FORAGE_DRAW_CATEGORIES.has(m.category)), resourceMaterials: MATERIALS.filter(m=>m.zone==='highground' && RESOURCE_DRAW_CATEGORIES.has(m.category)), warmthPenalty:0 }
+};
+let ZONES = DEFAULT_ZONES;
+
+const DEFAULT_RECIPES = [
+  { id:'lean_to', profile:'firekeeper', name:'Lean-To 🛖', tier:'basic', type:'persistent', requires:[{category:'plant',count:2},{category:'food',count:1}], effect:{ shelterTier:1 }, points:2, desc:'Shelter tier 1; +2 Warmth on Rest' },
+  { id:'sturdy_shelter', profile:'firekeeper', name:'Sturdy Shelter 🏕️', tier:'improved', type:'persistent', requires:[{category:'plant',count:3},{category:'food',count:1},{category:'water',count:1}], requiresRarity:'uncommon', effect:{ shelterTier:2, immuneToWind:true }, points:4, desc:'Shelter tier 2; +3 Warmth on Rest' },
+  { id:'debris_hut', profile:'firekeeper', name:'Debris Hut 🏠', tier:'expert', type:'persistent', requires:[{category:'plant',count:4},{category:'food',count:1},{category:'water',count:1}], requiresRarity:'rare', effect:{ shelterTier:3, pointsPerRound:1 }, points:6, desc:'Shelter tier 3; +4 Warmth on Rest, +1pt/round' },
+  { id:'campfire', profile:'firekeeper', name:'Campfire 🔥', tier:'basic', type:'persistent', requires:[{category:'wood',count:1},{category:'fire_starter',count:1}], effect:{ enablesCooking:true, fire:true }, points:2, desc:'Short-lived fire; needs fuel and a starter' },
+  { id:'sustained_fire', profile:'firekeeper', name:'Sustained Fire 🔥🪵', tier:'improved', type:'persistent', requires:[{category:'wood',count:2},{category:'stone',count:1},{category:'fire_starter',count:1}], requiresRarity:'uncommon', effect:{ enablesCooking:true, rescuePerRound:1, fire:true }, points:4, desc:'Longer-burning fire; still needs stoking' },
+  { id:'signal_fire', profile:'firekeeper', name:'Signal Fire 🚨', tier:'expert', type:'persistent', requires:[{category:'wood',count:1},{category:'stone',count:1},{category:'fire_starter',count:1}], requiresRarity:'rare', effect:{ enablesCooking:true, rescuePerRound:1, fire:true }, points:5, desc:'Signals rescue while it keeps burning' },
+  { id:'snare', profile:'forager', name:'Snare 🪤', tier:'basic', type:'persistent', requires:[{category:'plant',count:1},{category:'food',count:2}], effect:{ foodPerRoundChance:0.45, foodSourceZone:'forest' }, points:2, desc:'45% chance to produce food each round' },
+  { id:'fishing_pole', profile:'forager', name:'Fishing Pole 🎣', tier:'improved', type:'persistent', requires:[{category:'plant',count:1},{category:'food',count:1},{category:'water',count:1}], requiresRarity:'uncommon', effect:{ foodPerRoundChance:0.6, foodSourceZone:'river' }, points:4, desc:'60% chance to produce food each round' },
+  { id:'boiled_water', profile:'forager', name:'Boiled Water 💧♨️', tier:'basic', type:'one-time', requires:[{category:'water',count:1}], requiresTableau:'campfire', effect:{ hydration:3 }, points:1, desc:'+3 Hydration (needs campfire)' },
+  { id:'water_filter', profile:'forager', name:'Water Filter 💧', tier:'basic', type:'persistent', requires:[{category:'plant',count:1},{category:'water',count:1}], effect:{ bonusDraw:1 }, points:2, desc:'+1 draw at River' },
+  { id:'cooked_meal', profile:'forager', name:'Cooked Meal 🍳', tier:'basic', type:'one-time', requires:[{category:'food',count:1}], requiresTableau:'campfire', effect:{ hunger:3 }, points:1, desc:'+3 Hunger (needs campfire)' },
+  { id:'preserved_food', profile:'forager', name:'Preserved Food 🥫', tier:'expert', type:'persistent', requires:[{category:'plant',count:2},{category:'food',count:1},{category:'water',count:1}], requiresRarity:'rare', effect:{ hungerPerRound:2, duration:3 }, points:5, desc:'+2 Hunger/round, 3 rounds' },
+  { id:'stone_tool', profile:'pathfinder', name:'Foraging Kit 🧺', tier:'basic', type:'persistent', requires:[{category:'plant',count:2},{category:'food',count:1}], effect:{ bonusDraw:1 }, points:2, desc:'+1 card draw per turn' },
+  { id:'cutting_tool', profile:'pathfinder', name:'Harvest Knife 🔪', tier:'improved', type:'persistent', requires:[{category:'plant',count:1},{category:'food',count:1},{category:'water',count:1}], requiresRarity:'uncommon', effect:{ bonusDraw:2, bonusCraft:1 }, points:4, desc:'+2 draw, +1 craft action' },
+  { id:'medicine', profile:'forager', name:'Medicine 💊', tier:'improved', type:'one-time', requires:[{category:'plant',count:1},{category:'water',count:1}], requiresRarity:'uncommon', effect:{ anyMeter:2 }, points:2, desc:'+2 to any meter' },
+  { id:'signal_mirror', profile:'pathfinder', name:'Signal Mirror 🪞', tier:'improved', type:'one-time', requires:[{category:'plant',count:1},{category:'food',count:1},{category:'water',count:1}], requiresRarity:'uncommon', effect:{ rescue:3 }, points:3, desc:'+3 Rescue progress' },
+  { id:'rescue_cache', profile:'pathfinder', name:'Rescue Cache 🆘', tier:'expert', type:'one-time', requires:[{category:'plant',count:2},{category:'food',count:1},{category:'water',count:1}], requiresRarity:'rare', effect:{ rescue:5 }, points:8, desc:'+5 Rescue, 8 points' }
+];
+let RECIPES = DEFAULT_RECIPES;
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+const DEFAULT_PLAYER_NAMES = ['Player 1', 'Player 2', 'Player 3'];
+const DEFAULT_PROFILE_IDS = ['firekeeper', 'forager', 'hunter'];
+const RARITY_ORDER = { common: 0, uncommon: 1, rare: 2 };
+
+const DEFAULT_CHARACTER_PROFILES = {
+  firekeeper: {
+    id: 'firekeeper',
+    name: 'Firekeeper',
+    emoji: '🔥',
+    summary: 'Shelter, fire, and warmth control.',
+    craftableRecipes: ['lean_to', 'sturdy_shelter', 'debris_hut', 'campfire', 'sustained_fire', 'signal_fire', 'smoke_bundle', 'medicine']
+  },
+  forager: {
+    id: 'forager',
+    name: 'Forager',
+    emoji: '🧺',
+    summary: 'Food, water, medicine, and traps.',
+    craftableRecipes: ['boiled_water', 'water_filter', 'cooked_meal', 'preserved_food', 'foraging_kit', 'medicine', 'snare', 'fishing_pole']
+  },
+  hunter: {
+    id: 'hunter',
+    name: 'Hunter',
+    emoji: '🏹',
+    summary: 'Hunting, deterrence, and ridge traversal.',
+    craftableRecipes: ['snare', 'fishing_pole', 'bow', 'windbreak_cloak', 'campfire', 'foraging_kit', 'smoke_bundle', 'signal_mirror', 'stone_tool', 'cutting_tool', 'rescue_cache']
+  },
+  pathfinder: {
+    id: 'pathfinder',
+    name: 'Pathfinder',
+    emoji: '🧭',
+    summary: 'Tools, signals, and rescue progress.',
+    craftableRecipes: ['stone_tool', 'climbing_staff', 'signal_mirror', 'rescue_cache', 'boiled_water', 'water_filter', 'sturdy_shelter', 'smoke_bundle']
+  }
+};
+let CHARACTER_PROFILES = DEFAULT_CHARACTER_PROFILES;
+
+function getProfile(profileId) {
+  return CHARACTER_PROFILES[profileId] || CHARACTER_PROFILES.forager || Object.values(CHARACTER_PROFILES)[0];
+}
+
+function getProfileRecipeIds(profileId) {
+  const profile = getProfile(profileId);
+  const core = profile.coreRecipeIds || [];
+  const shared = profile.sharedRecipeIds || [];
+  return profile.unlockedRecipeIds || [...core, ...shared, ...(profile.craftableRecipes || [])];
+}
+
+function createPlayer(name, profileId='forager') {
+  return {
+    name,
+    isAI: name !== 'Player 1',
+    profileId,
+    hand: [],
+    stockpile: [],
+    tableau: [],
+    meters: { hunger: 8, warmth: 5, hydration: 8, morale: 8 },
+    score: 0,
+    pendingFoodDrawBonus: 0,
+    pendingZoneHazardCancelZone: null,
+    safeWaterReady: false,
+    lastExploredZone: null,
+    selectedCards: new Set(),
+    actionsLeft: 2
+  };
+}
+
+function createPlayers(count = 3) {
+  return Array.from({ length: count }, (_, index) => createPlayer(DEFAULT_PLAYER_NAMES[index] || `Player ${index + 1}`, DEFAULT_PROFILE_IDS[index] || 'forager'));
+}
+
+const state = {
+  round: 1,
+  currentPlayerIndex: 0,
+  players: createPlayers(3),
+  selectedZone: null,
+  handIdCounter: 0,
+  maxMeter: 10,
+  rescueTarget: 20,
+  sharedRescue: 0,
+  environmentId: 'temperate_forest',
+  gameOver: false
+};
+
+async function loadGameData() {
+  try {
+    const [materialsRes, recipesRes] = await Promise.all([
+      fetch('materials.json'),
+      fetch('recipes.json')
+    ]);
+    if (!materialsRes.ok || !recipesRes.ok) throw new Error('data fetch failed');
+    const [materialsData, recipesData] = await Promise.all([
+      materialsRes.json(),
+      recipesRes.json()
+    ]);
+    const materialBundle = buildMaterialsFromDesign(materialsData);
+    MATERIALS = materialBundle.materials;
+    ZONES = materialBundle.zones;
+    RECIPES = buildRecipesFromDesign(recipesData);
+    CHARACTER_PROFILES = buildProfilesFromDesign(RECIPES);
+    return true;
+  } catch (error) {
+    console.warn('Falling back to inline data:', error);
+    return false;
+  }
+}
+
+const ENVIRONMENTS = {
+  temperate_forest: { label: 'Temperate Forest', warmthShift: -1 }
+};
+
+const SHELTER_TIERS = [
+  { id: 'debris_hut', tier: 3, restWarmth: 4 },
+  { id: 'sturdy_shelter', tier: 2, restWarmth: 3 },
+  { id: 'cave_entrance', tier: 2, restWarmth: 3, special: true },
+  { id: 'lean_to', tier: 1, restWarmth: 2 }
+];
+
+function getActivePlayer() {
+  return state.players[state.currentPlayerIndex];
+}
+
+function getPlayerSelectedCards(player = getActivePlayer()) {
+  return [...player.selectedCards]
+    .map(handId => findPlayerCardById(player, handId))
+    .filter(Boolean);
+}
+
+function getPlayerInventory(player = getActivePlayer()) {
+  return [...player.hand, ...player.stockpile];
+}
+
+function findPlayerCardById(player, handId) {
+  return getPlayerInventory(player).find(card => card.handId === handId) || null;
+}
+
+function removePlayerCardById(player, handId) {
+  const removeFrom = list => list.filter(card => card.handId !== handId);
+  player.hand = removeFrom(player.hand);
+  player.stockpile = removeFrom(player.stockpile);
+}
+
+function isSpoilableCard(card, preserveFood=false) {
+  if (!card) return false;
+  if (card.spoils === true) return true;
+  if (card.spoils === false) return false;
+  if (card.category === 'food' && preserveFood) return false;
+  if (card.category !== 'food' && card.category !== 'water') return false;
+  const effect = card.consumeEffect || {};
+  const utilityOnly =
+    typeof effect.foodDrawBonus === 'number' ||
+    typeof effect.bonusFlint === 'number' ||
+    typeof effect.grantLeanTo === 'boolean' ||
+    (typeof effect.rescue === 'number' && !('hunger' in effect) && !('hydration' in effect));
+  return !utilityOnly;
+}
+
+function resolveEndOfTurnInventory(player) {
+  const durable = [];
+  const spoiled = [];
+  const preserveFood = player.tableau.some(item => item.effect && item.effect.preserveFood);
+
+  player.hand.forEach(card => {
+    if (isSpoilableCard(card, preserveFood)) spoiled.push(card);
+    else durable.push(card);
+  });
+
+  durable.forEach(card => {
+    if (!player.stockpile.some(existing => existing.handId === card.handId)) {
+      player.stockpile.push(card);
+    }
+  });
+  const spoiledStockpile = player.stockpile.filter(card => isSpoilableCard(card, preserveFood));
+  if (spoiledStockpile.length) {
+    spoiled.push(...spoiledStockpile);
+  }
+  player.stockpile = player.stockpile.filter(card => !isSpoilableCard(card, preserveFood));
+
+  player.hand = [];
+
+  if (durable.length) {
+    log(`📦 ${player.name} stockpiled ${durable.length} durable card${durable.length === 1 ? '' : 's'}.`, 'good');
+  }
+  if (spoiled.length) {
+    log(`🍂 ${player.name} discarded ${spoiled.length} spoilable card${spoiled.length === 1 ? '' : 's'} at end of turn.`, 'bad');
+  }
+
+  return { durable, spoiled };
+}
+
+function getTableauBonus(player, key) {
+  return player.tableau.reduce((total, item) => total + (item.effect && item.effect[key] ? item.effect[key] : 0), 0);
+}
+
+function getRecipeMinRarity(recipe) {
+  return null;
+}
+
+function buildProfilesFromDesign(recipes) {
+  const recipeIds = recipes.map(recipe => recipe.id);
+  return {
+    firekeeper: {
+      id: 'firekeeper',
+      name: 'Firekeeper',
+      emoji: '🔥',
+      summary: 'Shelter, fire, and warmth control.',
+      craftableRecipes: recipeIds,
+      allowAllRecipes: true
+    },
+    forager: {
+      id: 'forager',
+      name: 'Forager',
+      emoji: '🧺',
+      summary: 'Food, water, and medical support.',
+      craftableRecipes: recipeIds,
+      allowAllRecipes: true
+    },
+    hunter: {
+      id: 'hunter',
+      name: 'Hunter',
+      emoji: '🏹',
+      summary: 'Field tools and signaling.',
+      craftableRecipes: recipeIds,
+      allowAllRecipes: true
+    },
+    pathfinder: {
+      id: 'pathfinder',
+      name: 'Pathfinder',
+      emoji: '🧭',
+      summary: 'Navigation, tools, and rescue support.',
+      craftableRecipes: recipeIds,
+      allowAllRecipes: true
+    }
+  };
+}
+
+function buildRecipesFromDesign(data) {
+  const groups = Array.isArray(data.recipes) ? data.recipes : [];
+  return groups.flatMap(group => {
+    const items = Array.isArray(group.items) ? group.items : [];
+    return items.map(recipe => {
+      const effect = { ...(recipe.effect || {}) };
+      if (recipe.id === 'snare') {
+        effect.zoneUse = effect.zoneUse || {
+          zones: [recipe.zone || 'meadow'],
+          actionName: 'use',
+          die: 1,
+          successOn: [1],
+          reward: {
+            hunger: effect.hungerOnActivate || 4,
+            foodTag: 'snare catch'
+          }
+        };
+      } else if (recipe.id === 'fishing_pole') {
+        effect.zoneUse = effect.zoneUse || {
+          zones: [recipe.zone || 'river'],
+          actionName: 'use',
+          die: 1,
+          successOn: [1],
+          reward: {
+            hunger: effect.fishBonus || 2,
+            bonusDraw: 1,
+            foodTag: 'fishing catch'
+          }
+        };
+      } else if (recipe.id === 'bow') {
+        effect.zoneUse = effect.zoneUse || {
+          zones: [recipe.zone || 'forest'],
+          actionName: 'use',
+          die: 2,
+          successOn: [1],
+          reward: {
+            hunger: effect.hungerOnSuccess || 6,
+            foodTag: 'hunt'
+          },
+          fail: { hunger: -1 }
+        };
+      } else if (recipe.id === 'signal_mirror') {
+        effect.zoneUse = effect.zoneUse || {
+          zones: [recipe.zone || 'highground'],
+          actionName: 'signal',
+          die: 1,
+          successOn: [1],
+          reward: { rescue: effect.rescue || 4 }
+        };
+      } else if (recipe.id === 'signal_kit') {
+        effect.zoneUse = effect.zoneUse || {
+          zones: [recipe.zone || 'highground'],
+          actionName: 'signal',
+          die: 1,
+          successOn: [1],
+          reward: { rescue: effect.rescue || 6 }
+        };
+        effect.rescuePerRound = effect.rescuePerRound || 1;
+      } else if (recipe.id === 'water_filter') {
+        effect.treatsWater = true;
+      } else if (recipe.id === 'water_rig') {
+        effect.treatsWater = true;
+        effect.passiveHydration = 1;
+      } else if (recipe.id === 'drying_rack') {
+        effect.preserveFood = true;
+      }
+
+      if (recipe.type === 'zone_use' && !effect.zoneUse) {
+        effect.zoneUse = {
+          zones: recipe.zone ? [recipe.zone] : [],
+          actionName: 'use',
+          die: recipe.effect && recipe.effect.rollDie ? recipe.effect.rollDie : 1,
+          successOn: [1],
+          reward: {
+            ...(typeof effect.rescue === 'number' ? { rescue: effect.rescue } : {}),
+            ...(typeof effect.hunger === 'number' ? { hunger: effect.hunger } : {}),
+            ...(typeof effect.hydration === 'number' ? { hydration: effect.hydration } : {}),
+            ...(typeof effect.morale === 'number' ? { morale: effect.morale } : {}),
+            ...(effect.cancelHazard ? { cancelHazard: true } : {})
+          }
+        };
+      }
+
+      return {
+        ...recipe,
+        group: group.category || 'Misc',
+        desc: recipe.description || '',
+        effect,
+        requires: Object.entries(recipe.requires || {}).map(([category, count]) => ({ category, count })),
+        points: recipe.points || 0,
+        profile: recipe.profile || null,
+        craftType: recipe.type,
+        tier: recipe.valueThreshold >= 8 ? 'expert' : recipe.valueThreshold >= 5 ? 'improved' : 'basic',
+        type: recipe.type === 'recovery' ? 'one-time' : 'persistent',
+        valueThreshold: recipe.valueThreshold || 0
+      };
+    });
+  });
+}
+
+function buildMaterialsFromDesign(data) {
+  const categories = data.categories || {};
+  const nextCategories = {};
+  Object.entries(categories).forEach(([id, info]) => {
+    nextCategories[id] = {
+      label: info.label || id,
+      emoji: info.emoji || '•'
+    };
+  });
+  CATEGORIES = { ...DEFAULT_CATEGORIES, ...nextCategories };
+
+  const zones = {};
+  const materials = [];
+  Object.entries(data.zones || {}).forEach(([zoneId, zone]) => {
+    const cards = (zone.cards || []).map(card => {
+      const value = typeof card.value === 'number' ? card.value : 1;
+      const normalized = {
+        ...card,
+        zone: zoneId,
+        value,
+        description: card.description || '',
+        consumeEffect: card.consumeEffect || undefined,
+        hazardEffect: card.hazardEffect || undefined,
+        consumeRisk: card.consumeRisk || undefined,
+        protectedBy: card.protectedBy || [],
+        unsafe: !!card.unsafe || !!card.rawRisk,
+        rawRisk: !!card.rawRisk,
+        type: card.type || (card.category === 'hazard' ? 'hazard' : undefined)
+      };
+      materials.push(normalized);
+      return normalized;
+    });
+    zones[zoneId] = {
+      id: zoneId,
+      name: zone.name || zoneId,
+      emoji: zone.emoji || '🗺️',
+      description: zone.identity || zone.description || '',
+      identity: zone.identity || '',
+      opportunity: zone.opportunity || '',
+      danger: zone.danger || '',
+      cards,
+      materials: cards.filter(card => card.category !== 'hazard' && FORAGE_DRAW_CATEGORIES.has(card.category)),
+      resourceMaterials: cards.filter(card => card.category !== 'hazard' && RESOURCE_DRAW_CATEGORIES.has(card.category)),
+      dangerHazardIds: cards.filter(card => card.category === 'hazard').map(card => card.id),
+      drawCount: 2,
+      warmthPenalty: 0
+    };
+  });
+
+  return { materials, zones };
+}
+
+function recipeMatchesProfile(recipe, player = getActivePlayer()) {
+  return true;
+}
+
+function getShelterTier(player) {
+  for (const shelter of SHELTER_TIERS) {
+    if (player.tableau.some(item => item.id === shelter.id)) return shelter;
+  }
+  return null;
+}
+
+function hasShelter(player) {
+  return !!getShelterTier(player);
+}
+
+function getRestWarmthRecovery(player) {
+  const shelter = getShelterTier(player);
+  return shelter ? shelter.restWarmth : 1;
+}
+
+function getWarmthPressure(player) {
+  const environment = ENVIRONMENTS[state.environmentId] || ENVIRONMENTS.temperate_forest;
+  const fireReduction = player.tableau.reduce((total, item) => {
+    const active = item.duration === null || item.duration > 0;
+    return total + ((active && item.effect && item.effect.warmthPressureReduction) ? item.effect.warmthPressureReduction : 0);
+  }, 0);
+  if (environment.warmthShift < 0) return Math.min(0, environment.warmthShift + fireReduction);
+  if (environment.warmthShift > 0) return Math.max(0, environment.warmthShift - fireReduction);
+  return 0;
+}
+
+function setMorale(player, nextValue, reason='', type='info') {
+  const before = player.meters.morale;
+  player.meters.morale = clamp(nextValue, 0, state.maxMeter);
+  if (reason) log(`🎭 ${player.name}: ${reason} (${player.meters.morale}/${state.maxMeter}).`, type);
+  if (before > 0 && player.meters.morale === 0) log(`🎭 ${player.name} is broken at 0 morale.`, 'bad');
+}
+
+function adjustMorale(player, delta, reason='') {
+  const before = player.meters.morale;
+  setMorale(player, before + delta, reason, delta < 0 ? 'bad' : 'good');
+}
+
+function adjustSharedRescue(player, delta, source='') {
+  const before = state.sharedRescue;
+  const next = clamp(before + delta, 0, state.rescueTarget);
+  state.sharedRescue = next;
+  if (source) log(`🆘 ${player.name}: ${source} (+${delta} rescue).`, 'good');
+  const beforeMilestones = Math.floor(before / 5);
+  const afterMilestones = Math.floor(next / 5);
+  const gained = afterMilestones - beforeMilestones;
+  if (gained > 0) {
+    adjustMorale(player, gained, `rescue milestone +${gained}`);
+  }
+}
+
+function getStartingActions(player) {
+  return 2 + getTableauBonus(player, 'bonusCraft');
+}
+
+function getExploreDrawCount(player) {
+  const moraleBonus = player.meters.morale >= 8 ? 1 : 0;
+  const zoneBonus = state.selectedZone === 'river' ? getTableauBonus(player, 'bonusWaterDraw') : 0;
+  return 2 + getTableauBonus(player, 'bonusDraw') + zoneBonus + moraleBonus + (player.pendingFoodDrawBonus || 0);
+}
+
+function getHandLimit(player) {
+  let limit = 7;
+  if (player.meters.morale >= 8) limit += 1;
+  else if (player.meters.morale <= 2) limit -= 2;
+  else if (player.meters.morale <= 4) limit -= 1;
+  return limit;
+}
+
+function getAIPlayer() {
+  return getActivePlayer().isAI ? getActivePlayer() : null;
+}
+
+function chooseBestZoneForPlayer(player) {
+  if (player.meters.hydration <= 4) return 'river';
+  if (player.meters.hunger <= 4) return 'forest';
+  if (player.meters.warmth <= 4) return 'forest';
+  if (player.meters.morale <= 4) return 'meadow';
+  return ['forest', 'river', 'meadow', 'highground'][Math.floor(Math.random() * 4)];
+}
+
+function chooseBestResourceZoneForPlayer(player) {
+  const inventory = getPlayerInventory(player);
+  const wantsWood = !inventory.some(card => card.category === 'wood');
+  const wantsStone = !inventory.some(card => card.category === 'stone');
+  const wantsStarter = !inventory.some(card => card.category === 'fire_starter');
+  if (wantsWood || wantsStarter) return 'forest';
+  if (wantsStone) return player.meters.hydration <= 4 ? 'river' : 'highground';
+  return null;
+}
+
+function chooseBestZoneUseActionForPlayer(player) {
+  const scoredActions = player.tableau
+    .filter(item => item.effect && item.effect.zoneUse)
+    .map(item => {
+      const zoneUse = item.effect.zoneUse;
+      const reward = zoneUse.reward || {};
+      const score =
+        (typeof reward.hunger === 'number' ? reward.hunger * 3 : 0) +
+        (typeof reward.hydration === 'number' ? reward.hydration * 3 : 0) +
+        (typeof reward.rescue === 'number' ? reward.rescue * 2 : 0) +
+        (typeof reward.bonusDraw === 'number' ? reward.bonusDraw : 0) +
+        (reward.safeWater && player.meters.hydration <= 6 ? 2 : 0) +
+        (reward.cancelHazard ? 1 : 0) +
+        (item.id === 'bow' && player.meters.hunger <= 6 ? 3 : 0) +
+        (item.id === 'snare' && player.meters.hunger <= 6 ? 3 : 0) +
+        (item.id === 'fishing_pole' && player.meters.hunger <= 6 ? 3 : 0) +
+        (item.id === 'climbing_staff' && player.meters.morale <= 6 ? 2 : 0);
+      return {
+        item,
+        zoneId: (zoneUse.zones || [])[0] || null,
+        score
+      };
+    })
+    .filter(entry => entry.zoneId && entry.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scoredActions[0] || null;
+}
+
+function getCraftableRecipes(player) {
+  return RECIPES.filter(recipe => canCraft(recipe, player));
+}
+
+function canCraftFromHand(recipe, player) {
+  if (!recipeMatchesProfile(recipe, player)) return false;
+  if (recipe.requiresTableau && !hasCampfireInTableau(player)) return false;
+  const inventory = getPlayerInventory(player);
+  const selected = getPlayerSelectedCards(player);
+  const candidates = selected.length ? selected : inventory;
+  const categoryCounts = {};
+  let valueTotal = 0;
+  candidates.forEach(card => {
+    if (!recipe.requires.some(req => cardMatchesRequirement(card, req))) return;
+    valueTotal += card.value || 1;
+    recipe.requires.forEach(req => {
+      if (cardMatchesRequirement(card, req)) {
+        categoryCounts[req.category] = (categoryCounts[req.category] || 0) + 1;
+      }
+    });
+  });
+  return selected.every(card => recipe.requires.some(req => cardMatchesRequirement(card, req)))
+    && recipe.requires.every(req => (categoryCounts[req.category] || 0) >= req.count)
+    && valueTotal >= (recipe.valueThreshold || 0);
+}
+
+function isFireRecipe(recipe) {
+  return ['campfire', 'sustained_fire', 'signal_fire'].includes(recipe.id);
+}
+
+function isFireItem(item) {
+  return ['campfire', 'sustained_fire', 'signal_fire'].includes(item.id) || !!item.effect?.fire;
+}
+
+function getFireStarterStrength(card) {
+  if (!card || card.category !== 'fire_starter') return 0;
+  if (typeof card.value === 'number') return card.value;
+  return 1;
+}
+
+function getFireDurationFromSelection(recipe, selectedCards) {
+  const starterStrength = selectedCards.reduce((best, card) => Math.max(best, getFireStarterStrength(card)), 0) || 1;
+  const fuelCount = selectedCards.filter(card => card.category !== 'fire_starter').length;
+  const baseDuration = recipe.effect && typeof recipe.effect.duration === 'number'
+    ? recipe.effect.duration
+    : recipe.id === 'campfire'
+      ? 1
+      : recipe.id === 'sustained_fire'
+        ? 2
+        : 2;
+  return baseDuration + starterStrength + Math.max(0, Math.floor(fuelCount / 2));
+}
+
+function selectCardsForRecipe(recipe, player) {
+  player.selectedCards.clear();
+  const used = new Set();
+  const inventory = getPlayerInventory(player);
+  recipe.requires.forEach(req => {
+    let needed = req.count;
+    inventory
+      .filter(card => cardMatchesRequirement(card, req))
+      .sort((a, b) => (b.value || 1) - (a.value || 1))
+      .forEach(card => {
+        if (needed > 0 && !used.has(card.handId) && cardMatchesRequirement(card, req)) {
+          used.add(card.handId);
+          player.selectedCards.add(card.handId);
+          needed--;
+        }
+      });
+  });
+
+  const selected = getPlayerSelectedCards(player);
+  let valueTotal = selected.reduce((sum, card) => sum + (card.value || 1), 0);
+  if (valueTotal < (recipe.valueThreshold || 0)) {
+    const filler = inventory
+      .filter(card => !used.has(card.handId))
+      .sort((a, b) => (b.value || 1) - (a.value || 1));
+    for (const card of filler) {
+      if (valueTotal >= (recipe.valueThreshold || 0)) break;
+      if (!recipe.requires.some(req => cardMatchesRequirement(card, req))) continue;
+      used.add(card.handId);
+      player.selectedCards.add(card.handId);
+      valueTotal += card.value || 1;
+    }
+  }
+}
+
+function getUrgentConsumeTargets(player) {
+  return getPlayerInventory(player).filter(card => {
+    if (!card.consumeEffect) return false;
+    if (card.category === 'water' && player.meters.hydration <= 6) return true;
+    if (card.category === 'food' && player.meters.hunger <= 6) return true;
+    if (typeof card.consumeEffect.rescue === 'number' && state.sharedRescue < state.rescueTarget) return true;
+    if (typeof card.consumeEffect.warmth === 'number' && player.meters.warmth <= 4) return true;
+    return false;
+  });
+}
+
+function runAITurn() {
+  if (state.gameOver) return;
+  const player = getAIPlayer();
+  if (!player) return;
+
+  let safety = 12;
+  while (!state.gameOver && getActivePlayer().isAI && safety-- > 0) {
+    const current = getActivePlayer();
+    const craftable = RECIPES.filter(recipe => canCraftFromHand(recipe, current)).sort((a, b) => b.points - a.points);
+    if (craftable.length) {
+      const recipe = craftable[0];
+      selectCardsForRecipe(recipe, current);
+      craftItem(recipe);
+      continue;
+    }
+
+    const urgentTargets = getUrgentConsumeTargets(current);
+    if (urgentTargets.length) {
+      urgentTargets.sort((a, b) => {
+        const aScore = (a.consumeEffect.hydration || 0) + (a.consumeEffect.hunger || 0) + (a.consumeEffect.rescue || 0) + (a.consumeEffect.warmth || 0);
+        const bScore = (b.consumeEffect.hydration || 0) + (b.consumeEffect.hunger || 0) + (b.consumeEffect.rescue || 0) + (b.consumeEffect.warmth || 0);
+        return bScore - aScore;
+      });
+      applyConsumeEffect(urgentTargets[0], current);
+      removePlayerCardById(current, urgentTargets[0].handId);
+      log(`🤖 ${current.name} used ${urgentTargets[0].name}.`, 'info');
+      checkGameState();
+      renderAll();
+      continue;
+    }
+
+    const fireItem = current.tableau.find(item => isFireItem(item) && item.duration !== null && item.duration <= 1);
+    if (fireItem) {
+      const fuelCards = getPlayerInventory(current).filter(card => ['wood', 'stone', 'plant', 'fire_starter'].includes(card.category));
+      if (fuelCards.length) {
+        fuelCards.slice(0, 2).forEach(card => current.selectedCards.add(card.handId));
+        stokeFire();
+        continue;
+      }
+    }
+
+    const zoneUseAction = chooseBestZoneUseActionForPlayer(current);
+    if (zoneUseAction && current.actionsLeft > 0) {
+      state.selectedZone = zoneUseAction.zoneId;
+      renderAll();
+      useTableauItem(zoneUseAction.item.id);
+      continue;
+    }
+
+    const resourceZone = chooseBestResourceZoneForPlayer(current);
+    if (resourceZone && current.actionsLeft > 0 && current.hand.length < getHandLimit(current)) {
+      state.selectedZone = resourceZone;
+      renderAll();
+      harvestResources();
+      continue;
+    }
+
+    if (current.actionsLeft > 0) {
+      const zoneId = chooseBestZoneForPlayer(current);
+      state.selectedZone = zoneId;
+      renderAll();
+      explore();
+      continue;
+    }
+
+    endTurn();
+  }
+}
+
+function scheduleAITurn() {
+  if (state.gameOver) return;
+  const activePlayer = getActivePlayer();
+  if (!activePlayer.isAI) return;
+  setTimeout(runAITurn, 250);
+}
+
+function clearZoneSelection() {
+  document.querySelectorAll('.zone-btn').forEach(button => button.classList.remove('selected'));
+  document.getElementById('exploreBtn').disabled = true;
+  document.getElementById('harvestBtn').disabled = true;
+  document.getElementById('stokeBtn').disabled = true;
+}
+
+function updatePhaseLabel(text) {
+  document.getElementById('phaseLabel').textContent = text;
+}
+
+// ─── UTILITIES ───────────────────────────────────────────────────────────────
+
+function log(msg, type='') {
+  const el = document.getElementById('gameLog');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry' + (type ? ' ' + type : '');
+  entry.textContent = msg;
+  el.prepend(entry);
+}
+
+function clamp(val, min, max) { return Math.min(max, Math.max(min, val)); }
+
+function resolveHazardCard(card, player, zoneId) {
+  if (isProtectedByRecipe(player, card)) {
+    log(`🛡️ ${player.name} was protected from ${card.name}.`, 'good');
+    return;
+  }
+  applyHazardEffect(card, player, zoneId);
+}
+
+function drawFromZone(zoneId, count=2, player=getActivePlayer()) {
+  const zone = ZONES[zoneId];
+  const pool = [...(zone.cards || [])];
+  const drawn = [];
+  for (let i = 0; i < count; i++) {
+    if (!pool.length) break;
+    const roll = Math.random();
+    let eligible;
+    if (roll < 0.12) eligible = pool.filter(m => (m.value || 1) >= 3 || m.category === 'hazard');
+    else if (roll < 0.42) eligible = pool.filter(m => (m.value || 1) === 2);
+    else eligible = pool.filter(m => (m.value || 1) === 1);
+    if (!eligible.length) eligible = pool;
+    const pick = eligible[Math.floor(Math.random() * eligible.length)];
+    pool.splice(pool.indexOf(pick), 1);
+    if (pick.category === 'hazard' || pick.type === 'hazard') {
+      resolveHazardCard(pick, player, zoneId);
+      continue;
+    }
+    drawn.push({ ...pick, handId: state.handIdCounter++ });
+  }
+  return drawn;
+}
+
+function drawFromResourceZone(zoneId, count=2, player=getActivePlayer()) {
+  const zone = ZONES[zoneId];
+  const pool = [...(zone.resourceMaterials || [])];
+  const drawn = [];
+  for (let i = 0; i < count; i++) {
+    if (!pool.length) break;
+    const roll = Math.random();
+    let eligible;
+    if (roll < 0.12) eligible = pool.filter(m => (m.value || 1) >= 3);
+    else if (roll < 0.42) eligible = pool.filter(m => (m.value || 1) === 2);
+    else eligible = pool.filter(m => (m.value || 1) === 1);
+    if (!eligible.length) eligible = pool;
+    const pick = eligible[Math.floor(Math.random() * eligible.length)];
+    pool.splice(pool.indexOf(pick), 1);
+    drawn.push({ ...pick, handId: state.handIdCounter++ });
+  }
+  return drawn;
+}
+
+function grantFoodCard(player, zoneId, sourceName='') {
+  const zoneMaterials = MATERIALS.filter(material => material.zone === zoneId && material.category === 'food');
+  const pool = zoneMaterials.length ? zoneMaterials : MATERIALS.filter(material => material.category === 'food');
+  if (!pool.length) return null;
+  const choicePool = pool.filter(material => (material.value || 1) === 1);
+  const pick = choicePool[Math.floor(Math.random() * choicePool.length)];
+  const card = { ...pick, handId: state.handIdCounter++ };
+  player.hand.push(card);
+  log(`🍽️ ${player.name}: ${sourceName || 'foraging'} produced ${card.name}.`, 'good');
+  return card;
+}
+
+function harvestResources() {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  if (!state.selectedZone || player.actionsLeft <= 0) return;
+  const zone = ZONES[state.selectedZone];
+  const roomLeft = Math.max(0, getHandLimit(player) - player.hand.length);
+  const actualDrawCount = Math.min(2, roomLeft);
+  if (!actualDrawCount) {
+    log(`🫳 ${player.name} reached the hand limit.`, 'bad');
+    return;
+  }
+  const drawn = drawFromResourceZone(state.selectedZone, actualDrawCount, player);
+  if (!drawn.length) {
+    log(`⚠️ ${zone.name} has no hard resources to harvest.`, 'bad');
+    return;
+  }
+  player.hand.push(...drawn);
+  player.actionsLeft--;
+  state.selectedZone = null;
+  clearZoneSelection();
+  log(`🪵 ${player.name} harvested resources from ${zone.emoji} ${zone.name} — drew ${drawn.map(d=>d.name).join(', ')}.`, 'info');
+  updatePhaseLabel(`${player.name.toUpperCase()} — DRAW, HARVEST, CRAFT, OR CONSUME`);
+  checkGameState();
+  renderAll();
+}
+
+function stokeFire() {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  if (player.actionsLeft <= 0) return;
+  const fireItem = player.tableau.find(item => isFireItem(item));
+  if (!fireItem) {
+    log(`⚠️ ${player.name} has no fire to stoke.`, 'bad');
+    return;
+  }
+
+  const selected = getPlayerSelectedCards(player);
+  const fuelCards = selected.filter(card => ['wood', 'stone', 'plant', 'fire_starter'].includes(card.category));
+  if (!fuelCards.length) {
+    log(`⚠️ Select wood, stone, plant, or fire starter cards to add fuel.`, 'bad');
+    return;
+  }
+
+  let fuelGain = 0;
+  const consumed = new Set();
+  fuelCards.forEach(card => {
+    fuelGain += card.category === 'fire_starter' ? getFireStarterStrength(card) : 1;
+    consumed.add(card.handId);
+  });
+
+  fireItem.duration = (fireItem.duration || 0) + fuelGain;
+  consumed.forEach(handId => removePlayerCardById(player, handId));
+  player.selectedCards.clear();
+  player.actionsLeft--;
+  log(`🔥 ${player.name} stoked ${fireItem.name} for +${fuelGain} rounds.`, 'good');
+  updatePhaseLabel(`${player.name.toUpperCase()} — FIRE STOKED`);
+  checkGameState();
+  renderAll();
+}
+
+function useTableauItem(itemId) {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  if (player.actionsLeft <= 0) return;
+  if (!state.selectedZone) {
+    log(`⚠️ Select a zone before using a tableau item.`, 'bad');
+    return;
+  }
+  const item = player.tableau.find(entry => entry.id === itemId);
+  const zoneUse = item && item.effect && item.effect.zoneUse;
+  if (!item || !zoneUse) {
+    log(`⚠️ ${item ? item.name : 'That item'} cannot be used this way.`, 'bad');
+    return;
+  }
+  if (!(zoneUse.zones || []).includes(state.selectedZone)) {
+    log(`⚠️ ${item.name} cannot be used in ${ZONES[state.selectedZone].name}.`, 'bad');
+    return;
+  }
+  if (item.id === 'snare') {
+    const bait = getPlayerInventory(player).find(card => card.id === 'snare_bait');
+    if (!bait) {
+      log(`⚠️ ${item.name} needs Snare Bait to work.`, 'bad');
+      return;
+    }
+    removePlayerCardById(player, bait.handId);
+    log(`🪤 ${player.name} loaded ${item.name} with ${bait.name}.`, 'good');
+  }
+
+  const die = zoneUse.die || 1;
+  const roll = die > 1 ? Math.floor(Math.random() * die) + 1 : 1;
+  const success = !zoneUse.successOn || !zoneUse.successOn.length || (zoneUse.successOn || []).includes(roll);
+  const outcome = success ? (zoneUse.reward || {}) : (zoneUse.fail || {});
+  applyZoneUseOutcome(player, state.selectedZone, item.name, outcome);
+  player.actionsLeft--;
+  const zoneName = ZONES[state.selectedZone].name;
+  log(`🎲 ${player.name} used ${item.name} in ${zoneName} and rolled ${roll}/${die} (${success ? 'success' : 'fail'}).`, success ? 'good' : 'bad');
+  updatePhaseLabel(`${player.name.toUpperCase()} — ITEM USED`);
+  checkGameState();
+  renderAll();
+}
+
+function hasCampfireInTableau(player = getActivePlayer()) {
+  return player.tableau.some(t => isFireItem(t) && (t.duration === null || t.duration > 0));
+}
+
+function hasRarityInSelected(rarity, player = getActivePlayer()) {
+  const needed = typeof rarity === 'number' ? rarity : 0;
+  return getPlayerSelectedCards(player).some(card => (card.value || 1) >= needed);
+}
+
+function cardMatchesRequirement(card, req) {
+  if (card.id === 'dry_flower_bundle' && req.category === 'plant') return true;
+  return card.category === req.category;
+}
+
+function cardMeetsMinRarity(card, minRarity) {
+  const needed = typeof minRarity === 'number' ? minRarity : 0;
+  return (card.value || 1) >= needed;
+}
+
+function hasTableauRecipe(player, recipeId) {
+  return player.tableau.some(item => item.id === recipeId);
+}
+
+function playerHasProtectionAgainst(player, threatId) {
+  return player.tableau.some(item => {
+    const protectsAgainst = item.protectsAgainst || (item.effect && item.effect.protectsAgainst);
+    return Array.isArray(protectsAgainst) && protectsAgainst.includes(threatId);
+  });
+}
+
+function isProtectedByRecipe(player, card) {
+  if (playerHasProtectionAgainst(player, card.id)) return true;
+  const protectedBy = card.protectedBy || [];
+  return protectedBy.some(recipeId => hasTableauRecipe(player, recipeId));
+}
+
+function discardRandomHandCard(player, sourceName='') {
+  if (!player.hand.length) return null;
+  const selectedHand = player.hand[Math.floor(Math.random() * player.hand.length)];
+  player.hand = player.hand.filter(c => c.handId !== selectedHand.handId);
+  player.selectedCards.delete(selectedHand.handId);
+  if (sourceName) log(`🃏 ${player.name}: ${sourceName} discarded ${selectedHand.name}.`, 'bad');
+  return selectedHand;
+}
+
+function applyHazardEffect(card, player, zoneId) {
+  const effect = card.hazardEffect || {};
+  if (typeof effect.morale === 'number') adjustMorale(player, effect.morale, card.name);
+  if (typeof effect.hunger === 'number') player.meters.hunger = clamp(player.meters.hunger + effect.hunger, 0, state.maxMeter);
+  if (typeof effect.warmth === 'number') player.meters.warmth = clamp(player.meters.warmth + effect.warmth, 0, state.maxMeter);
+  if (typeof effect.hydration === 'number') player.meters.hydration = clamp(player.meters.hydration + effect.hydration, 0, state.maxMeter);
+  if (typeof effect.hungerIfUnprotected === 'number') player.meters.hunger = clamp(player.meters.hunger + effect.hungerIfUnprotected, 0, state.maxMeter);
+  if (typeof effect.hungerIfNoShelter === 'number' && !hasShelter(player)) {
+    player.meters.hunger = clamp(player.meters.hunger + effect.hungerIfNoShelter, 0, state.maxMeter);
+  }
+  if (effect.discardRandom) {
+    for (let i = 0; i < effect.discardRandom; i++) discardRandomHandCard(player, card.name);
+  }
+  if (effect.pendingWaterPenalty) {
+    player.waterborneIllness = true;
+    log(`💧 ${player.name}: waterborne illness is now pending.`, 'bad');
+  }
+  if (card.id === 'flash_flood') {
+    log(`🌊 ${player.name}: flash flood surged through the zone.`, 'bad');
+  } else if (card.id === 'rockslide') {
+    adjustMorale(player, effect.morale || -1, 'rockslide');
+  } else if (card.id === 'animal_attack' && !isProtectedByRecipe(player, card)) {
+    log(`🐺 ${player.name}: animal attack hit unprotected.`, 'bad');
+  } else if (card.id === 'poison_berries') {
+    log(`🍓 ${player.name}: poison berries were among the forage.`, 'bad');
+  } else if (card.id === 'bee_swarm') {
+    log(`🐝 ${player.name}: bee swarm disrupted the area.`, 'bad');
+  } else if (card.id === 'wrong_plant') {
+    log(`🌿 ${player.name}: wrong plant caused trouble.`, 'bad');
+  } else if (card.id === 'exposure') {
+    log(`⛰️ ${player.name}: exposure cut warmth.`, 'bad');
+  }
+  if (zoneId) {
+    log(`⚠️ ${player.name} triggered ${card.name} in ${ZONES[zoneId].name}.`, 'bad');
+  }
+}
+
+function resolveZoneDanger(player, zoneId) {
+  const zone = ZONES[zoneId];
+  const hazardPool = zone ? (zone.cards || []).filter(card => card.category === 'hazard' || card.type === 'hazard') : [];
+  if (!hazardPool.length) return false;
+  if (player.pendingZoneHazardCancelZone === zoneId) {
+    player.pendingZoneHazardCancelZone = null;
+    log(`🛡️ ${player.name} avoided the next hazard in ${zone.name}.`, 'good');
+    return false;
+  }
+  const hazardCard = hazardPool[Math.floor(Math.random() * hazardPool.length)];
+  if (!hazardCard) return false;
+  if (isProtectedByRecipe(player, hazardCard)) {
+    log(`🛡️ ${player.name}'s gear protected them from ${hazardCard.name}.`, 'good');
+    return false;
+  }
+  applyHazardEffect(hazardCard, player, zoneId);
+  return true;
+}
+
+function applyZoneUseOutcome(player, zoneId, sourceName, outcome) {
+  if (!outcome) return;
+  if (typeof outcome.morale === 'number') adjustMorale(player, outcome.morale, sourceName);
+  if (typeof outcome.hunger === 'number') player.meters.hunger = clamp(player.meters.hunger + outcome.hunger, 0, state.maxMeter);
+  if (typeof outcome.hydration === 'number') player.meters.hydration = clamp(player.meters.hydration + outcome.hydration, 0, state.maxMeter);
+  if (typeof outcome.warmth === 'number') player.meters.warmth = clamp(player.meters.warmth + outcome.warmth, 0, state.maxMeter);
+  if (typeof outcome.rescue === 'number') adjustSharedRescue(player, outcome.rescue, sourceName);
+  if (typeof outcome.bonusDraw === 'number') player.pendingFoodDrawBonus = (player.pendingFoodDrawBonus || 0) + outcome.bonusDraw;
+  if (outcome.foodTag) {
+    log(`🍽️ ${player.name}: ${sourceName} yielded ${outcome.foodTag}.`, 'good');
+  }
+  if (outcome.safeWater) {
+    player.safeWaterReady = true;
+    log(`💧 ${player.name}: water from ${ZONES[zoneId].name} is now safer.`, 'good');
+  }
+  if (outcome.cancelHazard) {
+    player.pendingZoneHazardCancelZone = zoneId;
+    log(`🛡️ ${player.name} can ignore the next hazard in ${ZONES[zoneId].name}.`, 'good');
+  }
+}
+
+function canCraft(recipe, player = getActivePlayer()) {
+  const selected = getPlayerSelectedCards(player);
+  if (!recipeMatchesProfile(recipe, player)) return false;
+  if (recipe.requiresTableau && !hasCampfireInTableau(player)) return false;
+  if (!selected.length) return false;
+  const categoryCounts = {};
+  let valueTotal = 0;
+  selected.forEach(c => {
+    if (!recipe.requires.some(req => cardMatchesRequirement(c, req))) return;
+    valueTotal += c.value || 1;
+    recipe.requires.forEach(req => {
+      if (cardMatchesRequirement(c, req)) {
+        categoryCounts[req.category] = (categoryCounts[req.category] || 0) + 1;
+      }
+    });
+  });
+  return selected.every(card => recipe.requires.some(req => cardMatchesRequirement(card, req)))
+    && recipe.requires.every(req => (categoryCounts[req.category] || 0) >= req.count)
+    && valueTotal >= (recipe.valueThreshold || 0);
+}
+
+function setPlayerTurnState(player) {
+  player.actionsLeft = getStartingActions(player);
+  player.selectedCards.clear();
+}
+
+function syncZoneButtons() {
+  const activePlayer = getActivePlayer();
+  const canExplore = !state.gameOver && !!state.selectedZone && activePlayer.actionsLeft > 0;
+  const canHarvest = !state.gameOver && !!state.selectedZone && activePlayer.actionsLeft > 0 && (ZONES[state.selectedZone]?.resourceMaterials?.length || 0) > 0;
+  const canStoke = !state.gameOver && activePlayer.actionsLeft > 0 && hasCampfireInTableau(activePlayer);
+  document.getElementById('exploreBtn').disabled = !canExplore;
+  document.getElementById('harvestBtn').disabled = !canHarvest;
+  document.getElementById('stokeBtn').disabled = !canStoke;
+  document.getElementById('actionsLeft').textContent = activePlayer.actionsLeft;
+}
+
+function getOtherPlayers() {
+  return state.players.filter((_, index) => index !== state.currentPlayerIndex);
+}
+
+function formatMeterLine(player) {
+  return `🍖 ${player.meters.hunger}/${state.maxMeter} · 🔥 ${player.meters.warmth}/${state.maxMeter} · 💧 ${player.meters.hydration}/${state.maxMeter} · 🎭 ${player.meters.morale}/${state.maxMeter}`;
+}
+
+function formatTableauNames(player) {
+  if (!player.tableau.length) return 'No tableau items';
+  return player.tableau.map(item => item.name).join(', ');
+}
+
+function checkGameState() {
+  if (state.gameOver) return true;
+
+  if (state.sharedRescue >= state.rescueTarget) {
+    state.gameOver = true;
+    const topScore = Math.max(...state.players.map(player => player.score));
+    const leaders = state.players.filter(player => player.score === topScore).map(player => player.name);
+    const leaderText = leaders.length === 1 ? leaders[0] : leaders.join(', ');
+    updatePhaseLabel(`🎉 RESCUED — ${leaderText} LEAD WITH ${topScore} PTS`);
+    log(`🎉 Rescue reached. Final leader${leaders.length > 1 ? 's' : ''}: ${leaderText} with ${topScore} pts.`, 'good');
+    return true;
+  }
+
+  const fallenPlayer = state.players.find(player =>
+    player.meters.hunger <= 0 || player.meters.warmth <= 0 || player.meters.hydration <= 0
+  );
+
+  if (fallenPlayer) {
+    state.gameOver = true;
+    if (fallenPlayer.meters.hunger <= 0) {
+      updatePhaseLabel(`💀 ${fallenPlayer.name.toUpperCase()} ELIMINATED — STARVATION`);
+      log(`💀 ${fallenPlayer.name} starved. Hunger reached zero.`, 'bad');
+    } else if (fallenPlayer.meters.warmth <= 0) {
+      updatePhaseLabel(`💀 ${fallenPlayer.name.toUpperCase()} ELIMINATED — HYPOTHERMIA`);
+      log(`💀 ${fallenPlayer.name} froze. Warmth reached zero.`, 'bad');
+    } else if (fallenPlayer.meters.hydration <= 0) {
+      updatePhaseLabel(`💀 ${fallenPlayer.name.toUpperCase()} ELIMINATED — DEHYDRATION`);
+      log(`💀 ${fallenPlayer.name} dehydrated. Hydration reached zero.`, 'bad');
+    }
+    return true;
+  }
+
+  const brokenPlayer = state.players.find(player => player.meters.morale <= 0);
+  if (brokenPlayer) {
+    state.gameOver = true;
+    updatePhaseLabel(`🎭 ${brokenPlayer.name.toUpperCase()} BROKEN — MORALE 0`);
+    log(`🎭 ${brokenPlayer.name} broke at zero morale.`, 'bad');
+    return true;
+  }
+
+  return false;
+}
+
+// ─── RENDERING ───────────────────────────────────────────────────────────────
+
+function renderMeters() {
+  const player = getActivePlayer();
+  const profile = getProfile(player.profileId);
+  const m = player.meters;
+  ['hunger','warmth','hydration','morale'].forEach(key => {
+    document.getElementById(key+'Val').textContent = `${m[key]}/${state.maxMeter}`;
+    document.getElementById(key+'Bar').style.width = `${(m[key]/state.maxMeter)*100}%`;
+  });
+  document.getElementById('rescueVal').textContent = `${state.sharedRescue}/${state.rescueTarget}`;
+  document.getElementById('rescueBar').style.width = `${(state.sharedRescue/state.rescueTarget)*100}%`;
+  document.getElementById('scoreDisplay').textContent = player.score + ' pts';
+  document.getElementById('activePlayerLabel').textContent = `${player.name.toUpperCase()} · ${profile.name.toUpperCase()}`;
+  document.getElementById('activePlayerName').textContent = `${player.name.toUpperCase()} (${profile.name.toUpperCase()})`;
+  document.getElementById('roundNum').textContent = state.round;
+  syncZoneButtons();
+}
+
+function renderCardArea(areaId, cards, emptyText) {
+  const player = getActivePlayer();
+  const area = document.getElementById(areaId);
+  if (!cards.length) {
+    area.innerHTML = `<div class="empty-state">${emptyText}</div>`;
+    return;
+  }
+  area.innerHTML = '';
+  cards.forEach(card => {
+    const el = document.createElement('div');
+    el.className = `card value-${card.value || 1}${player.selectedCards.has(card.handId) ? ' selected' : ''}`;
+    el.innerHTML = `
+      <div class="card-name">${card.name}</div>
+      <div class="card-category">${CATEGORIES[card.category].emoji} ${CATEGORIES[card.category].label}</div>
+      <div class="card-rarity">Value ${card.value || 1}</div>
+      ${(card.consumeEffect || card.unsafe || card.consumeRisk) ? `<button class="consume-btn" onclick="quickConsume(${card.handId})">consume</button>` : ''}
+    `;
+    el.onclick = (e) => {
+      if (e.target.classList.contains('consume-btn')) return;
+      toggleCard(card.handId);
+    };
+    area.appendChild(el);
+  });
+}
+
+function renderHand() {
+  const player = getActivePlayer();
+  document.getElementById('handCount').textContent = `(${player.hand.length} fresh cards)`;
+  renderCardArea('handArea', player.hand, 'Explore a zone or harvest hard resources.');
+}
+
+function renderStockpile() {
+  const player = getActivePlayer();
+  document.getElementById('stockpileCount').textContent = `(${player.stockpile.length} cards)`;
+  renderCardArea('stockpileArea', player.stockpile, 'Durable cards move here at end of turn.');
+}
+
+function renderTableau() {
+  const player = getActivePlayer();
+  const area = document.getElementById('tableauItems');
+  if (!player.tableau.length) {
+    area.innerHTML = '<div class="empty-state">Nothing crafted yet.</div>';
+    return;
+  }
+  area.innerHTML = '';
+  player.tableau.forEach(item => {
+    const el = document.createElement('div');
+    el.className = `tableau-item ${item.tier}`;
+    let durationStr = item.duration ? ` (${item.duration}r left)` : '';
+    const zoneUse = item.effect && item.effect.zoneUse;
+    const allowedZones = zoneUse ? (zoneUse.zones || []).map(zoneId => (ZONES[zoneId] ? ZONES[zoneId].name : zoneId)).join(', ') : '';
+    const canUseHere = zoneUse && state.selectedZone && (zoneUse.zones || []).includes(state.selectedZone) && player.actionsLeft > 0;
+    const useButton = zoneUse ? `<button class="consume-btn" ${canUseHere ? '' : 'disabled'} onclick="useTableauItem('${item.id}')">${zoneUse.actionName || 'use'}</button>` : '';
+    const zoneLine = zoneUse ? `<div class="item-effect">Use in: ${allowedZones}</div>` : '';
+    el.innerHTML = `<div class="item-name">${item.name}${durationStr}</div><div class="item-effect">${item.desc}</div>${zoneLine}${useButton}`;
+    area.appendChild(el);
+  });
+}
+
+function renderPlayerSidebar() {
+  const area = document.getElementById('playerSidebar');
+  const others = getOtherPlayers();
+  if (!others.length) {
+    area.innerHTML = '<div class="empty-state">No other players yet.</div>';
+    return;
+  }
+
+  area.innerHTML = '';
+  others.forEach(player => {
+    const profile = getProfile(player.profileId);
+    const el = document.createElement('div');
+    el.className = 'player-card';
+    el.innerHTML = `
+      <div class="player-card-head">
+        <span>${player.name}${player.isAI ? ' [AI]' : ''}</span>
+        <span>${player.score} pts</span>
+      </div>
+      <div class="player-card-meta">${profile.emoji} ${profile.name} · ${profile.summary}</div>
+      <div class="player-card-meta">${formatMeterLine(player)}</div>
+      <div class="player-card-meta">Stockpile: ${player.stockpile.length ? player.stockpile.map(item => item.name).join(', ') : 'Empty'}</div>
+      <div class="player-card-meta">Tableau: ${formatTableauNames(player)}</div>
+      <div class="player-card-tableau">
+        ${player.tableau.length ? player.tableau.map(item => `<span class="player-tag">${item.name}</span>`).join('') : '<span class="player-tag">Empty</span>'}
+      </div>
+    `;
+    area.appendChild(el);
+  });
+}
+
+function renderRecipes() {
+  const list = document.getElementById('recipeList');
+  list.innerHTML = '';
+  const tierOrder = { basic: 0, improved: 1, expert: 2 };
+  const sortRecipes = recipes => recipes.slice().sort((a, b) => {
+    const groupDiff = (a.group || '').localeCompare(b.group || '');
+    if (groupDiff !== 0) return groupDiff;
+    const tierDiff = (tierOrder[a.tier] || 99) - (tierOrder[b.tier] || 99);
+    if (tierDiff !== 0) return tierDiff;
+    return (a.valueThreshold || 0) - (b.valueThreshold || 0);
+  });
+
+  function appendRecipeCard(recipe) {
+    const player = getActivePlayer();
+    const craftable = canCraft(recipe, player);
+    const el = document.createElement('div');
+    el.className = `recipe-card ${craftable ? 'craftable' : 'cant-craft'}`;
+    const selected = getPlayerSelectedCards(player);
+    const valueTotal = selected.reduce((sum, card) => sum + (card.value || 1), 0);
+
+    const reqLines = recipe.requires.map(req => {
+      const have = selected.filter(c => cardMatchesRequirement(c, req)).length;
+      const met = have >= req.count;
+      return `<span class="${met?'met':'unmet'}">${CATEGORIES[req.category].emoji} ${req.count}x ${CATEGORIES[req.category].label}</span>`;
+    }).join(' ');
+
+    const valueLine = `<span class="${valueTotal >= (recipe.valueThreshold || 0) ? 'met' : 'unmet'}">value ${valueTotal}/${recipe.valueThreshold || 0}</span> `;
+    const tableauLine = recipe.requiresTableau ? `<span class="${hasCampfireInTableau(player)?'met':'unmet'}">needs campfire</span> ` : '';
+
+    el.innerHTML = `
+      <div class="recipe-name">${recipe.name} <span style="color:var(--accent);font-size:0.6rem">${recipe.points}pt · ${recipe.craftType || recipe.type}</span></div>
+      <div class="recipe-req" style="margin-bottom:4px"><span class="met">${recipe.group}</span></div>
+      <div class="recipe-req">${valueLine}${tableauLine}${reqLines}</div>
+      <div class="recipe-req" style="color:var(--muted);margin-top:2px">${recipe.desc}</div>
+    `;
+    if (craftable) el.onclick = () => craftItem(recipe);
+    list.appendChild(el);
+  }
+
+  const header = document.createElement('div');
+  header.className = 'player-card';
+  header.innerHTML = `
+    <div class="player-card-head">
+      <span>RECIPES</span>
+      <span>${RECIPES.length} total</span>
+    </div>
+    <div class="player-card-meta">Grouped by craft family. Value threshold replaces rarity.</div>
+  `;
+  list.appendChild(header);
+
+  const groups = [...new Set(RECIPES.map(recipe => recipe.group || 'Misc'))];
+  groups.forEach(group => {
+    const ordered = sortRecipes(RECIPES.filter(recipe => (recipe.group || 'Misc') === group));
+    if (!ordered.length) return;
+    const section = document.createElement('div');
+    section.className = 'player-card';
+    section.innerHTML = `
+      <div class="player-card-head">
+        <span>${group.toUpperCase()}</span>
+        <span>${ordered.length} recipes</span>
+      </div>
+      <div class="player-card-meta">Basic ${ordered.filter(recipe => recipe.tier === 'basic').length} · Improved ${ordered.filter(recipe => recipe.tier === 'improved').length} · Expert ${ordered.filter(recipe => recipe.tier === 'expert').length}</div>
+    `;
+    list.appendChild(section);
+
+    ['basic', 'improved', 'expert'].forEach(tier => {
+      const tierRecipes = ordered.filter(recipe => recipe.tier === tier);
+      if (!tierRecipes.length) return;
+      const tierHeader = document.createElement('div');
+      tierHeader.className = 'player-card';
+      tierHeader.innerHTML = `
+        <div class="player-card-head">
+          <span>${tier.toUpperCase()}</span>
+          <span>${tierRecipes.length} recipes</span>
+        </div>
+      `;
+      list.appendChild(tierHeader);
+      tierRecipes.forEach(appendRecipeCard);
+    });
+  });
+}
+
+function renderAll() {
+  renderMeters();
+  renderHand();
+  renderStockpile();
+  renderTableau();
+  renderPlayerSidebar();
+  renderRecipes();
+  syncZoneButtons();
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+
+function selectZone(zoneId) {
+  if (state.gameOver) return;
+  state.selectedZone = zoneId;
+  document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector(`.zone-btn.${zoneId}`).classList.add('selected');
+  document.getElementById('phaseLabel').textContent = `ZONE SELECTED: ${ZONES[zoneId].name.toUpperCase()}`;
+  syncZoneButtons();
+}
+
+function explore() {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  if (!state.selectedZone || player.actionsLeft <= 0) return;
+  const zone = ZONES[state.selectedZone];
+  player.meters.hunger = clamp(player.meters.hunger - 1, 0, state.maxMeter);
+  const drawCount = getExploreDrawCount(player);
+  const handLimit = getHandLimit(player);
+  const roomLeft = Math.max(0, handLimit - player.hand.length);
+  const actualDrawCount = Math.min(drawCount, roomLeft);
+  const drawn = drawFromZone(state.selectedZone, actualDrawCount, player);
+  player.hand.push(...drawn);
+  player.pendingFoodDrawBonus = 0;
+
+  if (drawCount > actualDrawCount) {
+    log(`🫳 ${player.name} reached the hand limit (${handLimit}).`, 'bad');
+  }
+
+  player.actionsLeft--;
+  log(`🗺️ ${player.name} explored ${zone.emoji} ${zone.name} — drew ${drawn.map(d=>d.name).join(', ')}.`, 'info');
+  updatePhaseLabel(`${player.name.toUpperCase()} — DRAW, HARVEST, CRAFT, OR CONSUME`);
+  player.lastExploredZone = state.selectedZone;
+  state.selectedZone = null;
+  checkGameState();
+  renderAll();
+}
+
+function toggleCard(handId) {
+  const player = getActivePlayer();
+  if (player.selectedCards.has(handId)) player.selectedCards.delete(handId);
+  else player.selectedCards.add(handId);
+  renderHand();
+  renderRecipes();
+}
+
+function quickConsume(handId) {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  const card = findPlayerCardById(player, handId);
+  if (!card || (!card.consumeEffect && !card.unsafe && !card.consumeRisk)) return;
+  applyConsumeEffect(card, player);
+  removePlayerCardById(player, handId);
+  player.selectedCards.delete(handId);
+  log(`🍽️ ${player.name} consumed ${card.name}.`);
+  checkGameState();
+  renderAll();
+}
+
+function restAtShelter() {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  if (player.actionsLeft <= 0) return;
+  const recovery = getRestWarmthRecovery(player);
+  player.meters.warmth = clamp(player.meters.warmth + recovery, 0, state.maxMeter);
+  player.actionsLeft--;
+  state.selectedZone = null;
+  clearZoneSelection();
+  log(`🛌 ${player.name} rested and recovered ${recovery} Warmth.`, 'good');
+  updatePhaseLabel(`${player.name.toUpperCase()} — RESTED`);
+  checkGameState();
+  renderAll();
+}
+
+function sleepTurn() {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  player.meters.warmth = 5;
+  adjustMorale(player, 2, 'sleep');
+  player.actionsLeft = 0;
+  state.selectedZone = null;
+  clearZoneSelection();
+  log(`😴 ${player.name} slept. Warmth reset to 5.`, 'good');
+  updatePhaseLabel(`${player.name.toUpperCase()} — SLEEP COMPLETE`);
+  checkGameState();
+  renderAll();
+  endTurn();
+}
+
+function consumeSelected() {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  const selected = getPlayerSelectedCards(player);
+  if (!selected.length) { log('Select cards in your hand to consume.'); return; }
+  selected.forEach(card => {
+    if (card.consumeEffect || card.unsafe || card.consumeRisk) {
+      applyConsumeEffect(card, player);
+      log(`🍽️ ${player.name} consumed ${card.name}.`);
+    } else {
+      log(`⚠️ ${card.name} has no direct consume effect.`);
+    }
+    removePlayerCardById(player, card.handId);
+    player.selectedCards.delete(card.handId);
+  });
+  checkGameState();
+  renderAll();
+}
+
+function applyConsumeEffect(card, player = getActivePlayer()) {
+  const e = card.consumeEffect || {};
+  const cooked = card.category === 'food' && hasCampfireInTableau(player) && card.cookBonus;
+  if (typeof e.hunger === 'number') player.meters.hunger = clamp(player.meters.hunger + e.hunger, 0, state.maxMeter);
+  if (typeof e.warmth === 'number') player.meters.warmth = clamp(player.meters.warmth + e.warmth, 0, state.maxMeter);
+  if (typeof e.hydration === 'number') player.meters.hydration = clamp(player.meters.hydration + e.hydration, 0, state.maxMeter);
+  const hasWaterTreatment = player.tableau.some(item => item.effect && item.effect.treatsWater);
+  if (cooked) {
+    const bonus = card.cookBonus || {};
+    if (typeof bonus.hunger === 'number') player.meters.hunger = clamp(player.meters.hunger + bonus.hunger, 0, state.maxMeter);
+    if (typeof bonus.hungerBonus === 'number') player.meters.hunger = clamp(player.meters.hunger + bonus.hungerBonus, 0, state.maxMeter);
+    if (typeof bonus.hydration === 'number') player.meters.hydration = clamp(player.meters.hydration + bonus.hydration, 0, state.maxMeter);
+    if (typeof bonus.warmth === 'number') player.meters.warmth = clamp(player.meters.warmth + bonus.warmth, 0, state.maxMeter);
+    if (typeof bonus.morale === 'number') adjustMorale(player, bonus.morale, `${card.name} cooked`);
+  }
+  const unsafeProtected = card.unsafe && (player.safeWaterReady || hasWaterTreatment || playerHasProtectionAgainst(player, 'waterborne_illness'));
+  if (card.unsafe && !unsafeProtected) {
+    player.meters.hydration = clamp(player.meters.hydration - 1, 0, state.maxMeter);
+    adjustMorale(player, -1, 'unsafe water');
+  }
+  if (card.unsafe && player.safeWaterReady) {
+    player.safeWaterReady = false;
+  }
+  if (card.category === 'water' && player.waterborneIllness && !hasWaterTreatment) {
+    player.meters.hydration = clamp(player.meters.hydration - 3, 0, state.maxMeter);
+    adjustMorale(player, -2, 'waterborne illness');
+    player.waterborneIllness = false;
+  }
+  if (card.rawRisk && card.category === 'food') {
+    adjustMorale(player, -1, card.name);
+  }
+  if (e.clearFlag) {
+    player.waterborneIllness = false;
+  }
+  if (typeof e.rescue === 'number') adjustSharedRescue(player, e.rescue, card.name);
+  if (typeof e.foodDrawBonus === 'number') player.pendingFoodDrawBonus = (player.pendingFoodDrawBonus || 0) + e.foodDrawBonus;
+  if (typeof e.bonusFlint === 'number') {
+    for (let i = 0; i < e.bonusFlint; i++) {
+      const flintCard = MATERIALS.find(material => material.id === 'flint');
+      player.hand.push({ ...flintCard, handId: state.handIdCounter++ });
+    }
+    log(`🪨 ${player.name}: Flint Vein yielded ${e.bonusFlint} Flint.`, 'good');
+  }
+  if (card.consumeRisk && !hasTableauRecipe(player, card.consumeRisk.unlessRecipe)) {
+    if (typeof card.consumeRisk.morale === 'number') adjustMorale(player, card.consumeRisk.morale, card.name);
+    if (typeof card.consumeRisk.hunger === 'number') player.meters.hunger = clamp(player.meters.hunger + card.consumeRisk.hunger, 0, state.maxMeter);
+    if (typeof card.consumeRisk.hydration === 'number') player.meters.hydration = clamp(player.meters.hydration + card.consumeRisk.hydration, 0, state.maxMeter);
+  }
+  if (e.grantLeanTo) {
+    player.tableau.push({ id: 'lean_to', name: 'Lean-To 🛖', tier: 'basic', type: 'persistent', requires: [], effect: { shelterTier: 1 }, points: 2, desc: 'Shelter tier 1; +2 Warmth on Rest' });
+    player.score += 2;
+    log(`🛖 ${player.name}: Cave Entrance becomes a Lean-To.`, 'good');
+  }
+}
+
+function craftItem(recipe) {
+  if (state.gameOver) return;
+  const player = getActivePlayer();
+  if (!canCraft(recipe, player)) return;
+  // Remove used cards from hand
+  const selected = getPlayerSelectedCards(player);
+  const toRemove = new Set();
+  recipe.requires.forEach(req => {
+    let needed = req.count;
+    selected.forEach(card => {
+      if (cardMatchesRequirement(card, req) && needed > 0 && !toRemove.has(card.handId)) {
+        toRemove.add(card.handId);
+        needed--;
+      }
+    });
+  });
+  toRemove.forEach(handId => removePlayerCardById(player, handId));
+  player.selectedCards.clear();
+
+  // Apply immediate effects
+  if (typeof recipe.effect.hydration === 'number') player.meters.hydration = clamp(player.meters.hydration + recipe.effect.hydration, 0, state.maxMeter);
+  if (typeof recipe.effect.hunger === 'number') player.meters.hunger = clamp(player.meters.hunger + recipe.effect.hunger, 0, state.maxMeter);
+  if (typeof recipe.effect.rescue === 'number') adjustSharedRescue(player, recipe.effect.rescue, recipe.name);
+  if (typeof recipe.effect.anyMeter === 'number') {
+    // Apply to lowest meter
+    const keys = ['hunger','warmth','hydration'];
+    const lowest = keys.reduce((a,b) => player.meters[a] < player.meters[b] ? a : b);
+    player.meters[lowest] = clamp(player.meters[lowest] + recipe.effect.anyMeter, 0, state.maxMeter);
+    log(`💊 Medicine restored ${recipe.effect.anyMeter} ${lowest}.`, 'good');
+  }
+  if (recipe.effect.cleansesUnsafeWater) {
+    player.waterborneIllness = false;
+    player.safeWaterReady = true;
+    log(`💧 ${player.name} boiled water into a safer supply.`, 'good');
+  }
+  if (recipe.effect.safe) {
+    player.safeWaterReady = true;
+    player.waterborneIllness = false;
+  }
+  if (recipe.tier === 'expert') adjustMorale(player, 1, 'crafted expert item');
+
+  // Add to score
+  player.score += recipe.points;
+
+  // Add persistent items to tableau
+  if (recipe.type === 'persistent') {
+    const tableauItem = { ...recipe, duration: recipe.effect.duration || null };
+    const hazardReduction = recipe.effect && recipe.effect.hazardReduction;
+    if (typeof hazardReduction === 'string') {
+      tableauItem.protectsAgainst = [hazardReduction];
+    } else if (Array.isArray(hazardReduction)) {
+      tableauItem.protectsAgainst = hazardReduction.slice();
+    }
+    if (isFireRecipe(recipe)) {
+      tableauItem.effect = { ...tableauItem.effect, fire: true };
+      tableauItem.duration = getFireDurationFromSelection(recipe, selected);
+      log(`🔥 ${player.name} lit ${recipe.name} with ${tableauItem.duration} rounds of fuel.`, 'good');
+    }
+    player.tableau.push(tableauItem);
+    log(`🔨 ${player.name} crafted ${recipe.name} — added to tableau. +${recipe.points} pts`, 'good');
+  } else {
+    log(`⚡ ${player.name} used ${recipe.name}. +${recipe.points} pts`, 'good');
+  }
+
+  checkGameState();
+  renderAll();
+}
+
+function applyTableauEffects(player = getActivePlayer()) {
+  let warmthGain = 0;
+  let hungerGain = 0;
+  let rescueGain = 0;
+  let pointsGain = 0;
+
+  player.tableau = player.tableau.filter(item => {
+    // Apply effects
+    if (item.effect.warmthPerRound) warmthGain += item.effect.warmthPerRound;
+    if (item.effect.hungerPerRound) hungerGain += item.effect.hungerPerRound;
+    if (item.effect.rescuePerRound) rescueGain += item.effect.rescuePerRound;
+    if (item.effect.pointsPerRound) pointsGain += item.effect.pointsPerRound;
+    if (item.effect.passiveHydration) {
+      player.meters.hydration = clamp(player.meters.hydration + item.effect.passiveHydration, 0, state.maxMeter);
+    }
+    if (item.effect.foodPerRoundChance) {
+      const sourceZone = item.effect.foodSourceZone;
+      const canProc = !sourceZone || sourceZone === player.lastExploredZone;
+      if (canProc && Math.random() < item.effect.foodPerRoundChance) {
+        const foodZone = sourceZone || player.lastExploredZone || 'forest';
+        grantFoodCard(player, foodZone, item.name);
+      }
+    }
+    // Tick duration
+    if (item.duration !== null) {
+      item.duration--;
+      return item.duration > 0;
+    }
+    return true;
+  });
+
+  if (warmthGain) { player.meters.warmth = clamp(player.meters.warmth + warmthGain, 0, state.maxMeter); log(`🔥 ${player.name}'s tableau: +${warmthGain} Warmth.`, 'good'); }
+  if (hungerGain) { player.meters.hunger = clamp(player.meters.hunger + hungerGain, 0, state.maxMeter); log(`🍖 ${player.name}'s tableau: +${hungerGain} Hunger.`, 'good'); }
+  if (rescueGain) { adjustSharedRescue(player, rescueGain, 'tableau signal'); }
+  if (pointsGain) { player.score += pointsGain; log(`⭐ ${player.name}'s tableau: +${pointsGain} pts.`, 'good'); }
+}
+
+function applyRoundEndEffects(player = getActivePlayer()) {
+  const decayAmount = 1;
+  const pressure = getWarmthPressure(player);
+
+  player.meters.warmth = clamp(player.meters.warmth + pressure, 0, state.maxMeter);
+  player.meters.hunger = clamp(player.meters.hunger - decayAmount, 0, state.maxMeter);
+  const hydrationDecay = player.meters.warmth > 7 ? 2 : 1;
+  player.meters.hydration = clamp(player.meters.hydration - hydrationDecay, 0, state.maxMeter);
+
+  if (pressure !== 0) {
+    log(`🌡️ ${player.name}: Warmth shifted by ${pressure}.`, pressure < 0 ? 'bad' : 'good');
+  }
+  log(`⏱️ ${player.name}: Hunger decays by ${decayAmount}; Hydration decays by ${hydrationDecay}.`, 'bad');
+
+  if (player.meters.warmth > 7) {
+    log(`🥵 ${player.name} is overheated.`, 'bad');
+  } else if (player.meters.warmth < 3) {
+    adjustMorale(player, -1, 'cold');
+  }
+
+  if (!hasShelter(player)) {
+    adjustMorale(player, -1, 'night without shelter');
+  }
+
+  if (player.meters.hunger <= 2 || player.meters.warmth <= 2 || player.meters.hydration <= 2) {
+    adjustMorale(player, -1, 'critical meter');
+  }
+}
+
+function endTurn() {
+  if (state.gameOver) return;
+  const activePlayer = getActivePlayer();
+  log(`── END OF TURN: ${activePlayer.name} ──`, 'info');
+  applyTableauEffects(activePlayer);
+  applyRoundEndEffects(activePlayer);
+  resolveEndOfTurnInventory(activePlayer);
+  activePlayer.selectedCards.clear();
+  activePlayer.pendingZoneHazardCancelZone = null;
+  activePlayer.safeWaterReady = false;
+  if (checkGameState()) {
+    renderAll();
+    return;
+  }
+
+  state.round++;
+  state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
+  const nextPlayer = getActivePlayer();
+  setPlayerTurnState(nextPlayer);
+  state.selectedZone = null;
+  clearZoneSelection();
+  updatePhaseLabel(`${nextPlayer.name.toUpperCase()} — CHOOSE A ZONE, REST, SLEEP, OR HARVEST`);
+  renderAll();
+  log(`── ${nextPlayer.name}'s turn begins ──`, 'info');
+  scheduleAITurn();
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+async function bootstrap() {
+  await loadGameData();
+  state.players.forEach(player => setPlayerTurnState(player));
+  updatePhaseLabel(`${getActivePlayer().name.toUpperCase()} — CHOOSE A ZONE, REST, SLEEP, OR HARVEST`);
+  renderAll();
+  scheduleAITurn();
+}
+
+bootstrap();
+</script>
+</body>
+</html>
