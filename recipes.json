@@ -1,311 +1,439 @@
 {
   "design_notes": {
-    "value_system": "Each recipe requires: (1) specific material categories, and (2) a minimum total value from the cards played. Players combine any cards meeting the category requirements whose values sum to the threshold or higher.",
+    "value_system": "Recipes require category matches and a minimum total value from the cards played.",
     "craft_types": {
-      "camp": "Persistent tableau items. Improve long-term survival each round.",
-      "zone_use": "Must be activated in the matching zone to produce value. Stays in hand until used.",
-      "recovery": "Immediate one-time effect. Discarded after use."
+      "camp": "Persistent infrastructure that stays in tableau.",
+      "zone_use": "Activated in a matching zone to convert a tool into food, safety, or rescue progress.",
+      "recovery": "Immediate one-time effect; discarded after use."
     },
-    "cook_bonus": "Food items with a cookBonus field produce their better effect when consumed with a Campfire or Cooking Setup in tableau."
+    "loop": "Most payoff should come from using crafted tools in the correct place, not from drawing it directly.",
+    "cook_bonus": "Food cards may be eaten directly in a pinch, but crafted food systems should do the real work."
   },
-
   "recipes": [
-
     {
       "category": "Shelter",
       "items": [
         {
           "id": "lean_to",
+          "profile": "firekeeper",
           "name": "Lean-To",
           "type": "camp",
           "requires": { "wood": 2, "fiber": 1 },
           "valueThreshold": 4,
-          "effect": { "restWarmthBonus": 2 },
-          "description": "Basic shelter. Rest action restores +2 Warmth instead of +1.",
-          "points": 2,
-          "notes": "Minimum wood and fiber. Any value combination reaching 4 works."
+          "effect": { "restWarmthBonus": 2, "hazardReduction": ["wind_exposure"] },
+          "description": "Basic shelter. Rest restores +2 Warmth and softens wind exposure.",
+          "points": 2
         },
         {
           "id": "sturdy_shelter",
+          "profile": "firekeeper",
           "name": "Sturdy Shelter",
           "type": "camp",
           "requiresRecipes": ["lean_to"],
           "requires": { "wood": 3, "fiber": 1, "stone": 1 },
           "valueThreshold": 8,
-          "effect": { "restWarmthBonus": 3, "hazardReduction": "animal_attack" },
-          "description": "Solid construction. Rest restores +3 Warmth. Reduces Animal Attack morale loss by 1.",
-          "points": 4,
-          "notes": "Needs mix of good materials to reach threshold. Straight Sapling or Thick Log required in practice."
+          "effect": { "restWarmthBonus": 3, "hazardReduction": ["animal_attack", "wind_exposure"] },
+          "description": "Stronger shelter. Rest restores +3 Warmth and reduces direct zone danger.",
+          "points": 4
         },
         {
           "id": "debris_hut",
+          "profile": "firekeeper",
           "name": "Debris Hut",
           "type": "camp",
           "requiresRecipes": ["sturdy_shelter"],
           "requires": { "wood": 3, "fiber": 2, "plant": 1 },
           "valueThreshold": 11,
-          "effect": { "restWarmthBonus": 4, "sleepMoraleBonus": 1 },
-          "description": "Expert shelter. Rest restores +4 Warmth. Sleep action grants +1 bonus Morale.",
-          "points": 6,
-          "notes": "Requires a value-3 wood card (Hardwood Bough) to reach threshold realistically."
+          "effect": { "restWarmthBonus": 4, "sleepMoraleBonus": 1, "hazardReduction": ["animal_attack", "wind_exposure", "rockslide"] },
+          "description": "Advanced shelter. Rest restores +4 Warmth and sleep is safer.",
+          "points": 6
         }
       ]
     },
-
     {
       "category": "Fire",
       "items": [
         {
           "id": "campfire",
+          "profile": "firekeeper",
           "name": "Campfire",
           "type": "camp",
           "requires": { "wood": 2, "fire_starter": 1 },
           "valueThreshold": 4,
           "effect": { "warmthPressureReduction": 1, "enablesCooking": true },
-          "description": "Reduces environment warmth pressure by 1 each round. Enables cooking food for bonus effects.",
-          "points": 2,
-          "notes": "Core camp item. Most food and water crafts depend on this being in tableau."
+          "description": "Core fire infrastructure. Reduces warmth pressure and enables cooking.",
+          "points": 2
         },
         {
           "id": "sustained_fire",
+          "profile": "firekeeper",
           "name": "Sustained Fire",
           "type": "camp",
           "requiresRecipes": ["campfire"],
           "requires": { "wood": 3, "fire_starter": 1, "stone": 1 },
           "valueThreshold": 7,
           "effect": { "warmthPressureReduction": 2, "enablesCooking": true, "duration": 4 },
-          "description": "Reduces warmth pressure by 2 each round for 4 rounds. Enables cooking.",
-          "points": 4,
-          "notes": "Stone fire ring extends the burn. Duration tracked in tableau."
+          "description": "Better heat control and longer burn time.",
+          "points": 4
         },
         {
           "id": "signal_fire",
+          "profile": "firekeeper",
           "name": "Signal Fire",
           "type": "camp",
           "requiresRecipes": ["sustained_fire"],
           "requires": { "wood": 3, "fire_starter": 2 },
           "valueThreshold": 9,
           "effect": { "warmthPressureReduction": 1, "enablesCooking": true, "rescuePerRound": 1 },
-          "description": "Reduces warmth pressure by 1. Enables cooking. Generates +1 Rescue progress each round.",
-          "points": 5,
-          "notes": "Needs Flint or Dry Fungus to reach threshold. Best fire investment for rescue-focused players."
+          "description": "Fire infrastructure that also feeds rescue progress every round.",
+          "points": 5
+        },
+        {
+          "id": "torch",
+          "profile": "firekeeper",
+          "name": "Torch",
+          "type": "camp",
+          "requires": { "wood": 1, "fiber": 1, "fire_starter": 1 },
+          "valueThreshold": 4,
+          "effect": { "hazardReduction": ["forest_poison_forage", "bee_stings", "wind_exposure"] },
+          "description": "Portable fire tool that helps in dark or dangerous zones.",
+          "points": 2
         }
       ]
     },
-
     {
       "category": "Water",
       "items": [
         {
           "id": "boiled_water",
+          "profile": "forager",
           "name": "Boiled Water",
           "type": "recovery",
+          "requiresRecipes": ["campfire"],
           "requires": { "water": 1 },
-          "valueThreshold": 1,
-          "requiresTableau": "campfire",
-          "effect": { "hydration": 4, "safe": true },
-          "description": "Treated water. +4 Hydration. Requires Campfire or Sustained Fire in tableau.",
-          "points": 1,
-          "notes": "The primary safe hydration source. Campfire dependency is intentional."
+          "valueThreshold": 2,
+          "effect": { "hydration": 4, "cleansesUnsafeWater": true },
+          "description": "Treat unsafe water with fire. +4 Hydration and safe to drink.",
+          "points": 1
+        },
+        {
+          "id": "clay_pot",
+          "profile": "forager",
+          "name": "Clay Pot",
+          "type": "camp",
+          "requires": { "stone": 1, "fiber": 1, "plant": 1 },
+          "valueThreshold": 4,
+          "effect": { "treatsWater": true },
+          "description": "A basic container that supports safe water handling and boiling.",
+          "points": 2
         },
         {
           "id": "water_filter",
+          "profile": "forager",
           "name": "Water Filter",
           "type": "camp",
           "requires": { "stone": 2, "fiber": 1 },
           "valueThreshold": 4,
-          "effect": { "treatsWater": true, "bonusWaterDraw": 1 },
-          "description": "Passive water treatment. Unsafe water consumed counts as safe. Draw 1 extra water card when at River.",
-          "points": 3,
-          "notes": "Alternative to campfire for hydration. Negates Waterborne Illness hazard."
+          "effect": { "treatsWater": true, "protectsAgainst": ["river_contamination"] },
+          "description": "Treats unsafe water and protects against contamination.",
+          "points": 3
         },
         {
           "id": "water_rig",
+          "profile": "forager",
           "name": "Water Collection Rig",
           "type": "camp",
-          "requiresRecipes": ["water_filter"],
+          "requiresRecipes": ["clay_pot"],
           "requires": { "stone": 2, "fiber": 2, "plant": 1 },
           "valueThreshold": 7,
           "effect": { "treatsWater": true, "passiveHydration": 1 },
-          "description": "Collects and treats water passively. +1 Hydration per round. Unsafe water counts as safe.",
-          "points": 5,
-          "notes": "Best long-term water solution. Frees up explore actions from water gathering."
+          "description": "Improved water infrastructure. Treats water and restores a little each round.",
+          "points": 5
         }
       ]
     },
-
     {
       "category": "Food Procurement",
       "items": [
         {
           "id": "snare",
+          "profile": "hunter",
           "name": "Snare",
           "type": "zone_use",
           "zone": "meadow",
           "requires": { "fiber": 2, "wood": 1 },
           "valueThreshold": 4,
-          "effect": { "hungerOnActivate": 4, "requiresBait": true },
+          "effect": { "hungerOnActivate": 4, "rollDie": 6, "successOn": [3, 4, 5, 6] },
           "useRequirements": { "moraleMin": 3 },
-          "description": "Place at Meadow with Snare Bait. Next turn: draw produces +4 Hunger food catch instead of normal draw.",
-          "points": 2,
-          "notes": "Delayed food source. Requires Snare Bait card to activate. Strong return for fiber investment."
+          "actionName": "trap",
+          "description": "Use in Meadow to trap small game. Success produces food payoff through preparation, not drawing.",
+          "points": 2
         },
         {
           "id": "fishing_pole",
+          "profile": "hunter",
           "name": "Fishing Pole",
           "type": "zone_use",
           "zone": "river",
           "requires": { "wood": 1, "fiber": 2 },
           "valueThreshold": 5,
-          "effect": { "upgradeFishDraws": true, "fishBonus": 2 },
+          "effect": { "fishBonus": 4, "rollDie": 6, "successOn": [2, 3, 4, 5, 6] },
           "useRequirements": { "warmthMin": 3 },
-          "description": "Use at River. All fish drawn this turn add +2 Hunger bonus. Reusable.",
-          "points": 3,
-          "notes": "Straight Sapling (value 2) makes threshold easier. Reusable each visit to River."
+          "actionName": "fish",
+          "description": "Use in River to convert preparation into a fish catch roll.",
+          "points": 3
+        },
+        {
+          "id": "spear",
+          "profile": "hunter",
+          "name": "Spear",
+          "type": "zone_use",
+          "zone": "forest",
+          "requires": { "wood": 2, "fiber": 1, "stone": 1 },
+          "valueThreshold": 4,
+          "effect": { "hungerOnSuccess": 4, "rollDie": 6, "successOn": [3, 4, 5, 6] },
+          "useRequirements": { "hungerMin": 3, "moraleMin": 3 },
+          "actionName": "hunt",
+          "description": "Use in Forest to hunt with a simple spear.",
+          "points": 3
         },
         {
           "id": "bow",
+          "profile": "hunter",
           "name": "Bow",
           "type": "zone_use",
           "zone": "forest",
           "requiresRecipes": ["cutting_tool"],
           "requires": { "wood": 1, "fiber": 2 },
           "valueThreshold": 7,
-          "effect": { "huntOnActivate": true, "hungerOnSuccess": 6 },
+          "effect": { "hungerOnSuccess": 5, "rollDie": 6, "successOn": [4, 5, 6] },
           "useRequirements": { "hungerMin": 3, "moraleMin": 4 },
-          "description": "Use in Forest. Draw 1 hunt card — success deals +6 Hunger, failure costs 1 Hunger.",
-          "points": 4,
-          "notes": "Hardwood Bough (value 3) required to reach threshold. High risk, high reward."
+          "actionName": "hunt",
+          "description": "Use in Forest to hunt game after you prepare the right tool chain.",
+          "points": 4
+        },
+        {
+          "id": "fish_trap",
+          "profile": "hunter",
+          "name": "Fish Trap",
+          "type": "zone_use",
+          "zone": "river",
+          "requiresRecipes": ["fishing_pole"],
+          "requires": { "stone": 1, "fiber": 2 },
+          "valueThreshold": 6,
+          "effect": { "hungerOnActivate": 5, "rollDie": 6, "successOn": [3, 4, 5, 6] },
+          "useRequirements": { "warmthMin": 3 },
+          "actionName": "trap",
+          "description": "Use in River for a more stable fish catch setup.",
+          "points": 4
         },
         {
           "id": "drying_rack",
+          "profile": "hunter",
           "name": "Drying Rack",
           "type": "camp",
           "requiresRecipes": ["campfire"],
           "requires": { "wood": 2, "fiber": 1 },
           "valueThreshold": 5,
           "effect": { "preserveFood": true, "cookedFoodBonus": 1 },
-          "description": "Preserve cooked food. Cooked meals produce +1 extra Hunger. Prevents food spoilage.",
-          "points": 3,
-          "notes": "Pairs with Campfire. Makes cooking loop more efficient."
+          "description": "Preserve and dry meat or forage so it lasts longer.",
+          "points": 3
+        },
+        {
+          "id": "smoked_rations",
+          "profile": "hunter",
+          "name": "Smoked Rations",
+          "type": "recovery",
+          "requiresRecipes": ["drying_rack"],
+          "requires": { "food": 1, "fire_starter": 1 },
+          "valueThreshold": 4,
+          "effect": { "hunger": 3, "morale": 1 },
+          "description": "A simple preserved meal made from dried food and smoke.",
+          "points": 2
+        },
+        {
+          "id": "food_cache",
+          "name": "Food Cache",
+          "type": "camp",
+          "requiresRecipes": ["drying_rack"],
+          "requires": { "wood": 1, "fiber": 1, "food": 1 },
+          "valueThreshold": 5,
+          "effect": { "preserveFood": true, "bonusDraw": 1 },
+          "description": "Store preserved food so it survives longer and supports future turns.",
+          "points": 3
+        },
+        {
+          "id": "camp_stew",
+          "profile": "forager",
+          "name": "Camp Stew",
+          "type": "recovery",
+          "requiresRecipes": ["campfire"],
+          "requires": { "food": 1, "water": 1, "plant": 1 },
+          "valueThreshold": 5,
+          "effect": { "hunger": 4, "warmth": 1, "morale": 1 },
+          "description": "A hot meal that turns gathered bits into a real survival payoff.",
+          "points": 3
+        },
+        {
+          "id": "water_cache",
+          "name": "Water Cache",
+          "type": "camp",
+          "requiresRecipes": ["water_filter"],
+          "requires": { "stone": 1, "fiber": 1, "water": 1 },
+          "valueThreshold": 5,
+          "effect": { "treatsWater": true, "passiveHydration": 1 },
+          "description": "Store treated water and keep a safe reserve for later turns.",
+          "points": 3
         }
       ]
     },
-
     {
       "category": "Utility Tools",
       "items": [
         {
-          "id": "stone_tool",
-          "name": "Stone Tool",
-          "type": "camp",
-          "requires": { "stone": 2 },
-          "valueThreshold": 3,
-          "effect": { "bonusDraw": 1 },
-          "description": "Draw 1 extra card each time you Search a zone.",
-          "points": 2,
-          "notes": "Easiest tool to build. River Stone x2 gets you there. Compounds value fast."
-        },
-        {
           "id": "cutting_tool",
+          "profile": "pathfinder",
           "name": "Cutting Tool",
           "type": "camp",
-          "requiresRecipes": ["stone_tool"],
           "requires": { "stone": 1, "wood": 1 },
           "valueThreshold": 4,
-          "effect": { "bonusDraw": 1, "craftCostReduction": 1 },
-          "description": "Draw 1 extra card when Searching. Reduce value threshold of next craft by 1.",
-          "points": 3,
-          "notes": "Flint or Obsidian Shard makes this much easier. Threshold reduction stacks across turns."
+          "effect": { "craftCostReduction": 1 },
+          "description": "Crafting aid. Lowers the value threshold of recipes by 1.",
+          "points": 2
+        },
+        {
+          "id": "forage_kit",
+          "profile": "pathfinder",
+          "name": "Forage Kit",
+          "type": "camp",
+          "requires": { "fiber": 2, "plant": 1 },
+          "valueThreshold": 5,
+          "effect": { "bonusDraw": 1, "hazardReduction": ["wrong_plant"] },
+          "description": "Better field kit for meadow searching and safer forage.",
+          "points": 3
         },
         {
           "id": "climbing_staff",
+          "profile": "pathfinder",
           "name": "Climbing Staff",
           "type": "camp",
           "requires": { "wood": 1, "fiber": 1 },
           "valueThreshold": 4,
-          "effect": { "hazardReduction": "rockslide", "moveCostReduction": 1 },
-          "description": "Reduces Rockslide discard from random to player choice. Move action costs 1 less Hydration.",
-          "points": 2,
-          "notes": "Pathfinder synergy. High Ground becomes much safer with this in tableau."
+          "effect": { "hazardReduction": ["rockslide", "wind_exposure"], "moveCostReduction": 1 },
+          "description": "Safer movement and better footing on the ridge.",
+          "points": 2
+        },
+        {
+          "id": "knife",
+          "profile": "pathfinder",
+          "name": "Knife",
+          "type": "camp",
+          "requires": { "stone": 1, "wood": 1 },
+          "valueThreshold": 3,
+          "effect": { "rawFoodSafe": true },
+          "description": "Prep tool. Eating raw food does not trigger the morale penalty.",
+          "points": 2
+        },
+        {
+          "id": "axe",
+          "profile": "pathfinder",
+          "name": "Axe",
+          "type": "camp",
+          "requires": { "wood": 1, "stone": 2 },
+          "valueThreshold": 4,
+          "effect": { "drawBonusByCategory": { "wood": 1 }, "craftCostReduction": 1 },
+          "description": "When you draw wood, gain +1 additional wood.",
+          "points": 3
+        },
+        {
+          "id": "smoke_tool",
+          "profile": "pathfinder",
+          "name": "Smoke Tool",
+          "type": "camp",
+          "requires": { "fiber": 1, "fire_starter": 1 },
+          "valueThreshold": 4,
+          "effect": { "hazardReduction": ["bee_stings", "wrong_plant"] },
+          "description": "Smoke and cover for meadow work and dangerous plants.",
+          "points": 2
         }
       ]
     },
-
     {
       "category": "Medicine",
       "items": [
         {
-          "id": "basic_poultice",
-          "name": "Basic Poultice",
+          "id": "herb_kit",
+          "profile": "forager",
+          "name": "Herb Kit",
           "type": "recovery",
-          "requires": { "plant": 2 },
+          "requires": { "plant": 2, "fiber": 1 },
           "valueThreshold": 3,
           "effect": { "morale": 1, "anyMeter": 1 },
-          "description": "Simple wound care. +1 Morale and +1 to any one meter.",
-          "points": 1,
-          "notes": "Fast to craft. Good morale patch after a hazard hit."
+          "description": "Simple field medicine from gathered herbs and wraps.",
+          "points": 1
         },
         {
-          "id": "medicine",
-          "name": "Medicine",
+          "id": "medicine_kit",
+          "profile": "forager",
+          "name": "Medicine Kit",
           "type": "recovery",
-          "requiresRecipes": ["basic_poultice"],
+          "requiresRecipes": ["herb_kit"],
           "requires": { "plant": 2, "water": 1 },
           "valueThreshold": 5,
-          "effect": { "morale": 2, "anyMeter": 2 },
-          "description": "Proper treatment. +2 Morale and +2 to any one meter.",
-          "points": 2,
-          "notes": "Medicinal Moss or Medicinal Root needed to reach threshold cleanly."
+          "effect": { "morale": 2, "anyMeter": 2, "clearFlag": true },
+          "description": "Proper treatment for wounds and contamination effects.",
+          "points": 2
         },
         {
           "id": "strong_medicine",
+          "profile": "forager",
           "name": "Strong Medicine",
           "type": "recovery",
-          "requiresRecipes": ["medicine"],
+          "requiresRecipes": ["medicine_kit"],
           "craftRequirements": { "hydrationMin": 4 },
           "requires": { "plant": 3, "water": 1 },
           "valueThreshold": 8,
           "effect": { "morale": 3, "anyMeter": 4, "clearFlag": true },
-          "description": "Full treatment. +3 Morale, +4 to any one meter, clears all illness flags.",
-          "points": 4,
-          "notes": "Requires Medicinal Root (value 2) and Medicinal Moss (value 2) together in practice."
+          "description": "Strong treatment that clears bad status and restores more broadly.",
+          "points": 4
         }
       ]
     },
-
     {
       "category": "Rescue Signaling",
       "items": [
         {
           "id": "signal_mirror",
+          "profile": "pathfinder",
           "name": "Signal Mirror",
           "type": "zone_use",
           "zone": "highground",
           "requires": { "stone": 2 },
           "valueThreshold": 4,
-          "effect": { "rescue": 4 },
+          "effect": { "rescue": 4, "rollDie": 6, "successOn": [1, 2, 3, 4, 5, 6] },
           "useRequirements": { "needsComfort": true },
-          "description": "Use at High Ground. +4 Rescue progress. Consumed on use.",
-          "points": 3,
-          "notes": "Obsidian Shard (value 2) plus any stone gets there. Best single rescue push."
+          "actionName": "signal",
+          "description": "Use at High Ground to convert visibility into rescue progress.",
+          "points": 3
         },
         {
           "id": "signal_kit",
+          "profile": "pathfinder",
           "name": "Signal Kit",
           "type": "zone_use",
           "zone": "highground",
           "requiresRecipes": ["signal_mirror"],
           "requires": { "stone": 2, "fiber": 1, "fire_starter": 1 },
           "valueThreshold": 7,
-          "effect": { "rescue": 6, "rescuePerRound": 1 },
-          "useRequirements": { "needsComfort": true, "moraleMin": 5, "requiresCardId": "rescue_signal_site", "requiresCardLabel": "Rescue Signal Site", "consumeRequiredCard": true },
-          "description": "Use at High Ground with Rescue Signal Site. +6 Rescue immediately, +1 Rescue each round after.",
-          "points": 5,
-          "notes": "Best rescue tool in the game. Pathfinder primary craft. Requires Rescue Signal Site to activate full effect."
+          "effect": { "rescue": 6, "rescuePerRound": 1, "rollDie": 6, "successOn": [2, 3, 4, 5, 6] },
+          "useRequirements": { "needsComfort": true, "moraleMin": 5 },
+          "actionName": "signal",
+          "description": "Use at High Ground to establish a stronger rescue signal.",
+          "points": 5
         },
         {
           "id": "rescue_cache",
+          "profile": "pathfinder",
           "name": "Rescue Cache",
           "type": "recovery",
           "requiresRecipes": ["signal_kit"],
@@ -313,12 +441,10 @@
           "requires": { "wood": 1, "stone": 1, "fiber": 1, "food": 1, "water": 1, "fire_starter": 1 },
           "valueThreshold": 10,
           "effect": { "rescue": 5, "morale": 2 },
-          "description": "A prepared emergency cache. +5 Rescue, +2 Morale. One of every category required.",
-          "points": 6,
-          "notes": "Hardest craft in the game. Requires one of every category AND high total value. Big payoff."
+          "description": "A prepared emergency cache for the final stretch.",
+          "points": 6
         }
       ]
     }
-
   ]
 }

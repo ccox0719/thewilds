@@ -1,144 +1,133 @@
 {
   "design_notes": {
-    "value_system": "Every material has a value (1-3). Recipes require a minimum total value from selected cards. Players combine any materials to meet the threshold - category matching still required but value replaces rarity.",
-    "deck_structure": "16 cards per zone: 9x value-1, 4x value-2, 1x value-3, 2x hazard (hazards have no value and trigger immediately on draw)",
-    "food_philosophy": "Direct food is weak (value 1 only). Real nutrition comes from prepared tools like traps, fishing poles, and cooking setups.",
-    "water_philosophy": "All collected water is unsafe by default. Must be treated via fire or filtration craft before safe consumption.",
-    "hazard_philosophy": "Hazards reward preparation. Each has a protection condition that reduces or negates the effect."
+    "value_system": "Materials are mostly raw inputs. Zone draws should feel like gathering, not payoff.",
+    "deck_structure": "Each zone uses a mixed raw-material deck with a small amount of weak emergency forage and two hazards.",
+    "food_philosophy": "Food comes mainly from crafted procurement tools, cooking, and preparation systems.",
+    "water_philosophy": "Water is unsafe by default until treated by fire, filter, or container-based prep.",
+    "hazard_philosophy": "Each zone has a distinct danger and at least one crafted protection path."
   },
-
   "categories": {
-    "wood":         { "label": "Wood",          "emoji": "🪵" },
-    "plant":        { "label": "Plant",         "emoji": "🌿" },
-    "stone":        { "label": "Stone",         "emoji": "🪨" },
-    "food":         { "label": "Food",          "emoji": "🍖" },
-    "water":        { "label": "Water",         "emoji": "💧" },
-    "fire_starter": { "label": "Fire Starter",  "emoji": "🔥" },
-    "fiber":        { "label": "Fiber",         "emoji": "🧵" },
-    "hazard":       { "label": "Hazard",        "emoji": "⚠️" }
+    "wood": { "label": "Wood", "short": "W", "emoji": "??" },
+    "plant": { "label": "Plant", "short": "P", "emoji": "??" },
+    "stone": { "label": "Stone", "short": "S", "emoji": "??" },
+    "food": { "label": "Food", "short": "F", "emoji": "??" },
+    "water": { "label": "Water", "short": "H2O", "emoji": "??" },
+    "fire_starter": { "label": "Fire Starter", "short": "FI", "emoji": "??" },
+    "fiber": { "label": "Fiber", "short": "R", "emoji": "??" },
+    "hazard": { "label": "Hazard", "short": "!", "emoji": "??" }
   },
-
   "zones": {
-
     "forest": {
       "name": "Forest",
-      "emoji": "🌲",
-      "identity": "Shelter, wood, hunting cover",
-      "opportunity": "Bow and snare use, rare herbs",
-      "danger": "Animal attack, poisonous forage",
+      "emoji": "??",
+      "identity": "Shelter wood, bindings, medicine plants, and hunting cover",
+      "opportunity": "Bow use, snare use, torch use, herb kit use",
+      "danger": "Animal attack and poisonous forage",
+      "bestFor": ["shelter", "fire", "food procurement", "medicine"],
+      "drawCount": 2,
       "cards": [
-
-        { "id": "fallen_branch",     "name": "Fallen Branch",     "value": 1, "category": "wood",         "description": "Dry and workable. Basic shelter framing or kindling." },
-        { "id": "dry_leaves",        "name": "Dry Leaves",        "value": 1, "category": "plant",        "description": "Loose insulation and reliable tinder." },
-        { "id": "pine_needles",      "name": "Pine Needles",      "value": 1, "category": "plant",        "description": "Dense ground cover. Tinder and bedding insulation." },
-        { "id": "tree_bark",         "name": "Tree Bark",         "value": 1, "category": "fiber",        "description": "Strip and split for rough cordage or shelter skin." },
-        { "id": "vine",              "name": "Vine",              "value": 1, "category": "fiber",        "description": "Flexible and strong enough to bind a frame." },
-        { "id": "wild_herbs",        "name": "Wild Herbs",        "value": 1, "category": "plant",        "description": "Medicinal ingredient. Weak alone, essential in medicine crafts." },
-        { "id": "berries",           "name": "Berries",           "value": 1, "category": "food",         "description": "Emergency food only. +1 Hunger if consumed. Risk of misidentification.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
-        { "id": "grubs",             "name": "Grubs",             "value": 1, "category": "food",         "description": "Unpleasant but safe protein. +1 Hunger if consumed.", "consumeEffect": { "hunger": 1 } },
-        { "id": "sap",               "name": "Sap",               "value": 1, "category": "fire_starter", "description": "Flammable and sticky. Weak fire starter but available." },
-
-        { "id": "thick_log",         "name": "Thick Log",         "value": 2, "category": "wood",         "description": "Dense timber. Long burn fire or solid shelter wall section." },
-        { "id": "straight_sapling",  "name": "Straight Sapling",  "value": 2, "category": "wood",         "description": "Clean shaft for tool handles, poles, or weapon blanks." },
-        { "id": "medicinal_moss",    "name": "Medicinal Moss",    "value": 2, "category": "plant",        "description": "Potent healing material. Key component in medicine crafts." },
-        { "id": "dry_fungus",        "name": "Dry Fungus",        "value": 2, "category": "fire_starter", "description": "Catches spark reliably. Best basic fire starter in the forest." },
-
-        { "id": "hardwood_bough",    "name": "Hardwood Bough",    "value": 3, "category": "wood",         "description": "Dense and flexible. Required for bow crafting. Hard to find." },
-
-        { "id": "forest_animal_attack",   "name": "Animal Attack",    "category": "hazard", "description": "A predator charges. -2 Morale. If no shelter in tableau: also -1 Hunger.", "hazardEffect": { "morale": -2, "hungerIfNoShelter": -1 }, "protection": "Shelter in tableau reduces to -1 Morale only." },
-        { "id": "forest_poison_forage",   "name": "Poison Forage",    "category": "hazard", "description": "You almost consume something dangerous. -1 Morale, -1 Hunger. Forager character: negated.", "hazardEffect": { "morale": -1, "hunger": -1 }, "protection": "Forager character passive negates this entirely." }
+        { "id": "fallen_branch", "name": "Fallen Branch", "value": 1, "category": "wood", "description": "Basic fuel and frame stock." },
+        { "id": "bark_strip", "name": "Bark Strip", "value": 1, "category": "fiber", "description": "Rough bindings and light cover." },
+        { "id": "vine", "name": "Vine", "value": 1, "category": "fiber", "description": "Flexible lash material for snares and shelter." },
+        { "id": "tinder_bundle", "name": "Tinder Bundle", "value": 1, "category": "fire_starter", "description": "Dry tinder gathered from the forest floor." },
+        { "id": "sap_clump", "name": "Sap Clump", "value": 1, "category": "fire_starter", "description": "Sticky fuel for fire starting." },
+        { "id": "wild_herbs", "name": "Wild Herbs", "value": 1, "category": "plant", "description": "Raw herb material for medicine and poultices." },
+        { "id": "snare_bait", "name": "Snare Bait", "value": 1, "category": "food", "description": "Weak emergency bait for trap work. Risky and inefficient as food.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "bark_fiber", "name": "Bark Fiber", "value": 1, "category": "fiber", "description": "Processed bark strands for cordage." },
+        { "id": "straight_sapling", "name": "Straight Sapling", "value": 1, "category": "wood", "description": "Pole stock for tools and light frames." },
+        { "id": "hardwood_bough", "name": "Hardwood Bough", "value": 2, "category": "wood", "description": "Stronger frame stock for bows and supports." },
+        { "id": "medicinal_moss", "name": "Medicinal Moss", "value": 2, "category": "plant", "description": "Useful in dressing wounds and calming irritation." },
+        { "id": "resin_chunk", "name": "Resin Chunk", "value": 2, "category": "fire_starter", "description": "High-value resin for fast fire and waterproofing." },
+        { "id": "dry_fungus", "name": "Dry Fungus", "value": 2, "category": "fire_starter", "description": "Reliable spark catcher for fire starting." },
+        { "id": "bow_stave", "name": "Bow Stave", "value": 3, "category": "wood", "description": "High-quality stave for bow crafting." },
+        { "id": "forest_animal_attack", "name": "Animal Attack", "category": "hazard", "description": "Predator pressure and panic. -2 Morale, -1 Hunger if you lack shelter.", "hazardEffect": { "morale": -2, "hungerIfNoShelter": -1 }, "protectedBy": ["lean_to", "sturdy_shelter", "debris_hut"] },
+        { "id": "forest_poison_forage", "name": "Poison Forage", "category": "hazard", "description": "Dangerous plants and bad judgment. -1 Morale, -1 Hunger. Forager negates it.", "hazardEffect": { "morale": -1, "hunger": -1 }, "protectedBy": ["herb_kit", "medicine_kit"] }
       ]
     },
-
     "river": {
       "name": "River",
-      "emoji": "🏞️",
-      "identity": "Water access, fish, clay, reeds",
-      "opportunity": "Fishing, water collection, filtration",
-      "danger": "Unsafe water, flooding, slippery injury",
+      "emoji": "???",
+      "identity": "Unsafe water, reeds, clay, stone, and shoreline work",
+      "opportunity": "Fishing pole use, fish trap use, water filter use, clay pot use",
+      "danger": "Contaminated water, slipping, and flooding",
+      "bestFor": ["water", "food procurement", "utility tools"],
+      "drawCount": 2,
       "cards": [
-
-        { "id": "unsafe_water",      "name": "Unsafe Water",      "value": 1, "category": "water",        "description": "Collected from the river. Must be treated before safe drinking. Raw consume: +1 Hydration but triggers illness risk.", "consumeEffect": { "hydration": 1 }, "rawRisk": true },
-        { "id": "unsafe_water_b",    "name": "Unsafe Water",      "value": 1, "category": "water",        "description": "Collected from the river. Must be treated before safe drinking. Raw consume: +1 Hydration but triggers illness risk.", "consumeEffect": { "hydration": 1 }, "rawRisk": true },
-        { "id": "reeds",             "name": "Reeds",             "value": 1, "category": "fiber",        "description": "Tall and fibrous. Shelter thatching, basket weaving, or filtration material." },
-        { "id": "river_stone",       "name": "River Stone",       "value": 1, "category": "stone",        "description": "Smooth and dense. Fire ring construction or basic tool blank." },
-        { "id": "sand",              "name": "Sand",              "value": 1, "category": "stone",        "description": "Fine-grained. Filtration layer in water purification crafts." },
-        { "id": "mud",               "name": "Mud",               "value": 1, "category": "plant",        "description": "Wet and workable. Shelter insulation or gap sealing." },
-        { "id": "cattails",          "name": "Cattails",          "value": 1, "category": "fiber",        "description": "Edible base, cordage, tinder. Low value but versatile." },
-        { "id": "small_fish",        "name": "Small Fish",        "value": 1, "category": "food",         "description": "Caught by hand or improvised. +1 Hunger raw. Much better cooked.", "consumeEffect": { "hunger": 1 }, "cookBonus": { "hunger": 3 } },
-        { "id": "crayfish",          "name": "Crayfish",          "value": 1, "category": "food",         "description": "Easy to catch in shallows. +1 Hunger raw.", "consumeEffect": { "hunger": 1 }, "cookBonus": { "hunger": 2 } },
-
-        { "id": "clay",              "name": "Clay",              "value": 2, "category": "stone",        "description": "Moldable and heat resistant. Container crafting and shelter sealing." },
-        { "id": "flat_stone",        "name": "Flat Stone",        "value": 2, "category": "stone",        "description": "Natural cooking surface. Needed for stone cooking setups." },
-        { "id": "large_fish",        "name": "Large Fish",        "value": 2, "category": "food",         "description": "Significant catch. +2 Hunger raw, +5 Hunger cooked.", "consumeEffect": { "hunger": 2 }, "cookBonus": { "hunger": 5 } },
-        { "id": "smooth_stone",      "name": "Smooth Stone",      "value": 2, "category": "stone",        "description": "Dense and rounded. Grinding tool blank or weighted construction." },
-
-        { "id": "flint",             "name": "Flint",             "value": 3, "category": "fire_starter", "description": "Reliable spark and sharp edge. Best fire starter in the game. Required for advanced cutting tools." },
-
-        { "id": "river_flash_flood",      "name": "Flash Flood",        "category": "hazard", "description": "Water surges without warning. Discard 1 random card from hand. -1 Morale.", "hazardEffect": { "morale": -1, "discardRandom": 1 }, "protection": "No full protection. Pathfinder passive reduces discard to optional." },
-        { "id": "river_waterborne_illness","name": "Waterborne Illness", "category": "hazard", "description": "Contamination in the water. Sets illness flag: next unsafe water consumed deals -3 Hydration and -2 Morale.", "hazardEffect": { "setFlag": "waterborne_illness" }, "protection": "Water Filter or Boiling Setup in tableau: negated entirely." }
+        { "id": "reeds", "name": "Reeds", "value": 1, "category": "fiber", "description": "Flexible shoreline stalks for weaving and filters." },
+        { "id": "mud", "name": "Mud", "value": 1, "category": "plant", "description": "Sealing and shaping material for crude containers." },
+        { "id": "sand", "name": "Sand", "value": 1, "category": "stone", "description": "A basic filtration layer and packing material." },
+        { "id": "river_stone", "name": "River Stone", "value": 1, "category": "stone", "description": "Smooth stone for fire rings and support surfaces." },
+        { "id": "cattail_stalk", "name": "Cattail Stalk", "value": 1, "category": "fiber", "description": "Tough stalk for lashings and light weaving." },
+        { "id": "driftwood", "name": "Driftwood", "value": 1, "category": "wood", "description": "Weathered wood for frames and fuel." },
+        { "id": "river_mussels", "name": "River Mussels", "value": 1, "category": "food", "description": "Weak emergency shellfish. Safe only in small amounts and better cooked.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "shore_grit", "name": "Shore Grit", "value": 1, "category": "food", "description": "Tiny bits of edible river margin forage. Barely worth eating.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "unsafe_water", "name": "Unsafe Water", "value": 1, "category": "water", "description": "Collected water. Unsafe until treated.", "consumeEffect": { "hydration": 1 }, "rawRisk": true, "unsafe": true },
+        { "id": "silt_clay", "name": "Silt Clay", "value": 1, "category": "stone", "description": "Fine clay for potting and sealing." },
+        { "id": "river_pebbles", "name": "River Pebbles", "value": 1, "category": "stone", "description": "Loose stone fill and drainage material." },
+        { "id": "clay_lump", "name": "Clay Lump", "value": 2, "category": "stone", "description": "Malleable clay for containers and sealing." },
+        { "id": "coarse_reed", "name": "Coarse Reed", "value": 2, "category": "fiber", "description": "Strong woven material for water gear." },
+        { "id": "flat_stone", "name": "Flat Stone", "value": 2, "category": "stone", "description": "A useful cooking or pounding surface." },
+        { "id": "stream_wood", "name": "Stream Wood", "value": 2, "category": "wood", "description": "Water-sheened wood suitable for frames and traps." },
+        { "id": "river_quartz", "name": "River Quartz", "value": 3, "category": "stone", "description": "High-value stone for better tools and fire work." },
+        { "id": "river_contamination", "name": "Contaminated Current", "category": "hazard", "description": "Waterborne illness risk. Unsafe water worsens without treatment.", "hazardEffect": { "setFlag": "waterborne_illness" }, "protectedBy": ["water_filter", "clay_pot"] },
+        { "id": "river_flash_flood", "name": "Flash Flood", "category": "hazard", "description": "Rapid water surge. -1 Morale and a card loss risk.", "hazardEffect": { "morale": -1, "discardRandom": 1 }, "protectedBy": ["climbing_staff"] }
       ]
     },
-
     "meadow": {
       "name": "Meadow",
-      "emoji": "🌾",
-      "identity": "Open ground, fibers, small game, medicinal plants",
-      "opportunity": "Snare placement, herb gathering, beeswax, feathers",
-      "danger": "Exposure, stings, bad plant identification",
+      "emoji": "??",
+      "identity": "Fibers, weak forage, feathers, and open-ground work",
+      "opportunity": "Snare use, forage kit use, wraps, and smoke tool use",
+      "danger": "Bad plant identification, exposure, and stings",
+      "bestFor": ["food procurement", "medicine", "utility tools"],
+      "drawCount": 2,
       "cards": [
-
-        { "id": "wild_grass",        "name": "Wild Grass",        "value": 1, "category": "fiber",        "description": "Abundant cordage and weaving material. Weak but everywhere." },
-        { "id": "dry_soil",          "name": "Dry Soil",          "value": 1, "category": "plant",        "description": "Fire pit base and shelter floor material." },
-        { "id": "dandelion",         "name": "Dandelion",         "value": 1, "category": "food",         "description": "Safe and common. +1 Hunger. Weak emergency food.", "consumeEffect": { "hunger": 1 } },
-        { "id": "clover",            "name": "Clover",            "value": 1, "category": "food",         "description": "Safe and common. +1 Hunger.", "consumeEffect": { "hunger": 1 } },
-        { "id": "insects",           "name": "Insects",           "value": 1, "category": "food",         "description": "Protein in a pinch. +1 Hunger.", "consumeEffect": { "hunger": 1 } },
-        { "id": "thistle",           "name": "Thistle",           "value": 1, "category": "plant",        "description": "Tough fibrous plant. Useful in medicine and cordage." },
-        { "id": "nettle",            "name": "Nettle",            "value": 1, "category": "fiber",        "description": "Stings raw but produces strong processed cordage." },
-        { "id": "sunlight",          "name": "Sunlight",          "value": 1, "category": "plant",        "description": "Open sky exposure. Consume to shift Warmth +2.", "consumeEffect": { "warmth": 2 } },
-        { "id": "feathers",          "name": "Feathers",          "value": 1, "category": "fiber",        "description": "Light insulation. Used in bedding and arrow fletching." },
-
-        { "id": "beeswax",           "name": "Beeswax",           "value": 2, "category": "plant",        "description": "Waterproofing and candle material. Key in weatherproofing crafts." },
-        { "id": "medicinal_root",    "name": "Medicinal Root",    "value": 2, "category": "plant",        "description": "Potent healing base. Required for strong medicine crafts." },
-        { "id": "wild_onion",        "name": "Wild Onion",        "value": 2, "category": "food",         "description": "+1 Hunger raw. Adds cook bonus to any meal it is paired with.", "consumeEffect": { "hunger": 1 }, "cookBonus": { "hungerBonus": 1 } },
-        { "id": "snare_bait",        "name": "Snare Bait",        "value": 2, "category": "food",         "description": "Used with a Snare craft at the meadow. Required to activate trap." },
-
-        { "id": "honeycomb",         "name": "Honeycomb",         "value": 3, "category": "food",         "description": "Dense and sweet. +3 Hunger, +1 Morale if consumed directly.", "consumeEffect": { "hunger": 3, "morale": 1 } },
-
-        { "id": "meadow_bee_sting",   "name": "Bee Sting",        "category": "hazard", "description": "Painful and distracting. -1 Morale, -1 Warmth.", "hazardEffect": { "morale": -1, "warmth": -1 }, "protection": "No protection available. Minor and unavoidable." },
-        { "id": "meadow_wrong_plant", "name": "Wrong Plant",      "category": "hazard", "description": "Accidental consumption of a harmful plant. -1 Morale, -2 Hunger. Forager: negated.", "hazardEffect": { "morale": -1, "hunger": -2 }, "protection": "Forager character passive negates this entirely." }
+        { "id": "grasses", "name": "Grasses", "value": 1, "category": "fiber", "description": "Abundant weaving and cordage material." },
+        { "id": "fibers", "name": "Fibers", "value": 1, "category": "fiber", "description": "Loose plant fibers for binding and wraps." },
+        { "id": "wild_onion", "name": "Wild Onion", "value": 1, "category": "food", "description": "Weak emergency forage. Safer than most but still inefficient.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "berries", "name": "Berries", "value": 1, "category": "food", "description": "Weak emergency forage. Risky if overused.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "insects", "name": "Insects", "value": 1, "category": "food", "description": "Emergency protein in a pinch.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "herb_leaves", "name": "Herb Leaves", "value": 1, "category": "plant", "description": "Simple green material for basic medicine." },
+        { "id": "wax_pollen", "name": "Wax Pollen", "value": 1, "category": "plant", "description": "Soft material for waterproofing and craft glue." },
+        { "id": "feathers", "name": "Feathers", "value": 1, "category": "fiber", "description": "Light insulation and fletching material." },
+        { "id": "dry_stem", "name": "Dry Stem", "value": 1, "category": "wood", "description": "Light fuel and basic frame material." },
+        { "id": "snare_cord", "name": "Snare Cord", "value": 2, "category": "fiber", "description": "Strong enough for trap work and lashing." },
+        { "id": "forage_herbs", "name": "Forage Herbs", "value": 2, "category": "plant", "description": "A better medicine ingredient from the meadow." },
+        { "id": "wraps", "name": "Wraps", "value": 2, "category": "fiber", "description": "Cloth-like binding material for care and insulation." },
+        { "id": "smoke_fiber", "name": "Smoke Fiber", "value": 2, "category": "fiber", "description": "Burns well in a smoke tool or slow fire." },
+        { "id": "bowstring", "name": "Bowstring", "value": 3, "category": "fiber", "description": "High-tension cord for a bow or stronger trap work." },
+        { "id": "bee_stings", "name": "Bee Stings", "category": "hazard", "description": "Pain and distraction. -1 Morale, -1 Warmth.", "hazardEffect": { "morale": -1, "warmth": -1 }, "protectedBy": ["smoke_tool", "wraps"] },
+        { "id": "wrong_plant", "name": "Wrong Plant", "category": "hazard", "description": "Bad identification hurts. -1 Morale, -2 Hunger. Forager can negate it.", "hazardEffect": { "morale": -1, "hunger": -2 }, "protectedBy": ["forage_kit", "medicine_kit"] }
       ]
     },
-
     "highground": {
       "name": "High Ground",
-      "emoji": "⛰️",
-      "identity": "Visibility, stone, rescue signaling, wind exposure",
-      "opportunity": "Signaling, rare stone, scouting bonus",
-      "danger": "Rockslide, cold wind, falls",
+      "emoji": "??",
+      "identity": "Visibility, stone, wind exposure, and rescue signaling",
+      "opportunity": "Signal kit use, mirror use, and rescue progress",
+      "danger": "Wind exposure, falls, and rockslide",
+      "bestFor": ["rescue signaling", "utility tools", "fire"],
+      "drawCount": 2,
       "cards": [
-
-        { "id": "loose_rock",        "name": "Loose Rock",        "value": 1, "category": "stone",        "description": "Rough and angular. Basic tool blank or construction fill." },
-        { "id": "gravel",            "name": "Gravel",            "value": 1, "category": "stone",        "description": "Fine stone. Filtration and drainage layer in water crafts." },
-        { "id": "lichen",            "name": "Lichen",            "value": 1, "category": "food",         "description": "Slow food, always available. +1 Hunger.", "consumeEffect": { "hunger": 1 } },
-        { "id": "exposed_root",      "name": "Exposed Root",      "value": 1, "category": "fiber",        "description": "Tough and fibrous. Strong cordage material." },
-        { "id": "dense_shrub",       "name": "Dense Shrub",       "value": 1, "category": "plant",        "description": "Windbreak and rough shelter wall material." },
-        { "id": "wind",              "name": "Wind",              "value": 1, "category": "plant",        "description": "Biting exposure. Shifts Warmth -2 immediately on draw.", "consumeEffect": { "warmth": -2 } },
-        { "id": "visibility",        "name": "Visibility",        "value": 1, "category": "plant",        "description": "Clear sightlines. Consume for +1 Rescue progress.", "consumeEffect": { "rescue": 1 } },
-        { "id": "animal_track",      "name": "Animal Track",      "value": 1, "category": "food",         "description": "Fresh sign of game nearby. Draw 1 bonus food card on your next turn." },
-        { "id": "flat_rock_shelf",   "name": "Flat Rock Shelf",   "value": 1, "category": "stone",        "description": "Natural platform. Cooking surface or shelter floor base." },
-
-        { "id": "quartz",            "name": "Quartz",            "value": 2, "category": "fire_starter", "description": "Reliable spark source. Solid mid-tier fire starter." },
-        { "id": "signal_rock_pile",  "name": "Signal Rock Pile",  "value": 2, "category": "stone",        "description": "Arranged stones visible from distance. +2 Rescue on consume.", "consumeEffect": { "rescue": 2 } },
-        { "id": "cave_entrance",     "name": "Cave Entrance",     "value": 2, "category": "plant",        "description": "Natural shelter. Immediately acts as a Lean-To without crafting." },
-        { "id": "obsidian_shard",    "name": "Obsidian Shard",    "value": 2, "category": "stone",        "description": "Razor sharp. Cutting tool blank and precision craft material." },
-
-        { "id": "rescue_signal_site","name": "Rescue Signal Site","value": 3, "category": "stone",        "description": "Ideal high-visibility location. +4 Rescue on consume. Required for Signal Kit activation.", "consumeEffect": { "rescue": 4 } },
-
-        { "id": "highground_rockslide","name": "Rockslide",       "category": "hazard", "description": "Rocks give way underfoot. Discard 1 card from hand. -1 Morale.", "hazardEffect": { "morale": -1, "discardRandom": 1 }, "protection": "Pathfinder passive: choose which card to discard instead of random." },
-        { "id": "highground_exposure", "name": "Exposure",        "category": "hazard", "description": "Wind and cold combine. Warmth shifts -2 immediately. -1 Morale.", "hazardEffect": { "warmth": -2, "morale": -1 }, "protection": "Shelter in tableau reduces Warmth loss to -1 only." }
+        { "id": "stone", "name": "Stone", "value": 1, "category": "stone", "description": "General-purpose rock for building and weight." },
+        { "id": "quartz", "name": "Quartz", "value": 1, "category": "fire_starter", "description": "Spark-friendly mineral from exposed ridges." },
+        { "id": "signal_stone", "name": "Signal Stone", "value": 1, "category": "stone", "description": "Light-colored stone that stands out from afar." },
+        { "id": "sparse_wood", "name": "Sparse Wood", "value": 1, "category": "wood", "description": "Thin wood from the ridge line." },
+        { "id": "gravel", "name": "Gravel", "value": 1, "category": "stone", "description": "Loose stone for fill and drainage." },
+        { "id": "ridge_fiber", "name": "Ridge Fiber", "value": 1, "category": "fiber", "description": "Tough fiber from wind-bent plants." },
+        { "id": "windbreak_scrub", "name": "Windbreak Scrub", "value": 1, "category": "plant", "description": "Low brush that blocks some wind." },
+        { "id": "lookout_slate", "name": "Lookout Slate", "value": 1, "category": "stone", "description": "Flat stone useful for markers and platforms." },
+        { "id": "chalk_mark", "name": "Chalk Mark", "value": 1, "category": "stone", "description": "Bright marking material for signals." },
+        { "id": "lichen_patch", "name": "Lichen Patch", "value": 1, "category": "food", "description": "Weak emergency forage from exposed rock. Low-value and slow to gather.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "stunted_berries", "name": "Stunted Berries", "value": 1, "category": "food", "description": "Sparse ridge berries. Small food, small benefit.", "consumeEffect": { "hunger": 1 }, "rawRisk": true },
+        { "id": "climbing_stone", "name": "Climbing Stone", "value": 2, "category": "stone", "description": "Grippy stone for holds and tool work." },
+        { "id": "signal_bundle", "name": "Signal Bundle", "value": 2, "category": "plant", "description": "A visible bundle for signaling and markers." },
+        { "id": "anchor_rope", "name": "Anchor Rope", "value": 2, "category": "fiber", "description": "Secure line for climbing and shelter tie-downs." },
+        { "id": "flat_shelf", "name": "Flat Shelf", "value": 2, "category": "stone", "description": "Natural platform for gear or lookout use." },
+        { "id": "beacon_stone", "name": "Beacon Stone", "value": 3, "category": "stone", "description": "High-visibility stone for rescue markers." },
+        { "id": "wind_exposure", "name": "Wind Exposure", "category": "hazard", "description": "Cold wind cuts through you. -2 Warmth, -1 Morale.", "hazardEffect": { "warmth": -2, "morale": -1 }, "protectedBy": ["lean_to", "sturdy_shelter", "debris_hut"] },
+        { "id": "rockslide", "name": "Rockslide", "category": "hazard", "description": "Loose rock gives way. Discard a card and lose morale.", "hazardEffect": { "morale": -1, "discardRandom": 1 }, "protectedBy": ["climbing_staff"] }
       ]
     }
-
   }
 }

@@ -15,7 +15,7 @@ A competitive survival crafting game where stranded players make hard tradeoffs 
 - Food and water are mostly secured through preparation and tool use
 - Each zone feels dangerous and distinct
 - Characters are asymmetric and interdependent
-- Crafted items are often used in locations, not just parked in a tableau
+- Crafted tools are the point of the loop: build them, then use them in the zone where they matter
 - Rescue is a strategic race, not an automatic timer
 
 ---
@@ -113,14 +113,14 @@ Morale affects gameplay efficiency, not just survival.
 
 ## Action Economy
 
-Each turn a player spends actions from this list. Action count per turn: TBD via playtesting (suggest 2).
+Each turn a player spends actions from this list. Action count per turn: 3 for the prototype, then tune from playtesting.
 
 | Action | Cost | Effect |
 |---|---|---|
 | Move | Hydration -1 | Travel to a zone |
 | Search | Hunger -1 | Draw 2 cards from current zone deck |
 | Craft | None | Build a recipe from hand materials |
-| Use Craft | None | Activate a zone-use item in its matching zone |
+| Use Tool | None | Activate a zone-use item in its matching zone |
 | Rest | 1 action | Recover Warmth based on shelter quality |
 | Sleep | Full turn | Warmth resets to 5, +2 Morale. No draws or crafts. |
 | Signal | 1 action | Contribute rescue progress via specific tools or locations |
@@ -298,16 +298,18 @@ Each character has a primary craft category, secondary craft category, and one p
 ### Food Procurement
 | Recipe | Type | Zone | Requires | Threshold | Effect | Points |
 |---|---|---|---|---|---|---|
-| Snare | Zone-Use | Meadow | 2x Fiber, 1x Wood | 4 | +4 Hunger next turn (needs Snare Bait) | 2 |
-| Fishing Pole | Zone-Use | River | 1x Wood, 2x Fiber | 5 | All fish this turn +2 Hunger bonus | 3 |
-| Bow | Zone-Use | Forest | 1x Wood, 2x Fiber | 7 | Hunt draw: success +6 Hunger, fail -1 Hunger | 4 |
+| Snare | Zone-Use | Meadow | 2x Fiber, 1x Wood | 4 | Trap food in Meadow (needs Snare Bait) | 2 |
+| Fishing Pole | Zone-Use | River | 1x Wood, 2x Fiber | 5 | Fish in River: all fish +2 Hunger bonus | 3 |
+| Bow | Zone-Use | Forest | 1x Wood, 2x Fiber | 7 | Hunt in Forest: success +6 Hunger, fail -1 Hunger | 4 |
 | Drying Rack | Camp | — | 2x Wood, 1x Fiber | 5 | Cooked meals +1 Hunger. Prevents spoilage | 3 |
 
 ### Utility Tools
 | Recipe | Type | Requires | Threshold | Effect | Points |
 |---|---|---|---|---|---|
 | Stone Tool | Camp | 2x Stone | 3 | +1 card draw per Search | 2 |
-| Cutting Tool | Camp | 1x Stone, 1x Wood | 4 | +1 draw per Search. Next craft threshold -1 | 3 |
+| Cutting Tool | Camp | 1x Stone, 1x Wood | 4 | Next craft threshold -1 | 3 |
+| Knife | Camp | 1x Stone, 1x Wood | 3 | Raw food can be eaten without the morale penalty | 2 |
+| Axe | Camp | 1x Wood, 2x Stone | 4 | When you draw wood, gain +1 extra wood | 3 |
 | Climbing Staff | Camp | 1x Wood, 1x Fiber | 4 | Rockslide: choose discard. Move -1 Hydration | 2 |
 
 ### Medicine
@@ -371,7 +373,7 @@ Avoid rewarding passive turtling too heavily.
 
 | Question | Status |
 |---|---|
-| Exact action count per turn | TBD — suggest 2, playtesting |
+| Exact action count per turn | Prototype baseline set to 3; continue tuning with playtesting |
 | Movement between adjacent zones vs open access | TBD |
 | How many danger checks per zone visit | Currently 1 (drawn from deck) |
 | Whether tools degrade or require upkeep | TBD |
