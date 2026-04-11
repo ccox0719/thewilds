@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "games_per_scenario": 500,
+    "player_count": 4,
+    "master_seed": 1337,
+    "scenario_count": 1
+  },
+  "variants": [
+    {
+      "variant_name": "B_current_rules",
+      "games": 500,
+      "rescue_rate": 0.206,
+      "wipeout_rate": 0.794,
+      "average_rounds": 20.792,
+      "average_survivors": 0.868,
+      "average_final_scores": {
+        "firekeeper": 7.882,
+        "forager": 11.408,
+        "hunter": 6.862,
+        "pathfinder": 7.22
+      },
+      "win_rate_by_profile": {
+        "firekeeper": 0.096,
+        "forager": 0.068,
+        "hunter": 0.024,
+        "pathfinder": 0.018
+      },
+      "death_rate_by_cause": {
+        "hunger": 0.1795,
+        "warmth": 0.0265,
+        "hydration": 0.4665,
+        "morale": 0.1105
+      },
+      "zone_visit_frequency": {
+        "forest": 5684,
+        "highground": 1201,
+        "river": 1883,
+        "meadow": 685
+      },
+      "recipe_craft_frequency": {
+        "campfire": 928,
+        "smoke_tool": 589,
+        "torch": 745,
+        "signal_mirror": 113,
+        "herb_kit": 121,
+        "fishing_pole": 1553,
+        "spear": 303,
+        "knife": 115,
+        "forage_kit": 371,
+        "sustained_fire": 3,
+        "cutting_tool": 157,
+        "climbing_staff": 165,
+        "axe": 404,
+        "water_filter": 484,
+        "fish_trap": 132,
+        "lean_to": 158,
+        "bow": 140,
+        "drying_rack": 6,
+        "medicine_kit": 9,
+        "sturdy_shelter": 5,
+        "strong_medicine": 2,
+        "water_cache": 1
+      },
+      "first_engine_rounds": {
+        "fire": 1.0,
+        "food_tool": 1.089613034623218,
+        "rescue_signal": 1.9722222222222223,
+        "water_treatment": 2.3503184713375798,
+        "shelter": 1.8672566371681416
+      },
+      "raw_food_consumption": 3057,
+      "unsafe_water_consumption": 192,
+      "hazard_trigger_frequency": 4415,
+      "hazard_prevented_frequency": 726,
+      "use_frequency_by_item": {
+        "signal_mirror": 202,
+        "fishing_pole": 25921,
+        "spear": 1095,
+        "bow": 119
+      },
+      "action_spend": {
+        "search": 18.906,
+        "craft": 13.008,
+        "use": 54.674,
+        "rest": 11.798,
+        "cook": 0.012,
+        "signal": 0.404,
+        "stoke": 1.764,
+        "sleep": 8.868
+      }
+    }
+  ]
+}

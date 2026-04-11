@@ -48,7 +48,7 @@ Each player tracks four personal meters.
 
 | Meter | Start | Max | Behavior |
 |---|---|---|---|
-| Hunger | 8 | 10 | Decays -1 per round end. Search actions cost Hunger. |
+| Hunger | 8 | 10 | Search actions cost Hunger. |
 | Hydration | 8 | 10 | Decays -1 per round end. Move actions cost Hydration. |
 | Warmth | 5 | 10 | Shifts based on environment pressure and player actions. Does NOT decay automatically. |
 | Morale | 8 | 10 | Event-driven only. Does not decay passively. Affects efficiency. |
@@ -298,7 +298,7 @@ Each character has a primary craft category, secondary craft category, and one p
 ### Food Procurement
 | Recipe | Type | Zone | Requires | Threshold | Effect | Points |
 |---|---|---|---|---|---|---|
-| Snare | Zone-Use | Meadow | 2x Fiber, 1x Wood | 4 | Trap food in Meadow (needs Snare Bait) | 2 |
+| Snare | Zone-Use | Meadow | 2x Fiber, 1x Wood | 3 | Trap food in Meadow (needs Snare Bait) | 2 |
 | Fishing Pole | Zone-Use | River | 1x Wood, 2x Fiber | 5 | Fish in River: all fish +2 Hunger bonus | 3 |
 | Bow | Zone-Use | Forest | 1x Wood, 2x Fiber | 7 | Hunt in Forest: success +6 Hunger, fail -1 Hunger | 4 |
 | Drying Rack | Camp | — | 2x Wood, 1x Fiber | 5 | Cooked meals +1 Hunger. Prevents spoilage | 3 |

@@ -1,0 +1,5 @@
+variant,profile,average_final_score,win_rate
+B_current_rules,firekeeper,7.882,0.096
+B_current_rules,forager,11.408,0.068
+B_current_rules,hunter,6.862,0.024
+B_current_rules,pathfinder,7.22,0.018

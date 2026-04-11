@@ -58,10 +58,10 @@
           "profile": "firekeeper",
           "name": "Campfire",
           "type": "camp",
-          "requires": { "wood": 2, "fire_starter": 1 },
-          "valueThreshold": 4,
-          "effect": { "warmthPressureReduction": 1, "enablesCooking": true },
-          "description": "Core fire infrastructure. Reduces warmth pressure and enables cooking.",
+          "requires": { "wood": 1, "fire_starter": 1 },
+          "valueThreshold": 3,
+          "effect": { "warmthPressureReduction": 1, "warmthPerRound": 1, "enablesCooking": true },
+          "description": "Core fire infrastructure. Reduces warmth pressure, restores a little warmth each round, and enables cooking sooner.",
           "points": 2
         },
         {
@@ -72,8 +72,8 @@
           "requiresRecipes": ["campfire"],
           "requires": { "wood": 3, "fire_starter": 1, "stone": 1 },
           "valueThreshold": 7,
-          "effect": { "warmthPressureReduction": 2, "enablesCooking": true, "duration": 4 },
-          "description": "Better heat control and longer burn time.",
+          "effect": { "warmthPressureReduction": 2, "warmthPerRound": 1, "enablesCooking": true, "duration": 4 },
+          "description": "Better heat control, a little ongoing warmth, and longer burn time.",
           "points": 4
         },
         {
@@ -84,8 +84,8 @@
           "requiresRecipes": ["sustained_fire"],
           "requires": { "wood": 3, "fire_starter": 2 },
           "valueThreshold": 9,
-          "effect": { "warmthPressureReduction": 1, "enablesCooking": true, "rescuePerRound": 1 },
-          "description": "Fire infrastructure that also feeds rescue progress every round.",
+          "effect": { "warmthPressureReduction": 1, "warmthPerRound": 1, "enablesCooking": true, "rescuePerRound": 1 },
+          "description": "Fire infrastructure that restores a little warmth and feeds rescue progress every round.",
           "points": 5
         },
         {
@@ -121,8 +121,8 @@
           "profile": "forager",
           "name": "Clay Pot",
           "type": "camp",
-          "requires": { "stone": 1, "fiber": 1, "plant": 1 },
-          "valueThreshold": 4,
+          "requires": { "stone": 1, "fiber": 1 },
+          "valueThreshold": 3,
           "effect": { "treatsWater": true },
           "description": "A basic container that supports safe water handling and boiling.",
           "points": 2
@@ -132,10 +132,10 @@
           "profile": "forager",
           "name": "Water Filter",
           "type": "camp",
-          "requires": { "stone": 2, "fiber": 1 },
-          "valueThreshold": 4,
-          "effect": { "treatsWater": true, "protectsAgainst": ["river_contamination"] },
-          "description": "Treats unsafe water and protects against contamination.",
+          "requires": { "stone": 1, "fiber": 1 },
+          "valueThreshold": 3,
+          "effect": { "treatsWater": true, "protectsAgainst": ["river_contamination"], "passiveHydration": 1 },
+          "description": "Treats unsafe water, protects against contamination, and steadies hydration a little each round.",
           "points": 3
         },
         {
@@ -145,7 +145,7 @@
           "type": "camp",
           "requiresRecipes": ["clay_pot"],
           "requires": { "stone": 2, "fiber": 2, "plant": 1 },
-          "valueThreshold": 7,
+          "valueThreshold": 10,
           "effect": { "treatsWater": true, "passiveHydration": 1 },
           "description": "Improved water infrastructure. Treats water and restores a little each round.",
           "points": 5
@@ -162,11 +162,11 @@
           "type": "zone_use",
           "zone": "meadow",
           "requires": { "fiber": 2, "wood": 1 },
-          "valueThreshold": 4,
-          "effect": { "hungerOnActivate": 4, "rollDie": 6, "successOn": [3, 4, 5, 6] },
+          "valueThreshold": 3,
+          "effect": { "rollDie": 6, "successOn": [3, 4, 5, 6] },
           "useRequirements": { "moraleMin": 3 },
           "actionName": "trap",
-          "description": "Use in Meadow to trap small game. Success produces food payoff through preparation, not drawing.",
+          "description": "Use in Meadow to trap small game. Success yields a raw rabbit catch that should be cooked.",
           "points": 2
         },
         {
@@ -191,10 +191,10 @@
           "zone": "forest",
           "requires": { "wood": 2, "fiber": 1, "stone": 1 },
           "valueThreshold": 4,
-          "effect": { "hungerOnSuccess": 4, "rollDie": 6, "successOn": [3, 4, 5, 6] },
+          "effect": { "rollDie": 6, "successOn": [3, 4, 5, 6] },
           "useRequirements": { "hungerMin": 3, "moraleMin": 3 },
           "actionName": "hunt",
-          "description": "Use in Forest to hunt with a simple spear.",
+          "description": "Use in Forest to hunt with a simple spear. Success yields a raw rabbit catch that should be cooked.",
           "points": 3
         },
         {
@@ -206,10 +206,10 @@
           "requiresRecipes": ["cutting_tool"],
           "requires": { "wood": 1, "fiber": 2 },
           "valueThreshold": 7,
-          "effect": { "hungerOnSuccess": 5, "rollDie": 6, "successOn": [4, 5, 6] },
+          "effect": { "rollDie": 6, "successOn": [4, 5, 6] },
           "useRequirements": { "hungerMin": 3, "moraleMin": 4 },
           "actionName": "hunt",
-          "description": "Use in Forest to hunt game after you prepare the right tool chain.",
+          "description": "Use in Forest to hunt game after you prepare the right tool chain. Success yields a raw deer catch that should be cooked.",
           "points": 4
         },
         {
@@ -221,10 +221,10 @@
           "requiresRecipes": ["fishing_pole"],
           "requires": { "stone": 1, "fiber": 2 },
           "valueThreshold": 6,
-          "effect": { "hungerOnActivate": 5, "rollDie": 6, "successOn": [3, 4, 5, 6] },
+          "effect": { "rollDie": 6, "successOn": [3, 4, 5, 6] },
           "useRequirements": { "warmthMin": 3 },
           "actionName": "trap",
-          "description": "Use in River for a more stable fish catch setup.",
+          "description": "Use in River for a more stable fish catch setup. Success yields a raw fish catch that should be cooked.",
           "points": 4
         },
         {
@@ -268,10 +268,10 @@
           "name": "Camp Stew",
           "type": "recovery",
           "requiresRecipes": ["campfire"],
-          "requires": { "food": 1, "water": 1, "plant": 1 },
-          "valueThreshold": 5,
-          "effect": { "hunger": 4, "warmth": 1, "morale": 1 },
-          "description": "A hot meal that turns gathered bits into a real survival payoff.",
+          "requires": { "food": 1, "water": 1 },
+          "valueThreshold": 3,
+          "effect": { "hunger": 6, "warmth": 1, "morale": 2 },
+          "description": "A stronger hot meal that turns gathered bits into a reliable survival payoff.",
           "points": 3
         },
         {
@@ -425,7 +425,7 @@
           "requiresRecipes": ["signal_mirror"],
           "requires": { "stone": 2, "fiber": 1, "fire_starter": 1 },
           "valueThreshold": 7,
-          "effect": { "rescue": 6, "rescuePerRound": 1, "rollDie": 6, "successOn": [2, 3, 4, 5, 6] },
+          "effect": { "rescue": 7, "rescuePerRound": 1, "rollDie": 6, "successOn": [2, 3, 4, 5, 6] },
           "useRequirements": { "needsComfort": true, "moraleMin": 5 },
           "actionName": "signal",
           "description": "Use at High Ground to establish a stronger rescue signal.",
@@ -439,7 +439,7 @@
           "requiresRecipes": ["signal_kit"],
           "craftRequirements": { "hungerMin": 4, "warmthMin": 4, "hydrationMin": 4, "moraleMin": 4 },
           "requires": { "wood": 1, "stone": 1, "fiber": 1, "food": 1, "water": 1, "fire_starter": 1 },
-          "valueThreshold": 10,
+          "valueThreshold": 7,
           "effect": { "rescue": 5, "morale": 2 },
           "description": "A prepared emergency cache for the final stretch.",
           "points": 6

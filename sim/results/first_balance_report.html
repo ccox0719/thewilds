@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Wilds Balance Report</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #17202a;
+      --muted: #5d6a79;
+      --accent: #2158d6;
+      --accent-soft: #ecf2ff;
+      --border: #dbe2ec;
+      --shadow: rgba(24, 38, 57, 0.08);
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(33, 88, 214, 0.10), transparent 34%),
+        linear-gradient(180deg, #fbfcfe 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 56px;
+    }
+    h1, h2 {
+      font-family: inherit;
+      letter-spacing: -0.02em;
+    }
+    .hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: 0 14px 34px var(--shadow);
+      margin-bottom: 22px;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+    }
+    .hero p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 16px 0 0;
+      color: var(--muted);
+    }
+    .meta span {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+    }
+    .verdict {
+      margin: 18px 0 0;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f7faff 0%, #edf3ff 100%);
+      border: 1px solid #d5def1;
+      color: #20304a;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin: 0 0 20px;
+    }
+    .board-card {
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 24px var(--shadow);
+    }
+    .board-card .label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .board-card .value {
+      margin-top: 8px;
+      font-size: 1.7rem;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      color: var(--accent-strong);
+    }
+    .board-card .note {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 12px 28px var(--shadow);
+    }
+    .card h2 {
+      margin: 6px 0 0;
+      font-size: 1.9rem;
+    }
+    .card .small {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 28px var(--shadow);
+      margin-bottom: 24px;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 0.95rem;
+    }
+    th {
+      text-align: left;
+      background: #f0f5ff;
+      color: #20304a;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    details.variant-detail {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin: 10px 0;
+      box-shadow: 0 8px 20px var(--shadow);
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    pre {
+      overflow: auto;
+      background: #0f172a;
+      color: #e8eefc;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 12px 0 0;
+    }
+    ul {
+      line-height: 1.6;
+    }
+    .variant-meta {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+    }
+    .status.ok {
+      background: #edf9ef;
+      color: #1f7a35;
+      border-color: #c9e9cf;
+    }
+    .status.warn {
+      background: #fff7e6;
+      color: #9a6700;
+      border-color: #f0ddb2;
+    }
+    .status.bad {
+      background: #fff0f0;
+      color: #a23d3d;
+      border-color: #f0c2c2;
+    }
+    .status.neutral {
+      background: #eef3f8;
+      color: #4c5d70;
+      border-color: #d7e0ea;
+    }
+    .gap-pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .gap-pill.ok {
+      background: #edf9ef;
+      color: #1f7a35;
+    }
+    .gap-pill.warn {
+      background: #fff7e6;
+      color: #9a6700;
+    }
+    .gap-pill.bad {
+      background: #fff0f0;
+      color: #a23d3d;
+    }
+    .gap-pill.neutral {
+      background: #eef3f8;
+      color: #4c5d70;
+    }
+    .section-title {
+      margin: 10px 0 14px;
+      font-size: 1.1rem;
+      color: #20304a;
+      letter-spacing: -0.01em;
+    }
+    .section-subtitle {
+      margin: -6px 0 14px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+    .small {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .chart {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 12px 28px var(--shadow);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr) 180px;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .chart-row:last-child {
+      border-bottom: none;
+    }
+    .chart-label {
+      font-weight: 650;
+      color: #20304a;
+    }
+    .bar-track {
+      position: relative;
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #edf2f8;
+      display: flex;
+    }
+    .bar {
+      height: 100%;
+    }
+    .bar.rescue {
+      background: linear-gradient(90deg, #4d78f2, #2158d6);
+    }
+    .bar.wipeout {
+      background: linear-gradient(90deg, #f59d71, #d66435);
+    }
+    .chart-values {
+      text-align: right;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <h1>The Wilds Balance Report</h1>
+      <p>Static viewer for the simulator batch output. The JSON file remains the detailed source of truth, while this page is meant for fast executive review.</p>
+      <div class="meta">
+        <span>Games per scenario: 500</span>
+        <span>Player count: 4</span>
+        <span>Master seed: 1337</span>
+        <span>Scenarios: 1</span>
+      </div>
+      <div class="verdict">Current rules are not yet in the target band. Rescue is 20.6%, wipeout is 79.4%, and hydration remains the main failure mode.</div>
+    </section>
+    <section class="board">
+      <div class="board-card"><div class="label">Rescue rate</div><div class="value">20.6%</div><div class="note">Target 45% to 55%</div></div><div class="board-card"><div class="label">Wipeout rate</div><div class="value">79.4%</div><div class="note">Target 5% to 10%</div></div><div class="board-card"><div class="label">Avg rounds</div><div class="value">20.79</div><div class="note">Target 7 to 9</div></div><div class="board-card"><div class="label">Engine timing</div><div class="value">1.09</div><div class="note">Food engine target ~3</div></div>
+    </section>
+    <section class="grid">
+      <div class="card"><div class="small">Current rescue</div><h2>0.206</h2></div>
+      <div class="card"><div class="small">Current wipeout</div><h2>0.794</h2></div>
+      <div class="card"><div class="small">Main death cause</div><h2>hydration</h2></div>
+      <div class="card"><div class="small">Engine actions / game</div><h2>55.08</h2></div>
+    </section>
+    <section class="card">
+      <h2 class="section-title">Notes</h2>
+      <ul>
+        <li>Generated from the simulator batch output.</li><li>Use this file for quick inspection; JSON remains the detailed source of truth.</li>
+      </ul>
+    </section>
+    <h2 class="section-title">Target Gap</h2>
+    <p class="section-subtitle">Green means the metric sits inside the target band. Amber means close. Red means the current rules are still outside the band.</p>
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Target</th><th>Current</th><th>Gap</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Rescue rate</td><td>45% to 55%</td><td>0.206</td><td><span class="gap-pill bad">0.244 below</span></td></tr><tr><td>Wipeout rate</td><td>5% to 10%</td><td>0.794</td><td><span class="gap-pill bad">0.694 above</span></td></tr><tr><td>Avg survivors</td><td>2.0 to 3.2</td><td>0.87</td><td><span class="gap-pill bad">1.132 below</span></td></tr><tr><td>Avg rounds</td><td>7.0 to 9.0</td><td>20.79</td><td><span class="gap-pill bad">11.792 above</span></td></tr><tr><td>Food engine round</td><td>~3.0</td><td>1.09</td><td><span class="gap-pill warn">1.91 from target</span></td></tr><tr><td>Water engine round</td><td>~2.0</td><td>2.35</td><td><span class="gap-pill warn">0.35 from target</span></td></tr>
+      </tbody>
+    </table>
+    <h2 class="section-title">Scenario Summary</h2>
+    <table>
+      <thead>
+        <tr><th>Rank</th><th>Variant</th><th>Rescue</th><th>Wipeout</th><th>Avg Rounds</th><th>Avg Survivors</th><th>Profiles Present</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>B_current_rules</td><td>0.206</td><td>0.794</td><td>20.79</td><td>0.87</td><td>firekeeper, forager, hunter, pathfinder</td></tr>
+      </tbody>
+    </table>
+    <h2 class="section-title">Comparisons vs Baseline</h2>
+    <table>
+      <thead>
+        <tr><th>Variant</th><th>Rescue Delta</th><th>Wipeout Delta</th><th>Rounds Delta</th></tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+    <section class="chart">
+      <h2 class="section-title">Variant Trend View</h2>
+      <p class="section-subtitle">Blue bars show rescue rate. Orange bars show wipeout rate. Longer bars are better only for rescue.</p>
+      
+            <div class="chart-row">
+              <div class="chart-label">B_current_rules</div>
+              <div class="bar-track" title="Rescue 20.6% / Wipeout 79.4%">
+                <div class="bar rescue" style="width: 100.0%"></div>
+                <div class="bar wipeout" style="width: 100.0%"></div>
+              </div>
+              <div class="chart-values">20.6% rescue | 79.4% wipeout</div>
+            </div>
+            
+    </section>
+    <h2 class="section-title">Recommended Changes</h2>
+    <div class="card">
+      <ol>
+        <li>Keep B_current_rules as the working baseline for the next pass.</li><li>Do not restore the reconstructed pre-tweak baseline; the current rules are the stronger reference point.</li><li>Keep the combined hunger and food-tool rules consolidated in the current baseline.</li><li>Run a larger seed sweep before touching water or morale pressure.</li><li>Prefer targeted hunger relief over broad passive decay shifts.</li>
+      </ol>
+    </div>
+    <section class="card">
+      <h2 class="section-title">Read This First</h2>
+      <ul>
+        <li>The game is still far below the requested rescue band.</li>
+        <li>Hunger is not the only pressure; the main death cause in the current rules is hydration.</li>
+        <li>Food and water engines are coming online well before the target round band.</li>
+        <li>Zone-use is happening often enough to matter, but it is not converting into enough rescue.</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2 class="section-title">Likely Diagnosis</h2>
+      <ul>
+        <li>Overtuned: hunger pressure.</li>
+        <li>Overtuned: morale pressure.</li>
+        <li>Undertuned: rescue conversion.</li>
+        <li>Undertuned: the payoff from stable engines.</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2 class="section-title">Top 3 Changes</h2>
+      <ol>
+        <li>Reduce passive hunger pressure first.</li>
+        <li>Ease morale collapse next.</li>
+        <li>Increase rescue conversion by strengthening signals or lowering the rescue target.</li>
+      </ol>
+    </section>
+    <details class="variant-detail">
+      <summary>Variant Details <span class="variant-meta">click to expand raw metrics</span></summary>
+      <div>
+            <details class="variant-detail">
+              <summary>B_current_rules <span class="variant-meta">rescue 0.206 | wipeout 0.794</span></summary>
+              <pre>{
+  &quot;variant_name&quot;: &quot;B_current_rules&quot;,
+  &quot;games&quot;: 500,
+  &quot;rescue_rate&quot;: 0.206,
+  &quot;wipeout_rate&quot;: 0.794,
+  &quot;average_rounds&quot;: 20.792,
+  &quot;average_survivors&quot;: 0.868,
+  &quot;first_engine_rounds&quot;: {
+    &quot;fire&quot;: 1.0,
+    &quot;food_tool&quot;: 1.089613034623218,
+    &quot;rescue_signal&quot;: 1.9722222222222223,
+    &quot;water_treatment&quot;: 2.3503184713375798,
+    &quot;shelter&quot;: 1.8672566371681416
+  },
+  &quot;raw_food_consumption&quot;: 3057,
+  &quot;unsafe_water_consumption&quot;: 192,
+  &quot;hazard_trigger_frequency&quot;: 4415,
+  &quot;hazard_prevented_frequency&quot;: 726
+}</pre>
+            </details>
+            </div>
+    </details>
+  </main>
+</body>
+</html>

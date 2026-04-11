@@ -58,6 +58,94 @@
     margin-bottom: 20px;
   }
 
+  .top-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 1200px;
+    margin: 0 auto 14px;
+  }
+
+  .top-actions a,
+  .top-actions button {
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+  }
+
+  .top-actions a:hover,
+  .top-actions button:hover {
+    border-color: var(--accent);
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 6, 6, 0.76);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 1200;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    width: min(1120px, 100%);
+    max-height: min(92vh, 1200px);
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    position: relative;
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(180deg, var(--surface) 0%, rgba(26, 26, 26, 0.96) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-header .panel-title {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .modal-close {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  body.modal-open {
+    overflow: hidden;
+  }
+
   .game-layout {
     display: grid;
     grid-template-columns: 220px 1fr 220px;
@@ -502,6 +590,50 @@
   }
   .consume-btn:hover { border-color: var(--rescue); color: var(--rescue); }
 
+  .dev-lab {
+    margin-bottom: 12px;
+    border: 1px solid rgba(200, 160, 96, 0.35);
+    background: linear-gradient(135deg, rgba(34, 28, 22, 0.96), rgba(24, 24, 24, 0.98));
+  }
+  .dev-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+  }
+  .dev-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dev-field label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .dev-field input, .dev-field select, .dev-field textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+  }
+  .dev-results {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(200, 160, 96, 0.18);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
   @media (max-width: 800px) {
     .game-layout { grid-template-columns: 1fr; }
   }
@@ -512,14 +644,158 @@
 <h1>THE WILDS</h1>
 <div class="subtitle">SURVIVAL CRAFTING PROTOTYPE  V2 RULESET</div>
 
-<div class="panel" style="margin-bottom:12px">
-  <div class="panel-title">HOW TO PLAY</div>
-  <div style="color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;line-height:1.5">
-    <div>1. Search a zone to draw raw materials, not finished rewards.</div>
-    <div>2. Craft tools and kits, then use them in the matching zone: fish the river, hunt the forest, trap the meadow, signal the high ground.</div>
-    <div>3. Treat unsafe water, cook or prepare food, and keep hunger, warmth, hydration, and morale above zero.</div>
-    <div>4. Morale is your action pool each turn.</div>
-    <div>6. Durable gear moves into stockpile and can be used later.</div>
+<div class="top-actions">
+  <button type="button" onclick="openHowToPlay()">HOW TO PLAY</button>
+  <button type="button" onclick="openBalanceLab()">OPEN BALANCE LAB</button>
+  <button type="button" onclick="openPlayersLog()">OPEN PLAYERS + LOG</button>
+  <a href="sim/results/first_balance_report.html" target="_blank" rel="noopener noreferrer">OPEN BALANCE REPORT</a>
+</div>
+
+<div id="howToPlayModal" class="modal-overlay" aria-hidden="true" onclick="closeHowToPlay(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="howToPlayTitle" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="panel-title" id="howToPlayTitle">HOW TO PLAY</div>
+        <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;line-height:1.5">
+          Short version of the core loop.
+        </div>
+      </div>
+      <button type="button" class="modal-close" aria-label="Close how to play" onclick="closeHowToPlay()">&times;</button>
+    </div>
+    <div class="panel" style="border:none;border-radius:0;background:transparent;margin:0">
+      <div style="color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;line-height:1.5">
+        <div>1. Search a zone to draw raw materials, not finished rewards.</div>
+        <div>2. Craft tools and kits, then use them in the matching zone: fish the river, hunt the forest, trap the meadow, signal the high ground.</div>
+        <div>3. Treat unsafe water, cook or prepare food, and keep hunger, warmth, hydration, and morale above zero.</div>
+        <div>4. Morale is your action pool each turn.</div>
+        <div>5. Durable gear moves into stockpile and can be used later.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="balanceLabModal" class="modal-overlay" aria-hidden="true" onclick="closeBalanceLab(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="balanceLabTitle" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="panel-title" id="balanceLabTitle">BALANCE LAB</div>
+        <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;line-height:1.5">
+          Change balance knobs here, apply them to a fresh game, or run a browser-side preview batch.
+        </div>
+      </div>
+      <button type="button" class="modal-close" aria-label="Close balance lab" onclick="closeBalanceLab()">&times;</button>
+    </div>
+    <div class="panel dev-lab" style="border:none;border-radius:0;background:transparent">
+      <div class="dev-grid">
+        <div class="dev-field">
+          <label><input type="checkbox" id="devSearchHungerCost" checked> Search costs hunger</label>
+        </div>
+        <div class="dev-field">
+          <label for="devSearchHungerLimit">Search hunger limit</label>
+          <input id="devSearchHungerLimit" type="number" min="0" max="10" step="1" value="">
+        </div>
+        <div class="dev-field">
+          <label for="devRoundEndHunger">Round-end hunger</label>
+          <select id="devRoundEndHunger">
+            <option value="none">none</option>
+            <option value="always">always</option>
+            <option value="every_other_round">every other round</option>
+            <option value="after_searches">after 2+ searches</option>
+          </select>
+        </div>
+        <div class="dev-field">
+          <label for="devMoraleLossCap">Morale loss cap</label>
+          <input id="devMoraleLossCap" type="number" min="0" max="3" step="1" value="">
+        </div>
+        <div class="dev-field">
+          <label for="devRescueTarget">Rescue target</label>
+          <input id="devRescueTarget" type="number" min="1" max="40" step="1" value="20">
+        </div>
+        <div class="dev-field">
+          <label for="devRescueUseBonus">Rescue use bonus</label>
+          <input id="devRescueUseBonus" type="number" min="0" max="10" step="1" value="0">
+        </div>
+        <div class="dev-field">
+          <label for="devPassiveRescuePerRound">Passive rescue/round</label>
+          <input id="devPassiveRescuePerRound" type="number" min="0" max="5" step="1" value="0">
+        </div>
+        <div class="dev-field">
+          <label for="devFoodToolHungerBonus">Food tool hunger bonus</label>
+          <input id="devFoodToolHungerBonus" type="number" min="0" max="5" step="1" value="0">
+        </div>
+        <div class="dev-field">
+          <label for="devStartingHunger">Start hunger</label>
+          <input id="devStartingHunger" type="number" min="0" max="10" step="1" value="9">
+        </div>
+        <div class="dev-field">
+          <label for="devStartingWarmth">Start warmth</label>
+          <input id="devStartingWarmth" type="number" min="0" max="10" step="1" value="5">
+        </div>
+        <div class="dev-field">
+          <label for="devStartingHydration">Start hydration</label>
+          <input id="devStartingHydration" type="number" min="0" max="10" step="1" value="9">
+        </div>
+        <div class="dev-field">
+          <label for="devStartingMorale">Start morale</label>
+          <input id="devStartingMorale" type="number" min="0" max="10" step="1" value="9">
+        </div>
+        <div class="dev-field">
+          <label for="devSnareThreshold">Snare threshold</label>
+          <input id="devSnareThreshold" type="number" min="0" max="10" step="1" value="3">
+        </div>
+        <div class="dev-field">
+          <label for="devFishingThreshold">Fishing Pole threshold</label>
+          <input id="devFishingThreshold" type="number" min="0" max="10" step="1" value="4">
+        </div>
+        <div class="dev-field">
+          <label for="devCampStewThreshold">Camp Stew threshold</label>
+          <input id="devCampStewThreshold" type="number" min="0" max="10" step="1" value="4">
+        </div>
+        <div class="dev-field">
+          <label for="devPreviewGames">Preview games</label>
+          <input id="devPreviewGames" type="number" min="5" max="200" step="5" value="25">
+        </div>
+      </div>
+      <div class="action-row" style="margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="applyBalanceLab()">APPLY + NEW GAME</button>
+        <button class="btn btn-secondary" onclick="runBalancePreview()">RUN PREVIEW SIM</button>
+        <button class="btn btn-secondary" onclick="resetBalanceLab()">RESET DEFAULTS</button>
+        <button class="btn btn-secondary" onclick="exportBalancePreset()">EXPORT PRESET</button>
+        <button class="btn btn-secondary" onclick="importBalancePreset()">IMPORT PRESET</button>
+        <a class="btn btn-secondary" href="sim/results/first_balance_report.html" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none">OPEN BALANCE REPORT</a>
+      </div>
+      <textarea id="devPresetJson" style="width:100%;min-height:150px;margin-top:10px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px;font-family:'IBM Plex Mono',monospace;font-size:0.68rem" spellcheck="false"></textarea>
+      <div class="dev-results" id="devResults">Preview results will appear here.</div>
+    </div>
+  </div>
+</div>
+
+<div id="playersLogModal" class="modal-overlay" aria-hidden="true" onclick="closePlayersLog(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="playersLogTitle" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="panel-title" id="playersLogTitle">PLAYERS + LOG</div>
+        <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;line-height:1.5">
+          Secondary state, turn history, and the latest actions live here.
+        </div>
+      </div>
+      <button type="button" class="modal-close" aria-label="Close players and log" onclick="closePlayersLog()">&times;</button>
+    </div>
+    <div class="game-layout" style="grid-template-columns: 1fr 1fr; max-width: none; padding: 16px; gap: 12px;">
+      <div class="panel">
+        <div class="panel-title">OTHER PLAYERS</div>
+        <div class="player-sidebar" id="playerSidebar">
+          <div class="empty-state">No other players yet.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">GAME LOG</div>
+        <div class="log-area" id="gameLog">
+          <div class="log-entry info">&#x25B6; The Wilds prototype loaded. Player 1 begins.</div>
+          <div class="log-entry">Use the How to Play button for the short version of the loop.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -607,27 +883,16 @@
       </div>
 
       <div class="panel-title" style="margin-top:12px">STOCKPILE <span style="color:var(--muted);font-size:0.7rem" id="stockpileCount">(0 cards)</span></div>
-      <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;margin-bottom:6px">Durable cards move here at end of turn. Food and water spoil.</div>
+      <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;margin-bottom:6px">Durable cards move here at end of turn. Food spoils. Water is stored here.</div>
       <div class="hand-cards" id="stockpileArea">
-        <div class="empty-state">Durable cards move here at end of turn.</div>
+        <div class="empty-state">Durable cards move here at end of turn. Water is kept here.</div>
       </div>
     </div>
 
-      <div class="panel">
-        <div class="panel-title">GAME LOG</div>
-        <div class="log-area" id="gameLog">
-          <div class="log-entry info">&#x25B6; The Wilds prototype loaded. Player 1 begins.</div>
-          <div class="log-entry">Use the How to Play panel for the short version of the loop.</div>
-        </div>
-      </div>
   </div>
 
   <!-- RIGHT: RECIPES -->
   <div class="panel">
-    <div class="panel-title">OTHER PLAYERS</div>
-    <div class="player-sidebar" id="playerSidebar">
-      <div class="empty-state">No other players yet.</div>
-    </div>
     <div class="panel-title">RECIPES</div>
     <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;margin-bottom:4px">Craft tools, then take them to the right zone.</div>
     <div style="color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;margin-bottom:8px">Select cards from hand and stockpile, then click a recipe to craft.</div>
@@ -720,6 +985,28 @@ const SHARED_CRAFTABLE_RECIPES = [
 ];
 
 const SPECIAL_REWARD_CARDS = {
+  rabbit: {
+    id: 'rabbit',
+    name: 'Rabbit',
+    category: 'food',
+    value: 1,
+    description: 'A raw small-game catch. Better cooked before eating.',
+    consumeEffect: { hunger: 2 },
+    cookBonus: { hunger: 2 },
+    rawRisk: true,
+    spoils: false
+  },
+  deer: {
+    id: 'deer',
+    name: 'Deer',
+    category: 'food',
+    value: 3,
+    description: 'A raw large-game catch. Strong payoff when cooked.',
+    consumeEffect: { hunger: 3 },
+    cookBonus: { hunger: 3 },
+    rawRisk: true,
+    spoils: false
+  },
   river_fish: {
     id: 'river_fish',
     name: 'Fish',
@@ -727,9 +1014,38 @@ const SPECIAL_REWARD_CARDS = {
     value: 2,
     description: 'Fresh fish catch. Better cooked or preserved.',
     consumeEffect: { hunger: 3 },
-    cookBonus: { hunger: 2 }
+    cookBonus: { hunger: 2 },
+    rawRisk: true,
+    spoils: false
   }
 };
+
+function makeCookedFoodCard(rawCard) {
+  if (!rawCard || rawCard.category !== 'food') return null;
+  const rawHunger = typeof rawCard.consumeEffect?.hunger === 'number' ? rawCard.consumeEffect.hunger : 0;
+  const rawBonus = typeof rawCard.cookBonus?.hunger === 'number' ? rawCard.cookBonus.hunger : 0;
+  const totalHunger = rawHunger + rawBonus;
+  if (totalHunger <= 0) return null;
+  const cookedName = `Cooked ${rawCard.name}`;
+  return {
+    id: `cooked_${rawCard.id}`,
+    name: cookedName,
+    category: 'food',
+    value: Math.max(1, (rawCard.value || 1) + 1),
+    description: `${cookedName} ready to eat safely.`,
+    consumeEffect: { hunger: totalHunger },
+    rawRisk: false,
+    spoils: false
+  };
+}
+
+const DEFAULT_STARTING_LOADOUTS = {
+  firekeeper: ['straight_sapling', 'tinder_bundle'],
+  forager: ['bark_fiber', 'wild_onion'],
+  hunter: ['straight_sapling', 'snare_bait'],
+  pathfinder: ['coarse_reed', 'driftwood']
+};
+let STARTING_LOADOUTS = { ...DEFAULT_STARTING_LOADOUTS };
 
 function getProfile(profileId) {
   return CHARACTER_PROFILES[profileId] || CHARACTER_PROFILES.forager || Object.values(CHARACTER_PROFILES)[0];
@@ -750,21 +1066,62 @@ function createPlayer(name, profileId='forager') {
     hand: [],
     stockpile: [],
     tableau: [],
-    meters: { hunger: 9, warmth: 5, hydration: 9, morale: 9 },
+    meters: { ...BALANCE_DEV.startingMeters },
     score: 0,
     pendingFoodDrawBonus: 0,
     pendingZoneHazardCancelZone: null,
     safeWaterReady: false,
     lastExploredZone: null,
+    searchesThisRound: 0,
+    firstEngineRounds: { shelter: null, fire: null, water_treatment: null, food_tool: null, rescue_signal: null },
+    zoneVisits: {},
+    recipeCraftCounts: {},
+    useCounts: {},
     craftedRecipeIds: new Set(),
     selectedCards: new Set(),
-    actionsLeft: 3
+    baitCharges: 0,
+    actionsLeft: 3,
+    deathCause: null
   };
+}
+
+function normalizePlayerControl() {
+  state.players.forEach((player, index) => {
+    player.isAI = index !== 0;
+  });
+}
+
+function seedStartingLoadout(player) {
+  const loadouts = STARTING_LOADOUTS || DEFAULT_STARTING_LOADOUTS;
+  const ids = loadouts[player.profileId] || loadouts.default || [];
+  ids.forEach(cardId => {
+    const template = MATERIALS.find(material => material.id === cardId);
+    if (!template) return;
+    player.hand.push({ ...template, handId: state.handIdCounter++ });
+  });
 }
 
 function createPlayers(count = 4) {
   return Array.from({ length: count }, (_, index) => createPlayer(DEFAULT_PLAYER_NAMES[index] || `Player ${index + 1}`, DEFAULT_PROFILE_IDS[index] || 'forager'));
 }
+
+const BALANCE_DEV = {
+  searchHungerCost: true,
+  searchHungerCostLimit: null,
+  roundEndHunger: 'none',
+  roundEndSearchThreshold: 2,
+  moraleLossCapPerRound: null,
+  rescueTarget: 20,
+  rescueUseBonus: 0,
+  passiveRescuePerRound: 0,
+  foodToolHungerBonus: 0,
+  startingMeters: { hunger: 9, warmth: 5, hydration: 9, morale: 9 },
+  recipeThresholdOverrides: {
+    snare: 3,
+    fishing_pole: 4,
+    camp_stew: 3
+  }
+};
 
 function createInitialState() {
   return {
@@ -774,7 +1131,7 @@ function createInitialState() {
     selectedZone: null,
     handIdCounter: 0,
     maxMeter: 10,
-    rescueTarget: 20,
+    rescueTarget: BALANCE_DEV.rescueTarget,
     sharedRescue: 0,
     environmentId: 'temperate_forest',
     gameOver: false
@@ -797,7 +1154,8 @@ function serializePlayer(player) {
   return {
     ...player,
     craftedRecipeIds: [...(player.craftedRecipeIds || [])],
-    selectedCards: [...player.selectedCards]
+    selectedCards: [...player.selectedCards],
+    baitCharges: player.baitCharges || 0
   };
 }
 
@@ -816,14 +1174,17 @@ function deserializePlayer(player) {
     },
     craftedRecipeIds: new Set(player.craftedRecipeIds || []),
     selectedCards: new Set(player.selectedCards || []),
+    baitCharges: player.baitCharges || 0,
     actionsLeft: typeof player.actionsLeft === 'number' ? player.actionsLeft : 3,
     pendingFoodDrawBonus: player.pendingFoodDrawBonus || 0,
     pendingZoneHazardCancelZone: player.pendingZoneHazardCancelZone || null,
     safeWaterReady: !!player.safeWaterReady,
     lastExploredZone: player.lastExploredZone || null,
+    searchesThisRound: typeof player.searchesThisRound === 'number' ? player.searchesThisRound : 0,
     score: player.score || 0,
     isAI: !!player.isAI,
-    profileId: player.profileId || 'forager'
+    profileId: player.profileId || 'forager',
+    deathCause: player.deathCause || null
   };
 }
 
@@ -867,6 +1228,16 @@ function loadSavedGame() {
     state.sharedRescue = typeof saved.sharedRescue === 'number' ? saved.sharedRescue : state.sharedRescue;
     state.environmentId = saved.environmentId || state.environmentId;
     state.gameOver = !!saved.gameOver;
+    normalizePlayerControl();
+    if (!isPlayerAlive(state.players[state.currentPlayerIndex])) {
+      const nextIndex = findNextLivingPlayerIndex(state.currentPlayerIndex - 1 < 0 ? state.players.length - 1 : state.currentPlayerIndex - 1);
+      if (nextIndex >= 0) {
+        state.currentPlayerIndex = nextIndex;
+      } else {
+        state.gameOver = true;
+        state.endReason = 'wipeout';
+      }
+    }
     return true;
   } catch (error) {
     console.warn('Unable to load saved game state:', error);
@@ -890,6 +1261,7 @@ async function loadGameData() {
     const materialBundle = buildMaterialsFromDesign(materialsData, zonesData);
     MATERIALS = materialBundle.materials;
     ZONES = materialBundle.zones;
+    STARTING_LOADOUTS = materialBundle.startingLoadouts || DEFAULT_STARTING_LOADOUTS;
     RECIPES = buildRecipesFromDesign(recipesData);
     CHARACTER_PROFILES = buildProfilesFromDesign(RECIPES);
     return true;
@@ -912,6 +1284,26 @@ const SHELTER_TIERS = [
 
 function getActivePlayer() {
   return state.players[state.currentPlayerIndex];
+}
+
+function isPlayerAlive(player) {
+  return !!player && !player.deathCause && player.meters.hunger > 0 && player.meters.warmth > 0 && player.meters.hydration > 0 && player.meters.morale > 0;
+}
+
+function findNextLivingPlayerIndex(startIndex) {
+  for (let offset = 1; offset <= state.players.length; offset++) {
+    const index = (startIndex + offset) % state.players.length;
+    if (isPlayerAlive(state.players[index])) return index;
+  }
+  return -1;
+}
+
+function advanceTurnIfCurrentPlayerEliminated() {
+  if (state.gameOver) return false;
+  const activePlayer = getActivePlayer();
+  if (!activePlayer || !activePlayer.deathCause) return false;
+  endTurn();
+  return true;
 }
 
 function getPlayerSelectedCards(player = getActivePlayer()) {
@@ -939,7 +1331,8 @@ function isSpoilableCard(card, preserveFood=false) {
   if (card.spoils === true) return true;
   if (card.spoils === false) return false;
   if (card.category === 'food' && preserveFood) return false;
-  if (card.category !== 'food' && card.category !== 'water') return false;
+  if (card.category === 'water') return false;
+  if (card.category !== 'food') return false;
   const effect = card.consumeEffect || {};
   const utilityOnly =
     typeof effect.foodDrawBonus === 'number' ||
@@ -1006,6 +1399,435 @@ function getRecipeMinRarity(recipe) {
   return null;
 }
 
+const DEV_ENGINE_IDS = {
+  shelter: new Set(['lean_to', 'sturdy_shelter', 'debris_hut']),
+  fire: new Set(['campfire', 'sustained_fire', 'signal_fire']),
+  water_treatment: new Set(['boiled_water', 'clay_pot', 'water_filter', 'water_rig', 'water_cache']),
+  food_tool: new Set(['snare', 'fishing_pole', 'spear', 'bow', 'fish_trap']),
+  rescue_signal: new Set(['signal_mirror', 'signal_kit', 'rescue_cache'])
+};
+const FOOD_TOOL_IDS = DEV_ENGINE_IDS.food_tool;
+
+function noteDevEngineFirsts(player, recipeId) {
+  const round = state.round;
+  Object.entries(DEV_ENGINE_IDS).forEach(([key, ids]) => {
+    if (!ids.has(recipeId)) return;
+    if (player.firstEngineRounds[key] == null) {
+      player.firstEngineRounds[key] = round;
+    }
+  });
+}
+
+function refreshModalLock() {
+  const anyOpen = document.querySelector('.modal-overlay.open');
+  document.body.classList.toggle('modal-open', !!anyOpen);
+}
+
+function setModalVisibility(modalId, open) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return null;
+  if (open) {
+    document.querySelectorAll('.modal-overlay.open').forEach(existing => {
+      if (existing.id !== modalId) {
+        existing.classList.remove('open');
+        existing.setAttribute('aria-hidden', 'true');
+      }
+    });
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  } else {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  refreshModalLock();
+  return modal;
+}
+
+function openBalanceLab() {
+  const modal = setModalVisibility('balanceLabModal', true);
+  if (!modal) return;
+  syncBalanceLabInputs();
+  const firstField = modal.querySelector('#devSearchHungerCost');
+  if (firstField && typeof firstField.focus === 'function') firstField.focus();
+}
+
+function openHowToPlay() {
+  setModalVisibility('howToPlayModal', true);
+}
+
+function closeHowToPlay(event) {
+  const modal = document.getElementById('howToPlayModal');
+  if (!modal) return;
+  if (event && event.target && event.target !== modal) return;
+  setModalVisibility('howToPlayModal', false);
+}
+
+function closeBalanceLab(event) {
+  const modal = document.getElementById('balanceLabModal');
+  if (!modal) return;
+  if (event && event.target && event.target !== modal) return;
+  setModalVisibility('balanceLabModal', false);
+}
+
+function openPlayersLog() {
+  const modal = setModalVisibility('playersLogModal', true);
+  if (!modal) return;
+  renderPlayerSidebar();
+}
+
+function closePlayersLog(event) {
+  const modal = document.getElementById('playersLogModal');
+  if (!modal) return;
+  if (event && event.target && event.target !== modal) return;
+  setModalVisibility('playersLogModal', false);
+}
+
+function applyBalanceLabToRecipes() {
+  RECIPES.forEach(recipe => {
+    if (typeof recipe.baseValueThreshold !== 'number') {
+      recipe.baseValueThreshold = recipe.valueThreshold || 0;
+    }
+    const override = BALANCE_DEV.recipeThresholdOverrides[recipe.id];
+    recipe.valueThreshold = typeof override === 'number' ? override : recipe.baseValueThreshold;
+  });
+  state.rescueTarget = BALANCE_DEV.rescueTarget;
+}
+
+function readBalanceLabInputs() {
+  BALANCE_DEV.searchHungerCost = document.getElementById('devSearchHungerCost')?.checked ?? true;
+  const searchLimitRaw = document.getElementById('devSearchHungerLimit')?.value;
+  BALANCE_DEV.searchHungerCostLimit = searchLimitRaw === '' || searchLimitRaw === null ? null : clamp(Number(searchLimitRaw || 0), 0, 10);
+  BALANCE_DEV.roundEndHunger = document.getElementById('devRoundEndHunger')?.value || 'none';
+  const moraleCapRaw = document.getElementById('devMoraleLossCap')?.value;
+  BALANCE_DEV.moraleLossCapPerRound = moraleCapRaw === '' || moraleCapRaw === null ? null : clamp(Number(moraleCapRaw || 0), 0, 3);
+  BALANCE_DEV.rescueTarget = clamp(Number(document.getElementById('devRescueTarget')?.value || 20), 1, 40);
+  BALANCE_DEV.rescueUseBonus = clamp(Number(document.getElementById('devRescueUseBonus')?.value || 0), 0, 10);
+  BALANCE_DEV.passiveRescuePerRound = clamp(Number(document.getElementById('devPassiveRescuePerRound')?.value || 0), 0, 5);
+  BALANCE_DEV.foodToolHungerBonus = clamp(Number(document.getElementById('devFoodToolHungerBonus')?.value || 0), 0, 5);
+  BALANCE_DEV.startingMeters = {
+    hunger: clamp(Number(document.getElementById('devStartingHunger')?.value || 9), 0, 10),
+    warmth: clamp(Number(document.getElementById('devStartingWarmth')?.value || 5), 0, 10),
+    hydration: clamp(Number(document.getElementById('devStartingHydration')?.value || 9), 0, 10),
+    morale: clamp(Number(document.getElementById('devStartingMorale')?.value || 9), 0, 10)
+  };
+  BALANCE_DEV.roundEndSearchThreshold = 2;
+  BALANCE_DEV.recipeThresholdOverrides = {
+    snare: clamp(Number(document.getElementById('devSnareThreshold')?.value || 3), 0, 10),
+    fishing_pole: clamp(Number(document.getElementById('devFishingThreshold')?.value || 4), 0, 10),
+    camp_stew: clamp(Number(document.getElementById('devCampStewThreshold')?.value || 4), 0, 10)
+  };
+}
+
+function syncBalanceLabInputs() {
+  const setVal = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  };
+  const setChecked = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.checked = !!value;
+  };
+  setChecked('devSearchHungerCost', BALANCE_DEV.searchHungerCost);
+  setVal('devSearchHungerLimit', BALANCE_DEV.searchHungerCostLimit ?? '');
+  setVal('devRoundEndHunger', BALANCE_DEV.roundEndHunger);
+  setVal('devMoraleLossCap', BALANCE_DEV.moraleLossCapPerRound ?? '');
+  setVal('devRescueTarget', BALANCE_DEV.rescueTarget);
+  setVal('devRescueUseBonus', BALANCE_DEV.rescueUseBonus);
+  setVal('devPassiveRescuePerRound', BALANCE_DEV.passiveRescuePerRound);
+  setVal('devFoodToolHungerBonus', BALANCE_DEV.foodToolHungerBonus);
+  setVal('devStartingHunger', BALANCE_DEV.startingMeters.hunger);
+  setVal('devStartingWarmth', BALANCE_DEV.startingMeters.warmth);
+  setVal('devStartingHydration', BALANCE_DEV.startingMeters.hydration);
+  setVal('devStartingMorale', BALANCE_DEV.startingMeters.morale);
+  setVal('devSnareThreshold', BALANCE_DEV.recipeThresholdOverrides.snare);
+  setVal('devFishingThreshold', BALANCE_DEV.recipeThresholdOverrides.fishing_pole);
+  setVal('devCampStewThreshold', BALANCE_DEV.recipeThresholdOverrides.camp_stew);
+  const textarea = document.getElementById('devPresetJson');
+  if (textarea) textarea.value = JSON.stringify(buildBalancePreset(), null, 2);
+}
+
+function resetBalanceLab() {
+  BALANCE_DEV.searchHungerCost = true;
+  BALANCE_DEV.searchHungerCostLimit = null;
+  BALANCE_DEV.roundEndHunger = 'none';
+  BALANCE_DEV.moraleLossCapPerRound = null;
+  BALANCE_DEV.rescueTarget = 20;
+  BALANCE_DEV.rescueUseBonus = 0;
+  BALANCE_DEV.passiveRescuePerRound = 0;
+  BALANCE_DEV.foodToolHungerBonus = 0;
+  BALANCE_DEV.startingMeters = { hunger: 9, warmth: 5, hydration: 9, morale: 9 };
+  BALANCE_DEV.recipeThresholdOverrides = { snare: 3, fishing_pole: 4, camp_stew: 3 };
+  syncBalanceLabInputs();
+  applyBalanceLabToRecipes();
+  updateBalanceLabResults('Reset to defaults.');
+}
+
+function applyBalanceLab() {
+  readBalanceLabInputs();
+  applyBalanceLabToRecipes();
+  startNewGame();
+  updateBalanceLabResults('Applied to a fresh game.');
+}
+
+function updateBalanceLabResults(text) {
+  const results = document.getElementById('devResults');
+  if (results) {
+    results.textContent = text;
+  }
+}
+
+function buildBalancePreset() {
+  readBalanceLabInputs();
+  return {
+    games: Number(document.getElementById('devPreviewGames')?.value || 25),
+    players: 4,
+    seed: 1337,
+    variant: {
+      name: 'custom_balance_lab',
+      description: 'Exported from the Balance Lab in index.html',
+      search_hunger_cost: BALANCE_DEV.searchHungerCost,
+      search_hunger_cost_limit: BALANCE_DEV.searchHungerCostLimit,
+      round_end_hunger_decay: BALANCE_DEV.roundEndHunger,
+      round_end_hunger_threshold: BALANCE_DEV.roundEndSearchThreshold,
+      morale_action_pool: false,
+      morale_loss_cap_per_round: BALANCE_DEV.moraleLossCapPerRound,
+      rescue_target: BALANCE_DEV.rescueTarget,
+      rescue_use_bonus: BALANCE_DEV.rescueUseBonus,
+      passive_rescue_per_round: BALANCE_DEV.passiveRescuePerRound,
+      food_tool_hunger_bonus: BALANCE_DEV.foodToolHungerBonus,
+      starting_meters: { ...BALANCE_DEV.startingMeters },
+      spoilage_mode: 'standard',
+      recipe_threshold_overrides: { ...BALANCE_DEV.recipeThresholdOverrides }
+    }
+  };
+}
+
+function applyBalancePresetObject(preset) {
+  const variant = preset.variant || {};
+  BALANCE_DEV.searchHungerCost = variant.search_hunger_cost ?? variant.searchHungerCost ?? true;
+  BALANCE_DEV.searchHungerCostLimit = variant.search_hunger_cost_limit ?? variant.searchHungerCostLimit ?? null;
+  BALANCE_DEV.roundEndHunger = variant.round_end_hunger_decay ?? variant.roundEndHungerDecay ?? 'none';
+  BALANCE_DEV.roundEndSearchThreshold = variant.round_end_hunger_threshold ?? variant.roundEndHungerThreshold ?? 2;
+  BALANCE_DEV.moraleLossCapPerRound = variant.morale_loss_cap_per_round ?? variant.moraleLossCapPerRound ?? null;
+  BALANCE_DEV.rescueTarget = variant.rescue_target ?? variant.rescueTarget ?? 20;
+  BALANCE_DEV.rescueUseBonus = variant.rescue_use_bonus ?? variant.rescueUseBonus ?? 0;
+  BALANCE_DEV.passiveRescuePerRound = variant.passive_rescue_per_round ?? variant.passiveRescuePerRound ?? 0;
+  BALANCE_DEV.foodToolHungerBonus = variant.food_tool_hunger_bonus ?? variant.foodToolHungerBonus ?? 0;
+  BALANCE_DEV.startingMeters = variant.starting_meters || variant.startingMeters || { hunger: 9, warmth: 5, hydration: 9, morale: 9 };
+  BALANCE_DEV.recipeThresholdOverrides = variant.recipe_threshold_overrides || variant.recipeThresholdOverrides || { snare: 3, fishing_pole: 4, camp_stew: 3 };
+  const previewGames = document.getElementById('devPreviewGames');
+  if (previewGames && typeof preset.games === 'number') previewGames.value = preset.games;
+  const rescueTarget = document.getElementById('devRescueTarget');
+  if (rescueTarget) rescueTarget.value = BALANCE_DEV.rescueTarget;
+  syncBalanceLabInputs();
+  applyBalanceLabToRecipes();
+  startNewGame();
+  updateBalanceLabResults('Imported preset and applied it to a fresh game.');
+}
+
+function exportBalancePreset() {
+  const preset = buildBalancePreset();
+  const text = JSON.stringify(preset, null, 2);
+  const textarea = document.getElementById('devPresetJson');
+  if (textarea) textarea.value = text;
+  const blob = new Blob([text], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'thewilds_balance_preset.json';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  updateBalanceLabResults('Preset exported to a downloadable JSON file.');
+}
+
+function importBalancePreset() {
+  const textarea = document.getElementById('devPresetJson');
+  if (!textarea || !textarea.value.trim()) {
+    updateBalanceLabResults('Paste a preset JSON into the box first, then import.');
+    return;
+  }
+  try {
+    const preset = JSON.parse(textarea.value);
+    applyBalancePresetObject(preset);
+  } catch (error) {
+    updateBalanceLabResults(`Preset import failed: ${error.message}`);
+  }
+}
+
+function snapshotBalanceState() {
+  return {
+    state: {
+      round: state.round,
+      currentPlayerIndex: state.currentPlayerIndex,
+      selectedZone: state.selectedZone,
+      handIdCounter: state.handIdCounter,
+      maxMeter: state.maxMeter,
+      rescueTarget: state.rescueTarget,
+      sharedRescue: state.sharedRescue,
+      environmentId: state.environmentId,
+      gameOver: state.gameOver
+    },
+    players: state.players.map(serializePlayer),
+    recipeThresholds: RECIPES.map(recipe => ({
+      id: recipe.id,
+      valueThreshold: recipe.valueThreshold,
+      baseValueThreshold: recipe.baseValueThreshold
+    }))
+  };
+}
+
+function restoreBalanceState(snapshot) {
+  Object.assign(state, snapshot.state);
+  state.players = snapshot.players.map(deserializePlayer);
+  snapshot.recipeThresholds.forEach(saved => {
+    const recipe = RECIPES.find(entry => entry.id === saved.id);
+    if (!recipe) return;
+    recipe.valueThreshold = saved.valueThreshold;
+    recipe.baseValueThreshold = saved.baseValueThreshold;
+  });
+}
+
+function resetPreviewGame() {
+  Object.assign(state, createInitialState());
+  state.rescueTarget = BALANCE_DEV.rescueTarget;
+  normalizePlayerControl();
+  state.players.forEach((player, index) => {
+    player.isAI = index !== 0;
+    player.meters = { ...BALANCE_DEV.startingMeters };
+    player.actionsLeft = 3;
+    player.selectedCards = new Set();
+    player.craftedRecipeIds = new Set();
+    player.zoneVisits = {};
+    player.recipeCraftCounts = {};
+    player.useCounts = {};
+    player.searchesThisRound = 0;
+    player.firstEngineRounds = { shelter: null, fire: null, water_treatment: null, food_tool: null, rescue_signal: null };
+    seedStartingLoadout(player);
+  });
+  applyBalanceLabToRecipes();
+  state.players.forEach(player => setPlayerTurnState(player));
+}
+
+function identifyCauseFromState(player) {
+  if (player.meters.hunger <= 0) return 'hunger';
+  if (player.meters.warmth <= 0) return 'warmth';
+  if (player.meters.hydration <= 0) return 'hydration';
+  if (player.meters.morale <= 0) return 'morale';
+  return 'unknown';
+}
+
+function mergeCounter(target, source) {
+  Object.entries(source || {}).forEach(([key, value]) => {
+    target[key] = (target[key] || 0) + value;
+  });
+}
+
+function formatPreviewSummary(stats, gamesDone, totalGames) {
+  const rescueRate = gamesDone ? stats.rescue / gamesDone : 0;
+  const wipeoutRate = gamesDone ? stats.wipeout / gamesDone : 0;
+  const avgRounds = gamesDone ? stats.rounds / gamesDone : 0;
+  const mainDeathCause = Object.entries(stats.death).sort((a, b) => b[1] - a[1])[0]?.[0] || 'n/a';
+  const engineActionsPerGame = gamesDone ? stats.engineActions / gamesDone : 0;
+  return [
+    `Rescue rate`,
+    `${(rescueRate * 100).toFixed(1)}%`,
+    `Target 45% to 55%`,
+    `Wipeout rate`,
+    `${(wipeoutRate * 100).toFixed(1)}%`,
+    `Target 5% to 10%`,
+    `Avg rounds`,
+    `${avgRounds.toFixed(2)}`,
+    `Current rescue`,
+    `${rescueRate.toFixed(3)}`,
+    `Current wipeout`,
+    `${wipeoutRate.toFixed(3)}`,
+    `Main death cause`,
+    `${mainDeathCause}`,
+    `Engine actions / game`,
+    `${engineActionsPerGame.toFixed(2)}`
+  ].join('\n');
+}
+
+async function runBalancePreview() {
+  const snapshot = snapshotBalanceState();
+  readBalanceLabInputs();
+  applyBalanceLabToRecipes();
+
+  const games = clamp(Number(document.getElementById('devPreviewGames')?.value || 25), 5, 200);
+  const originals = {
+    renderAll,
+    log,
+    updatePhaseLabel,
+    saveGame,
+    scheduleAITurn,
+    clearZoneSelection
+  };
+  renderAll = () => {};
+  log = () => {};
+  updatePhaseLabel = () => {};
+  saveGame = () => {};
+  scheduleAITurn = () => {};
+  clearZoneSelection = () => {};
+
+  const stats = {
+    rescue: 0,
+    wipeout: 0,
+    rounds: 0,
+    death: { hunger: 0, warmth: 0, hydration: 0, morale: 0 },
+    engineActions: 0,
+    zoneVisits: {},
+    recipeCrafts: {},
+    firstEngine: { shelter: [], fire: [], water_treatment: [], food_tool: [], rescue_signal: [] }
+  };
+
+  try {
+    for (let i = 0; i < games; i++) {
+      resetPreviewGame();
+      let guard = 0;
+      while (!state.gameOver && guard++ < 1000) {
+        runAITurn();
+      }
+      stats.rounds += state.round;
+      stats.engineActions += state.players.reduce((total, player) => total + Object.values(player.useCounts || {}).reduce((sum, count) => sum + count, 0), 0);
+      if (state.sharedRescue >= state.rescueTarget) {
+        stats.rescue += 1;
+      } else {
+        stats.wipeout += 1;
+        const fallen = state.players.find(player => player.meters.hunger <= 0 || player.meters.warmth <= 0 || player.meters.hydration <= 0 || player.meters.morale <= 0);
+        if (fallen) {
+          const cause = identifyCauseFromState(fallen);
+          if (typeof stats.death[cause] !== 'number') stats.death[cause] = 0;
+          stats.death[cause] += 1;
+        }
+      }
+      state.players.forEach(player => {
+        mergeCounter(stats.zoneVisits, player.zoneVisits);
+        mergeCounter(stats.recipeCrafts, player.recipeCraftCounts);
+        Object.entries(player.firstEngineRounds || {}).forEach(([key, value]) => {
+          if (typeof value === 'number') {
+            stats.firstEngine[key].push(value);
+          }
+        });
+      });
+      if ((i + 1) % 5 === 0) {
+        updateBalanceLabResults(formatPreviewSummary(stats, i + 1, games));
+        await new Promise(resolve => requestAnimationFrame(resolve));
+      }
+    }
+    updateBalanceLabResults(formatPreviewSummary(stats, games, games));
+  } finally {
+    renderAll = originals.renderAll;
+    log = originals.log;
+    updatePhaseLabel = originals.updatePhaseLabel;
+    saveGame = originals.saveGame;
+    scheduleAITurn = originals.scheduleAITurn;
+    clearZoneSelection = originals.clearZoneSelection;
+    restoreBalanceState(snapshot);
+    renderAll();
+  }
+}
+
 function buildProfilesFromDesign(recipes) {
   const nextProfiles = Object.fromEntries(
     Object.entries(DEFAULT_CHARACTER_PROFILES).map(([profileId, profile]) => [
@@ -1039,7 +1861,7 @@ function buildRecipesFromDesign(data) {
           die: effect.rollDie || 6,
           successOn: effect.successOn || [3, 4, 5, 6],
           reward: {
-            hunger: effect.hungerOnActivate || 4,
+            grantHandCardId: 'rabbit',
             foodTag: 'snare catch'
           }
         };
@@ -1072,7 +1894,19 @@ function buildRecipesFromDesign(data) {
           die: effect.rollDie || 6,
           successOn: effect.successOn || [4, 5, 6],
           reward: {
-            hunger: effect.hungerOnSuccess || 5,
+            grantHandCardId: 'deer',
+            foodTag: 'hunt'
+          },
+          fail: { hunger: -1 }
+        };
+      } else if (recipe.id === 'spear') {
+        effect.zoneUse = effect.zoneUse || {
+          zones: [recipe.zone || 'forest'],
+          actionName: recipe.actionName || 'hunt',
+          die: effect.rollDie || 6,
+          successOn: effect.successOn || [3, 4, 5, 6],
+          reward: {
+            grantHandCardId: 'rabbit',
             foodTag: 'hunt'
           },
           fail: { hunger: -1 }
@@ -1133,7 +1967,8 @@ function buildRecipesFromDesign(data) {
         craftType: recipe.type,
         tier: recipe.valueThreshold >= 8 ? 'expert' : recipe.valueThreshold >= 5 ? 'improved' : 'basic',
         type: recipe.type === 'recovery' ? 'one-time' : 'persistent',
-        valueThreshold: recipe.valueThreshold || 0
+        valueThreshold: recipe.valueThreshold || 0,
+        baseValueThreshold: recipe.valueThreshold || 0
       };
     });
   });
@@ -1192,7 +2027,11 @@ function buildMaterialsFromDesign(data, zoneData = null) {
     };
   });
 
-  return { materials, zones };
+  return {
+    materials,
+    zones,
+    startingLoadouts: data.starting_loadouts || data.startingLoadouts || DEFAULT_STARTING_LOADOUTS
+  };
 }
 
 function recipeMatchesProfile(recipe, player = getActivePlayer()) {
@@ -1319,7 +2158,8 @@ function getHandLimit(player) {
 }
 
 function getAIPlayer() {
-  return getActivePlayer().isAI ? getActivePlayer() : null;
+  const activePlayer = getActivePlayer();
+  return activePlayer && activePlayer.isAI && isPlayerAlive(activePlayer) ? activePlayer : null;
 }
 
 function chooseBestZoneForPlayer(player) {
@@ -1562,6 +2402,7 @@ function runAITurn() {
       removePlayerCardById(current, urgentTargets[0].handId);
       log(` ${current.name} used ${urgentTargets[0].name}.`, 'info');
       checkGameState();
+      if (advanceTurnIfCurrentPlayerEliminated()) continue;
       renderAll();
       continue;
     }
@@ -1577,7 +2418,7 @@ function runAITurn() {
     }
 
     const zoneUseAction = chooseBestZoneUseActionForPlayer(current);
-    if (zoneUseAction && current.actionsLeft > 0) {
+    if (zoneUseAction) {
       selectZone(zoneUseAction.zoneId);
       useTableauItem(zoneUseAction.item.id);
       continue;
@@ -1684,7 +2525,9 @@ function searchZone() {
   const player = getActivePlayer();
   if (!state.selectedZone || player.actionsLeft <= 0) return;
   const zone = ZONES[state.selectedZone];
-  player.meters.hunger = clamp(player.meters.hunger - 1, 0, state.maxMeter);
+  if (BALANCE_DEV.searchHungerCost && (BALANCE_DEV.searchHungerCostLimit === null || player.searchesThisRound < BALANCE_DEV.searchHungerCostLimit)) {
+    player.meters.hunger = clamp(player.meters.hunger - 1, 0, state.maxMeter);
+  }
   const drawCount = getExploreDrawCount(player);
   const handLimit = getHandLimit(player);
   const roomLeft = Math.max(0, handLimit - player.hand.length);
@@ -1701,6 +2544,7 @@ function searchZone() {
   updatePhaseLabel(`${player.name.toUpperCase()} - SEARCH, CRAFT, OR CONSUME`);
   player.lastExploredZone = state.selectedZone;
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
@@ -1739,13 +2583,13 @@ function stokeFire() {
   log(` ${player.name} stoked ${fireItem.name} for +${fuelGain} rounds.`, 'good');
   updatePhaseLabel(`${player.name.toUpperCase()}  FIRE STOKED`);
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
 function useTableauItem(itemId) {
   if (state.gameOver) return;
   const player = getActivePlayer();
-  if (player.actionsLeft <= 0) return;
   const item = player.tableau.find(entry => entry.id === itemId);
   const zoneUse = item && item.effect && item.effect.zoneUse;
   const useFailures = item ? getUseRequirementFailures(item, player) : ['missing item'];
@@ -1757,11 +2601,17 @@ function useTableauItem(itemId) {
     log(` ${item.name} needs ${useFailures.join(', ')}.`, 'bad');
     return;
   }
-  const activeZone = state.selectedZone || player.lastExploredZone || (zoneUse.zones || [])[0] || null;
-  if (!activeZone || !(zoneUse.zones || []).includes(activeZone)) {
-    log(` ${item.name} cannot be used here.`, 'bad');
+  const allowedZones = zoneUse.zones || [];
+  const activeZone = (state.selectedZone && allowedZones.includes(state.selectedZone))
+    ? state.selectedZone
+    : (player.lastExploredZone && allowedZones.includes(player.lastExploredZone))
+      ? player.lastExploredZone
+      : allowedZones[0] || null;
+  if (!activeZone) {
+    log(` ${item.name} has no valid zone.`, 'bad');
     return;
   }
+  state.selectedZone = activeZone;
   if (item.id === 'snare') {
     const bait = getPlayerInventory(player).find(card => card.id === 'snare_bait');
     if (!bait) {
@@ -1790,11 +2640,16 @@ function useTableauItem(itemId) {
     outcome = { ...outcome, hunger: outcome.hunger + 1 };
   }
   applyZoneUseOutcome(player, activeZone, item.name, outcome);
-  player.actionsLeft--;
+  if (FOOD_TOOL_IDS.has(item.id) && typeof outcome.hunger === 'number' && BALANCE_DEV.foodToolHungerBonus) {
+    player.meters.hunger = clamp(player.meters.hunger + BALANCE_DEV.foodToolHungerBonus, 0, state.maxMeter);
+  }
+  player.useCounts[item.id] = (player.useCounts[item.id] || 0) + 1;
+  noteDevEngineFirsts(player, item.id);
   const zoneName = ZONES[activeZone].name;
   log(` ${player.name} used ${item.name} in ${zoneName} and rolled ${roll}/${die} (${success ? 'success' : 'fail'}).`, success ? 'good' : 'bad');
   updatePhaseLabel(`${player.name.toUpperCase()}  ITEM USED`);
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
@@ -1924,6 +2779,9 @@ function applyZoneUseOutcome(player, zoneId, sourceName, outcome) {
   if (typeof outcome.hydration === 'number') player.meters.hydration = clamp(player.meters.hydration + outcome.hydration, 0, state.maxMeter);
   if (typeof outcome.warmth === 'number') player.meters.warmth = clamp(player.meters.warmth + outcome.warmth, 0, state.maxMeter);
   if (typeof outcome.rescue === 'number') adjustSharedRescue(player, outcome.rescue, sourceName);
+  if (typeof outcome.rescue === 'number' && (sourceName === 'Signal Mirror' || sourceName === 'Signal Kit' || sourceName === 'Rescue Cache')) {
+    adjustSharedRescue(player, BALANCE_DEV.rescueUseBonus, sourceName);
+  }
   if (typeof outcome.bonusDraw === 'number') player.pendingFoodDrawBonus = (player.pendingFoodDrawBonus || 0) + outcome.bonusDraw;
   if (outcome.foodTag) {
     log(` ${player.name}: ${sourceName} yielded ${outcome.foodTag}.`, 'good');
@@ -1943,20 +2801,26 @@ function canCraft(recipe, player = getActivePlayer()) {
 }
 
 function setPlayerTurnState(player) {
+  if (!isPlayerAlive(player)) {
+    player.actionsLeft = 0;
+    player.selectedCards.clear();
+    return;
+  }
   player.actionsLeft = getStartingActions(player);
   player.selectedCards.clear();
 }
 
 function syncZoneButtons() {
   const activePlayer = getActivePlayer();
-  const canSearch = !state.gameOver && !!state.selectedZone && activePlayer.actionsLeft > 0;
-  const canStoke = !state.gameOver && activePlayer.actionsLeft > 0 && hasCampfireInTableau(activePlayer);
-  const selectedFood = getPlayerSelectedCards(activePlayer).filter(card => card.category === 'food');
-  const canCook = !state.gameOver && activePlayer.actionsLeft > 0 && hasCampfireInTableau(activePlayer) && selectedFood.length > 0;
+  const alive = isPlayerAlive(activePlayer);
+  const canSearch = !state.gameOver && alive && !!state.selectedZone && activePlayer.actionsLeft > 0;
+  const canStoke = !state.gameOver && alive && activePlayer.actionsLeft > 0 && hasCampfireInTableau(activePlayer);
+  const selectedFood = getPlayerSelectedCards(activePlayer).filter(card => card.category === 'food' && (card.rawRisk || card.cookBonus));
+  const canCook = !state.gameOver && alive && hasCampfireInTableau(activePlayer) && selectedFood.length > 0;
   document.getElementById('searchBtn').disabled = !canSearch;
   document.getElementById('stokeBtn').disabled = !canStoke;
   document.getElementById('cookBtn').disabled = !canCook;
-  document.getElementById('actionsLeft').textContent = activePlayer.actionsLeft;
+  document.getElementById('actionsLeft').textContent = alive ? activePlayer.actionsLeft : 0;
 }
 
 function getOtherPlayers() {
@@ -1985,30 +2849,32 @@ function checkGameState() {
     return true;
   }
 
-  const fallenPlayer = state.players.find(player =>
-    player.meters.hunger <= 0 || player.meters.warmth <= 0 || player.meters.hydration <= 0
-  );
+  state.players.forEach(player => {
+    if (player.deathCause) return;
+    let cause = null;
+    if (player.meters.hunger <= 0) cause = 'hunger';
+    else if (player.meters.warmth <= 0) cause = 'warmth';
+    else if (player.meters.hydration <= 0) cause = 'hydration';
+    else if (player.meters.morale <= 0) cause = 'morale';
+    if (!cause) return;
 
-  if (fallenPlayer) {
-    state.gameOver = true;
-    if (fallenPlayer.meters.hunger <= 0) {
-      updatePhaseLabel(` ${fallenPlayer.name.toUpperCase()} ELIMINATED  STARVATION`);
-      log(` ${fallenPlayer.name} starved. Hunger reached zero.`, 'bad');
-    } else if (fallenPlayer.meters.warmth <= 0) {
-      updatePhaseLabel(` ${fallenPlayer.name.toUpperCase()} ELIMINATED  HYPOTHERMIA`);
-      log(` ${fallenPlayer.name} froze. Warmth reached zero.`, 'bad');
-    } else if (fallenPlayer.meters.hydration <= 0) {
-      updatePhaseLabel(` ${fallenPlayer.name.toUpperCase()} ELIMINATED  DEHYDRATION`);
-      log(` ${fallenPlayer.name} dehydrated. Hydration reached zero.`, 'bad');
+    player.deathCause = cause;
+    if (cause === 'hunger') {
+      log(` ${player.name} starved. Hunger reached zero.`, 'bad');
+    } else if (cause === 'warmth') {
+      log(` ${player.name} froze. Warmth reached zero.`, 'bad');
+    } else if (cause === 'hydration') {
+      log(` ${player.name} dehydrated. Hydration reached zero.`, 'bad');
+    } else {
+      log(` ${player.name} broke at zero morale.`, 'bad');
     }
-    return true;
-  }
+  });
 
-  const brokenPlayer = state.players.find(player => player.meters.morale <= 0);
-  if (brokenPlayer) {
+  if (!state.players.some(isPlayerAlive)) {
     state.gameOver = true;
-    updatePhaseLabel(` ${brokenPlayer.name.toUpperCase()} BROKEN  MORALE 0`);
-    log(` ${brokenPlayer.name} broke at zero morale.`, 'bad');
+    state.endReason = 'wipeout';
+    updatePhaseLabel(' WIPEOUT  ALL PLAYERS ELIMINATED');
+    log(' All players have been eliminated.', 'bad');
     return true;
   }
 
@@ -2075,7 +2941,7 @@ function renderHand() {
 function renderStockpile() {
   const player = getActivePlayer();
   document.getElementById('stockpileCount').textContent = `(${player.stockpile.length} cards)`;
-  renderCardArea('stockpileArea', player.stockpile, 'Durable cards move here at end of turn.');
+  renderCardArea('stockpileArea', player.stockpile, 'Durable cards move here at end of turn. Water is kept here.');
 }
 
 function renderTableau() {
@@ -2094,7 +2960,7 @@ function renderTableau() {
     const allowedZones = zoneUse ? (zoneUse.zones || []).map(zoneId => (ZONES[zoneId] ? ZONES[zoneId].name : zoneId)).join(', ') : '';
     const useFailures = getUseRequirementFailures(item, player);
     const activeZone = state.selectedZone || player.lastExploredZone || null;
-    const canUseHere = zoneUse && activeZone && (zoneUse.zones || []).includes(activeZone) && player.actionsLeft > 0 && !useFailures.length;
+    const canUseHere = zoneUse && player.actionsLeft > 0 && !useFailures.length && activeZone && (zoneUse.zones || []).includes(activeZone);
     const useButton = zoneUse ? `<button class="consume-btn" ${canUseHere ? '' : 'disabled'} onclick="useTableauItem('${item.id}')">${zoneUse.actionName || 'use'}</button>` : '';
     const zoneLine = zoneUse ? `<div class="item-effect">Use in: ${allowedZones}</div>` : '';
     const reqLine = useFailures.length ? `<div class="item-effect">Need: ${useFailures.join(', ')}</div>` : '';
@@ -2170,12 +3036,16 @@ function renderRecipes() {
     const craftReqMissing = getMissingStatRequirements(recipe.craftRequirements, player);
     const prereqLine = prereqMissing.length ? `<div class="recipe-req"><span class="unmet">prereq ${prereqMissing.join(', ')}</span></div>` : '';
     const craftReqLine = craftReqMissing.length ? `<div class="recipe-req"><span class="unmet">need ${craftReqMissing.join(', ')}</span></div>` : '';
+    const zoneLine = recipe.craftType === 'zone_use'
+      ? `<div class="recipe-req"><span class="met">auto-selects zone on use</span></div>`
+      : '';
 
     el.innerHTML = `
       <div class="recipe-name">${reqEmoji ? `${reqEmoji} ` : ''}${recipe.name} <span style="color:var(--accent);font-size:0.6rem">${recipe.points}pt · ${recipe.craftType || recipe.type}</span></div>
       <div class="recipe-req">${valueLine}${tableauLine}${reqLines}</div>
       ${prereqLine}
       ${craftReqLine}
+      ${zoneLine}
       <div class="recipe-req" style="color:var(--muted);margin-top:2px">${recipe.desc}</div>
     `;
     el.onclick = () => craftItem(recipe);
@@ -2243,6 +3113,8 @@ function explore() {
   const drawn = drawFromZone(state.selectedZone, actualDrawCount, player);
   player.hand.push(...drawn);
   player.pendingFoodDrawBonus = 0;
+  player.zoneVisits[state.selectedZone] = (player.zoneVisits[state.selectedZone] || 0) + 1;
+  player.searchesThisRound = (player.searchesThisRound || 0) + 1;
 
   if (drawCount > actualDrawCount) {
     log(` ${player.name} reached the hand limit (${handLimit}).`, 'bad');
@@ -2254,6 +3126,7 @@ function explore() {
   player.lastExploredZone = state.selectedZone;
   state.selectedZone = null;
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
@@ -2274,33 +3147,38 @@ function quickConsume(handId) {
   player.selectedCards.delete(handId);
   log(` ${player.name} consumed ${card.name}.`);
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
 function cookSelected() {
   if (state.gameOver) return;
   const player = getActivePlayer();
-  if (player.actionsLeft <= 0) return;
   if (!hasCampfireInTableau(player)) {
     log(` ${player.name} needs a campfire to cook.`, 'bad');
     return;
   }
-  const selected = getPlayerSelectedCards(player).filter(card => card.category === 'food');
+  const selected = getPlayerSelectedCards(player).filter(card => card.category === 'food' && (card.rawRisk || card.cookBonus));
   if (!selected.length) {
-    log(` Select one or more food cards to cook.`, 'bad');
+    log(` Select a raw food card to cook.`, 'bad');
     return;
   }
 
   selected.forEach(card => {
-    applyConsumeEffect(card, player, { cooked: true });
+    const cookedCard = makeCookedFoodCard(card);
+    if (!cookedCard) {
+      log(` ${card.name} cannot be cooked here.`, 'bad');
+      return;
+    }
     removePlayerCardById(player, card.handId);
     player.selectedCards.delete(card.handId);
-    log(` ${player.name} cooked ${card.name}.`, 'good');
+    player.stockpile.push(cookedCard);
+    log(` ${player.name} cooked ${card.name} into ${cookedCard.name}.`, 'good');
   });
 
-  player.actionsLeft--;
-  updatePhaseLabel(`${player.name.toUpperCase()}  FOOD COOKED`);
+  updatePhaseLabel(`${player.name.toUpperCase()}  FOOD PREPARED`);
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
@@ -2317,6 +3195,7 @@ function restAtShelter() {
   log(` ${player.name} rested  +${recovery} Warmth, +1 Morale.`, 'good');
   updatePhaseLabel(`${player.name.toUpperCase()}  RESTED`);
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
@@ -2331,6 +3210,7 @@ function sleepTurn() {
   log(` ${player.name} slept. Warmth reset to 5.`, 'good');
   updatePhaseLabel(`${player.name.toUpperCase()}  CHOOSE A ZONE TO EXPLORE`);
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
   endTurn();
 }
@@ -2351,12 +3231,14 @@ function consumeSelected() {
     player.selectedCards.delete(card.handId);
   });
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
 function startNewGame() {
   clearSavedGame();
   Object.assign(state, createInitialState());
+  state.players.forEach(player => seedStartingLoadout(player));
   state.players.forEach(player => setPlayerTurnState(player));
   clearZoneSelection();
   updatePhaseLabel(`${getActivePlayer().name.toUpperCase()}  CHOOSE A ZONE TO EXPLORE`);
@@ -2364,7 +3246,7 @@ function startNewGame() {
   if (logArea) {
     logArea.innerHTML = `
       <div class="log-entry info"> New game started. Player 1 begins.</div>
-      <div class="log-entry">Use the How to Play panel for the short version of the loop.</div>
+      <div class="log-entry">Use the How to Play button for the short version of the loop.</div>
     `;
   }
   renderAll();
@@ -2481,7 +3363,10 @@ function craftItem(recipe) {
   } else {
     log(` ${player.name} used ${recipe.name}. +${recipe.points} pts`, 'good');
   }
+  player.recipeCraftCounts[recipe.id] = (player.recipeCraftCounts[recipe.id] || 0) + 1;
+  noteDevEngineFirsts(player, recipe.id);
   checkGameState();
+  if (advanceTurnIfCurrentPlayerEliminated()) return;
   renderAll();
 }
 
@@ -2490,6 +3375,9 @@ function applyTableauEffects(player = getActivePlayer()) {
   let hungerGain = 0;
   let rescueGain = 0;
   let pointsGain = 0;
+  const hasPassiveRescueInfrastructure = player.tableau.some(item =>
+    ['lean_to', 'sturdy_shelter', 'debris_hut', 'campfire', 'sustained_fire', 'signal_fire', 'signal_mirror', 'signal_kit', 'rescue_cache'].includes(item.id)
+  );
 
   player.tableau = player.tableau.filter(item => {
     // Apply effects
@@ -2519,46 +3407,69 @@ function applyTableauEffects(player = getActivePlayer()) {
   if (warmthGain) { player.meters.warmth = clamp(player.meters.warmth + warmthGain, 0, state.maxMeter); log(` ${player.name}'s tableau: +${warmthGain} Warmth.`, 'good'); }
   if (hungerGain) { player.meters.hunger = clamp(player.meters.hunger + hungerGain, 0, state.maxMeter); log(` ${player.name}'s tableau: +${hungerGain} Hunger.`, 'good'); }
   if (rescueGain) { adjustSharedRescue(player, rescueGain, 'tableau signal'); }
+  if (BALANCE_DEV.passiveRescuePerRound && hasPassiveRescueInfrastructure) {
+    adjustSharedRescue(player, BALANCE_DEV.passiveRescuePerRound, 'camp infrastructure');
+  }
   if (pointsGain) { player.score += pointsGain; log(`⭐ ${player.name}'s tableau: +${pointsGain} pts.`, 'good'); }
 }
 
 function applyRoundEndEffects(player = getActivePlayer()) {
-  const decayAmount = 1;
   const pressure = getWarmthPressure(player);
+  let moraleLoss = 0;
 
   player.meters.warmth = clamp(player.meters.warmth + pressure, 0, state.maxMeter);
-  player.meters.hunger = clamp(player.meters.hunger - decayAmount, 0, state.maxMeter);
   const hydrationDecay = player.meters.warmth > 7 ? 2 : 1;
   player.meters.hydration = clamp(player.meters.hydration - hydrationDecay, 0, state.maxMeter);
 
   if (pressure !== 0) {
     log(` ${player.name}: Warmth shifted by ${pressure}.`, pressure < 0 ? 'bad' : 'good');
   }
-  log(`⏱️ ${player.name}: Hunger decays by ${decayAmount}; Hydration decays by ${hydrationDecay}.`, 'bad');
+  log(`⏱️ ${player.name}: Hydration decays by ${hydrationDecay}.`, 'bad');
 
   if (player.meters.warmth > 7) {
     log(` ${player.name} is overheated.`, 'bad');
   } else if (player.meters.warmth < 3) {
-    adjustMorale(player, -1, 'cold');
+    moraleLoss += 1;
+  }
+
+  const hungerMode = BALANCE_DEV.roundEndHunger;
+  let hungerDecay = 0;
+  if (hungerMode === 'always') hungerDecay = 1;
+  else if (hungerMode === 'every_other_round') hungerDecay = state.round % 2 === 0 ? 1 : 0;
+  else if (hungerMode === 'after_searches') hungerDecay = player.searchesThisRound >= BALANCE_DEV.roundEndSearchThreshold ? 1 : 0;
+  if (hungerDecay > 0) {
+    player.meters.hunger = clamp(player.meters.hunger - hungerDecay, 0, state.maxMeter);
   }
 
   if (!hasShelter(player)) {
-    adjustMorale(player, -1, 'night without shelter');
+    moraleLoss += 1;
   }
 
-  if (player.meters.hunger <= 2 || player.meters.warmth <= 2 || player.meters.hydration <= 2) {
-    adjustMorale(player, -1, 'critical meter');
+  const criticalCount = ['hunger', 'warmth', 'hydration']
+    .filter(key => player.meters[key] <= 2).length;
+  if (criticalCount >= 2) {
+    moraleLoss += 1;
+  }
+
+  if (BALANCE_DEV.moraleLossCapPerRound !== null) {
+    moraleLoss = Math.min(moraleLoss, BALANCE_DEV.moraleLossCapPerRound);
+  }
+
+  if (moraleLoss > 0) {
+    adjustMorale(player, -moraleLoss, moraleLoss === 1 ? 'round-end pressure' : 'stacked round-end pressure');
   }
 }
 
 function applyEndOfRoundEffects() {
   state.players.forEach(player => {
+    if (!isPlayerAlive(player)) return;
     applyTableauEffects(player);
     applyRoundEndEffects(player);
     resolveEndOfTurnInventory(player);
     player.selectedCards.clear();
     player.pendingZoneHazardCancelZone = null;
     player.safeWaterReady = false;
+    player.searchesThisRound = 0;
   });
 }
 
@@ -2571,9 +3482,18 @@ function endTurn() {
   activePlayer.pendingZoneHazardCancelZone = null;
   activePlayer.safeWaterReady = false;
 
-  const finishedRound = state.currentPlayerIndex === state.players.length - 1;
-  state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
-  if (finishedRound) {
+  const previousIndex = state.currentPlayerIndex;
+  const nextIndex = findNextLivingPlayerIndex(previousIndex);
+  if (nextIndex < 0) {
+    state.gameOver = true;
+    state.endReason = 'wipeout';
+    updatePhaseLabel(' WIPEOUT  ALL PLAYERS ELIMINATED');
+    renderAll();
+    return;
+  }
+  const wrapped = nextIndex <= previousIndex;
+  state.currentPlayerIndex = nextIndex;
+  if (wrapped) {
     state.round++;
     applyEndOfRoundEffects();
   }
@@ -2619,8 +3539,20 @@ async function bootstrap() {
   }
   updatePhaseLabel(`${getActivePlayer().name.toUpperCase()}  CHOOSE A ZONE TO EXPLORE`);
   renderAll();
+  syncBalanceLabInputs();
   scheduleAITurn();
 }
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    const openModal = document.querySelector('.modal-overlay.open');
+    if (!openModal) return;
+    if (openModal.id === 'howToPlayModal') closeHowToPlay();
+    else if (openModal.id === 'balanceLabModal') closeBalanceLab();
+    else if (openModal.id === 'playersLogModal') closePlayersLog();
+    else setModalVisibility(openModal.id, false);
+  }
+});
 
 bootstrap();
 </script>

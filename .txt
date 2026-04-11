@@ -9,3 +9,6 @@ git pull origin main
 
 git clone https://github.com/ccox0719/thewilds.git
 cd thewilds
+
+
+python sim/balance_runner.py --first-pass

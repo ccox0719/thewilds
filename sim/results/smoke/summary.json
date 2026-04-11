@@ -1,0 +1,3767 @@
+{
+  "meta": {
+    "games_per_scenario": 3,
+    "player_count": 4,
+    "master_seed": 1,
+    "scenario_count": 6
+  },
+  "variants": [
+    {
+      "variant_name": "A_current_rules",
+      "games": 3,
+      "rescue_rate": 0.6666666666666666,
+      "wipeout_rate": 0.3333333333333333,
+      "average_rounds": 2.3333333333333335,
+      "average_survivors": 3.6666666666666665,
+      "average_final_scores": {
+        "firekeeper": 2.3333333333333335,
+        "forager": 3.6666666666666665,
+        "hunter": 5.333333333333333,
+        "pathfinder": 2.0
+      },
+      "win_rate_by_profile": {
+        "firekeeper": 0.0,
+        "forager": 0.3333333333333333,
+        "hunter": 0.3333333333333333,
+        "pathfinder": 0.0
+      },
+      "death_rate_by_cause": {
+        "hunger": 0.3333333333333333,
+        "warmth": 0.0,
+        "hydration": 0.0,
+        "morale": 0.0
+      },
+      "zone_visit_frequency": {
+        "forest": 28,
+        "river": 6,
+        "highground": 10,
+        "meadow": 1
+      },
+      "recipe_craft_frequency": {
+        "forage_kit": 1,
+        "herb_kit": 1,
+        "axe": 2,
+        "fishing_pole": 2,
+        "campfire": 2,
+        "water_filter": 1,
+        "climbing_staff": 1,
+        "smoke_tool": 1,
+        "signal_mirror": 2,
+        "torch": 2,
+        "spear": 1
+      },
+      "first_engine_rounds": {
+        "fire": 2.0,
+        "water_treatment": 3.0,
+        "food_tool": 1.6666666666666667,
+        "rescue_signal": 1.0
+      },
+      "raw_food_consumption": 6,
+      "unsafe_water_consumption": 0,
+      "hazard_trigger_frequency": 25,
+      "hazard_prevented_frequency": 1,
+      "use_frequency_by_item": {
+        "fishing_pole": 5,
+        "signal_mirror": 8,
+        "spear": 3
+      },
+      "action_spend": {
+        "search": 15.0,
+        "craft": 5.333333333333333,
+        "use": 5.333333333333333,
+        "rest": 0.6666666666666666,
+        "cook": 0.0,
+        "signal": 2.6666666666666665,
+        "stoke": 0.0,
+        "sleep": 0.0
+      },
+      "games_detail": [
+        {
+          "variant_name": "A_current_rules",
+          "seed": 15507259,
+          "game_index": 0,
+          "roster": [
+            "adaptive",
+            "risk_taker",
+            "hunter_first",
+            "firekeeper_first"
+          ],
+          "rounds_played": 3,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "adaptive",
+              "score": 5,
+              "meters": {
+                "hunger": 4,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 5
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": 3,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 2
+              },
+              "zone_visits": {
+                "forest": 5
+              },
+              "craft_counts": {
+                "forage_kit": 1,
+                "campfire": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 2,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "risk_taker",
+              "score": 4,
+              "meters": {
+                "hunger": 3,
+                "warmth": 2,
+                "hydration": 7,
+                "morale": 3
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": 3,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 7,
+                "craft": 2
+              },
+              "zone_visits": {
+                "forest": 3,
+                "river": 2,
+                "highground": 1,
+                "meadow": 1
+              },
+              "craft_counts": {
+                "herb_kit": 1,
+                "water_filter": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 2,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "hunter_first",
+              "score": 9,
+              "meters": {
+                "hunger": 7,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 2,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 3,
+                "use": 3
+              },
+              "zone_visits": {
+                "river": 3
+              },
+              "craft_counts": {
+                "axe": 2,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 3
+              },
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "firekeeper_first",
+              "score": 0,
+              "meters": {
+                "hunger": 0,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 4
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "rest": 2
+              },
+              "zone_visits": {
+                "forest": 5
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 13,
+            "river": 5,
+            "highground": 1,
+            "meadow": 1
+          },
+          "recipe_crafts": {
+            "forage_kit": 1,
+            "herb_kit": 1,
+            "axe": 2,
+            "fishing_pole": 1,
+            "campfire": 1,
+            "water_filter": 1
+          },
+          "use_counts": {
+            "fishing_pole": 3
+          },
+          "action_counts": {
+            "search": 20,
+            "craft": 7,
+            "rest": 2,
+            "use": 3
+          },
+          "hazard_triggers": 10,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 5,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": 3,
+            "water_treatment": 3,
+            "food_tool": 2,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "A_current_rules",
+          "seed": 15611988,
+          "game_index": 1,
+          "roster": [
+            "rescuer",
+            "adaptive",
+            "forager_first",
+            "risk_taker"
+          ],
+          "rounds_played": 2,
+          "end_reason": "rescue",
+          "shared_rescue": 20,
+          "survivors": 4,
+          "winner_player": "Player 3",
+          "winner_profile": "hunter",
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "rescuer",
+              "score": 0,
+              "meters": {
+                "hunger": 3,
+                "warmth": 2,
+                "hydration": 8,
+                "morale": 6
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5
+              },
+              "zone_visits": {
+                "highground": 5
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "adaptive",
+              "score": 4,
+              "meters": {
+                "hunger": 2,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 7
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 2
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "climbing_staff": 1,
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "forager_first",
+              "score": 5,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 2,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 2,
+                "use": 2
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {
+                "smoke_tool": 1,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 2
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "risk_taker",
+              "score": 3,
+              "meters": {
+                "hunger": 8,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": 1
+              },
+              "actions_spent": {
+                "search": 1,
+                "craft": 1,
+                "use": 4
+              },
+              "zone_visits": {
+                "highground": 1
+              },
+              "craft_counts": {
+                "signal_mirror": 1
+              },
+              "use_counts": {
+                "signal_mirror": 4
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "highground": 6,
+            "forest": 6
+          },
+          "recipe_crafts": {
+            "climbing_staff": 1,
+            "smoke_tool": 1,
+            "signal_mirror": 1,
+            "torch": 1,
+            "fishing_pole": 1
+          },
+          "use_counts": {
+            "signal_mirror": 4,
+            "fishing_pole": 2
+          },
+          "action_counts": {
+            "search": 12,
+            "craft": 5,
+            "use": 6,
+            "signal": 4
+          },
+          "hazard_triggers": 6,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 0,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": 2,
+            "rescue_signal": 1
+          }
+        },
+        {
+          "variant_name": "A_current_rules",
+          "seed": 15716717,
+          "game_index": 2,
+          "roster": [
+            "adaptive",
+            "rescuer",
+            "stabilizer",
+            "hunter_first"
+          ],
+          "rounds_played": 2,
+          "end_reason": "rescue",
+          "shared_rescue": 20,
+          "survivors": 4,
+          "winner_player": "Player 2",
+          "winner_profile": "forager",
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "adaptive",
+              "score": 2,
+              "meters": {
+                "hunger": 2,
+                "warmth": 5,
+                "hydration": 8,
+                "morale": 3
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": 1,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 4,
+                "highground": 1
+              },
+              "craft_counts": {
+                "campfire": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "rescuer",
+              "score": 3,
+              "meters": {
+                "hunger": 7,
+                "warmth": 2,
+                "hydration": 8,
+                "morale": 5
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 1,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1,
+                "use": 3
+              },
+              "zone_visits": {
+                "highground": 2
+              },
+              "craft_counts": {
+                "spear": 1
+              },
+              "use_counts": {
+                "spear": 3
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "stabilizer",
+              "score": 2,
+              "meters": {
+                "hunger": 1,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 3
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 5
+              },
+              "craft_counts": {
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "hunter_first",
+              "score": 3,
+              "meters": {
+                "hunger": 8,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": 1
+              },
+              "actions_spent": {
+                "search": 1,
+                "craft": 1,
+                "use": 4
+              },
+              "zone_visits": {
+                "river": 1
+              },
+              "craft_counts": {
+                "signal_mirror": 1
+              },
+              "use_counts": {
+                "signal_mirror": 4
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 9,
+            "highground": 3,
+            "river": 1
+          },
+          "recipe_crafts": {
+            "campfire": 1,
+            "spear": 1,
+            "signal_mirror": 1,
+            "torch": 1
+          },
+          "use_counts": {
+            "signal_mirror": 4,
+            "spear": 3
+          },
+          "action_counts": {
+            "search": 13,
+            "craft": 4,
+            "use": 7,
+            "signal": 4
+          },
+          "hazard_triggers": 9,
+          "hazard_prevented": 1,
+          "raw_food_consumption": 1,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": 1,
+            "water_treatment": null,
+            "food_tool": 1,
+            "rescue_signal": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant_name": "B_no_round_end_hunger_decay",
+      "games": 3,
+      "rescue_rate": 0.0,
+      "wipeout_rate": 1.0,
+      "average_rounds": 4.0,
+      "average_survivors": 3.0,
+      "average_final_scores": {
+        "firekeeper": 5.333333333333333,
+        "forager": 8.0,
+        "hunter": 2.3333333333333335,
+        "pathfinder": 2.6666666666666665
+      },
+      "win_rate_by_profile": {
+        "firekeeper": 0.0,
+        "forager": 0.0,
+        "hunter": 0.0,
+        "pathfinder": 0.0
+      },
+      "death_rate_by_cause": {
+        "hunger": 0.6666666666666666,
+        "warmth": 0.0,
+        "hydration": 0.0,
+        "morale": 0.3333333333333333
+      },
+      "zone_visit_frequency": {
+        "forest": 37,
+        "river": 8,
+        "highground": 12,
+        "meadow": 3
+      },
+      "recipe_craft_frequency": {
+        "campfire": 4,
+        "axe": 2,
+        "water_filter": 1,
+        "smoke_tool": 3,
+        "fishing_pole": 6,
+        "climbing_staff": 1,
+        "torch": 2,
+        "herb_kit": 2,
+        "forage_kit": 2
+      },
+      "first_engine_rounds": {
+        "fire": 1.0,
+        "water_treatment": 2.0,
+        "food_tool": 2.3333333333333335
+      },
+      "raw_food_consumption": 6,
+      "unsafe_water_consumption": 0,
+      "hazard_trigger_frequency": 25,
+      "hazard_prevented_frequency": 2,
+      "use_frequency_by_item": {
+        "fishing_pole": 19
+      },
+      "action_spend": {
+        "search": 20.0,
+        "craft": 7.666666666666667,
+        "use": 6.333333333333333,
+        "rest": 1.6666666666666667,
+        "cook": 0.0,
+        "signal": 0.0,
+        "stoke": 0.3333333333333333,
+        "sleep": 3.0
+      },
+      "games_detail": [
+        {
+          "variant_name": "B_no_round_end_hunger_decay",
+          "seed": 26619395,
+          "game_index": 0,
+          "roster": [
+            "conservative",
+            "hunter_first",
+            "rescuer",
+            "firekeeper_first"
+          ],
+          "rounds_played": 4,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "conservative",
+              "score": 2,
+              "meters": {
+                "hunger": 1,
+                "warmth": 5,
+                "hydration": 6,
+                "morale": 6
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": 1,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1,
+                "sleep": 3,
+                "stoke": 1
+              },
+              "zone_visits": {
+                "forest": 5
+              },
+              "craft_counts": {
+                "campfire": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "hunter_first",
+              "score": 14,
+              "meters": {
+                "hunger": 3,
+                "warmth": 2,
+                "hydration": 6,
+                "morale": 7
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": 2,
+                "food_tool": 3,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 6,
+                "craft": 5,
+                "use": 1
+              },
+              "zone_visits": {
+                "river": 3,
+                "forest": 3
+              },
+              "craft_counts": {
+                "axe": 2,
+                "water_filter": 1,
+                "fishing_pole": 1,
+                "climbing_staff": 1
+              },
+              "use_counts": {
+                "fishing_pole": 1
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "rescuer",
+              "score": 2,
+              "meters": {
+                "hunger": 0,
+                "warmth": 2,
+                "hydration": 6,
+                "morale": 2
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 8,
+                "craft": 1
+              },
+              "zone_visits": {
+                "highground": 7,
+                "forest": 1
+              },
+              "craft_counts": {
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "firekeeper_first",
+              "score": 3,
+              "meters": {
+                "hunger": 1,
+                "warmth": 4,
+                "hydration": 6,
+                "morale": 4
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "rest": 2,
+                "sleep": 2,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 13,
+            "river": 3,
+            "highground": 7
+          },
+          "recipe_crafts": {
+            "campfire": 1,
+            "axe": 2,
+            "water_filter": 1,
+            "smoke_tool": 1,
+            "fishing_pole": 2,
+            "climbing_staff": 1
+          },
+          "use_counts": {
+            "fishing_pole": 1
+          },
+          "action_counts": {
+            "search": 23,
+            "craft": 8,
+            "sleep": 5,
+            "rest": 2,
+            "use": 1,
+            "stoke": 1
+          },
+          "hazard_triggers": 10,
+          "hazard_prevented": 2,
+          "raw_food_consumption": 1,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": 1,
+            "water_treatment": 2,
+            "food_tool": 3,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "B_no_round_end_hunger_decay",
+          "seed": 26724124,
+          "game_index": 1,
+          "roster": [
+            "adaptive",
+            "rescuer",
+            "forager_first",
+            "stabilizer"
+          ],
+          "rounds_played": 3,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "adaptive",
+              "score": 9,
+              "meters": {
+                "hunger": 5,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": 1,
+                "water_treatment": null,
+                "food_tool": 3,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 4,
+                "use": 1
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "campfire": 3,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 1
+              },
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "rescuer",
+              "score": 1,
+              "meters": {
+                "hunger": 1,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 3
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 6,
+                "craft": 1,
+                "sleep": 1
+              },
+              "zone_visits": {
+                "highground": 3,
+                "forest": 3
+              },
+              "craft_counts": {
+                "herb_kit": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "forager_first",
+              "score": 2,
+              "meters": {
+                "hunger": 1,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1,
+                "sleep": 1
+              },
+              "zone_visits": {
+                "forest": 4,
+                "meadow": 1
+              },
+              "craft_counts": {
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "stabilizer",
+              "score": 2,
+              "meters": {
+                "hunger": 0,
+                "warmth": 4,
+                "hydration": 7,
+                "morale": 3
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1,
+                "sleep": 1
+              },
+              "zone_visits": {
+                "forest": 5
+              },
+              "craft_counts": {
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 16,
+            "highground": 3,
+            "meadow": 1
+          },
+          "recipe_crafts": {
+            "campfire": 3,
+            "torch": 2,
+            "fishing_pole": 1,
+            "herb_kit": 1
+          },
+          "use_counts": {
+            "fishing_pole": 1
+          },
+          "action_counts": {
+            "search": 20,
+            "craft": 7,
+            "sleep": 3,
+            "use": 1
+          },
+          "hazard_triggers": 9,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 2,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": 1,
+            "water_treatment": null,
+            "food_tool": 3,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "B_no_round_end_hunger_decay",
+          "seed": 26828853,
+          "game_index": 2,
+          "roster": [
+            "risk_taker",
+            "stabilizer",
+            "hunter_first",
+            "conservative"
+          ],
+          "rounds_played": 5,
+          "end_reason": "morale",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "risk_taker",
+              "score": 5,
+              "meters": {
+                "hunger": 4,
+                "warmth": 2,
+                "hydration": 5,
+                "morale": 2
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 6,
+                "craft": 2,
+                "rest": 3
+              },
+              "zone_visits": {
+                "river": 1,
+                "forest": 1,
+                "highground": 2,
+                "meadow": 2
+              },
+              "craft_counts": {
+                "forage_kit": 1,
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 2,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "stabilizer",
+              "score": 9,
+              "meters": {
+                "hunger": 5,
+                "warmth": 2,
+                "hydration": 5,
+                "morale": 5
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 4,
+                "use": 5
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {
+                "smoke_tool": 1,
+                "forage_kit": 1,
+                "fishing_pole": 1,
+                "herb_kit": 1
+              },
+              "use_counts": {
+                "fishing_pole": 5
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "hunter_first",
+              "score": 3,
+              "meters": {
+                "hunger": 5,
+                "warmth": 1,
+                "hydration": 5,
+                "morale": 0
+              },
+              "death_cause": "morale",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 1,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1,
+                "use": 6
+              },
+              "zone_visits": {
+                "river": 4,
+                "forest": 1
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 6
+              },
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "conservative",
+              "score": 3,
+              "meters": {
+                "hunger": 5,
+                "warmth": 4,
+                "hydration": 5,
+                "morale": 4
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 1,
+                "use": 6,
+                "sleep": 1
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 6
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "river": 5,
+            "forest": 8,
+            "highground": 2,
+            "meadow": 2
+          },
+          "recipe_crafts": {
+            "smoke_tool": 2,
+            "fishing_pole": 3,
+            "forage_kit": 2,
+            "herb_kit": 1
+          },
+          "use_counts": {
+            "fishing_pole": 17
+          },
+          "action_counts": {
+            "search": 17,
+            "craft": 8,
+            "use": 17,
+            "rest": 3,
+            "sleep": 1
+          },
+          "hazard_triggers": 6,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 3,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": 1,
+            "rescue_signal": null
+          }
+        }
+      ]
+    },
+    {
+      "variant_name": "C_hunger_decay_after_2_searches",
+      "games": 3,
+      "rescue_rate": 0.0,
+      "wipeout_rate": 1.0,
+      "average_rounds": 2.6666666666666665,
+      "average_survivors": 3.0,
+      "average_final_scores": {
+        "firekeeper": 5.0,
+        "forager": 4.0,
+        "hunter": 1.6666666666666667,
+        "pathfinder": 3.0
+      },
+      "win_rate_by_profile": {
+        "firekeeper": 0.0,
+        "forager": 0.0,
+        "hunter": 0.0,
+        "pathfinder": 0.0
+      },
+      "death_rate_by_cause": {
+        "hunger": 1.0,
+        "warmth": 0.0,
+        "hydration": 0.0,
+        "morale": 0.0
+      },
+      "zone_visit_frequency": {
+        "river": 6,
+        "forest": 30,
+        "highground": 2,
+        "meadow": 3
+      },
+      "recipe_craft_frequency": {
+        "knife": 2,
+        "herb_kit": 1,
+        "fishing_pole": 4,
+        "torch": 2,
+        "water_filter": 1,
+        "lean_to": 2,
+        "axe": 1,
+        "smoke_tool": 4,
+        "campfire": 1
+      },
+      "first_engine_rounds": {
+        "food_tool": 1.5,
+        "water_treatment": 2.0,
+        "shelter": 1.0,
+        "fire": 3.0
+      },
+      "raw_food_consumption": 1,
+      "unsafe_water_consumption": 0,
+      "hazard_trigger_frequency": 26,
+      "hazard_prevented_frequency": 2,
+      "use_frequency_by_item": {
+        "fishing_pole": 11
+      },
+      "action_spend": {
+        "search": 13.666666666666666,
+        "craft": 6.0,
+        "use": 3.6666666666666665,
+        "rest": 0.6666666666666666,
+        "cook": 0.0,
+        "signal": 0.0,
+        "stoke": 0.0,
+        "sleep": 0.0
+      },
+      "games_detail": [
+        {
+          "variant_name": "C_hunger_decay_after_2_searches",
+          "seed": 29766763,
+          "game_index": 0,
+          "roster": [
+            "hunter_first",
+            "forager_first",
+            "adaptive",
+            "risk_taker"
+          ],
+          "rounds_played": 3,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "hunter_first",
+              "score": 5,
+              "meters": {
+                "hunger": 5,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 2,
+                "use": 1
+              },
+              "zone_visits": {
+                "river": 2,
+                "forest": 1
+              },
+              "craft_counts": {
+                "knife": 1,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 1
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "forager_first",
+              "score": 3,
+              "meters": {
+                "hunger": 0,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 2
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 2
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "herb_kit": 1,
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "adaptive",
+              "score": 3,
+              "meters": {
+                "hunger": 4,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 6
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 1,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1,
+                "use": 3
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 3
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "risk_taker",
+              "score": 3,
+              "meters": {
+                "hunger": 5,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 7
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1,
+                "use": 3
+              },
+              "zone_visits": {
+                "river": 1,
+                "forest": 1
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 3
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "river": 3,
+            "forest": 8
+          },
+          "recipe_crafts": {
+            "knife": 1,
+            "herb_kit": 1,
+            "fishing_pole": 3,
+            "torch": 1
+          },
+          "use_counts": {
+            "fishing_pole": 7
+          },
+          "action_counts": {
+            "search": 11,
+            "craft": 6,
+            "use": 7
+          },
+          "hazard_triggers": 8,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 0,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": 1,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "C_hunger_decay_after_2_searches",
+          "seed": 29871492,
+          "game_index": 1,
+          "roster": [
+            "rescuer",
+            "hunter_first",
+            "forager_first",
+            "firekeeper_first"
+          ],
+          "rounds_played": 2,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "rescuer",
+              "score": 2,
+              "meters": {
+                "hunger": 1,
+                "warmth": 2,
+                "hydration": 8,
+                "morale": 2
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1
+              },
+              "zone_visits": {
+                "highground": 2,
+                "forest": 3
+              },
+              "craft_counts": {
+                "knife": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "hunter_first",
+              "score": 3,
+              "meters": {
+                "hunger": 1,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 6
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": 2,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 1
+              },
+              "zone_visits": {
+                "river": 2,
+                "forest": 2
+              },
+              "craft_counts": {
+                "water_filter": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "forager_first",
+              "score": 0,
+              "meters": {
+                "hunger": 0,
+                "warmth": 3,
+                "hydration": 8,
+                "morale": 1
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4
+              },
+              "zone_visits": {
+                "forest": 3,
+                "meadow": 1
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "firekeeper_first",
+              "score": 0,
+              "meters": {
+                "hunger": 5,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 5
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "highground": 2,
+            "river": 2,
+            "forest": 11,
+            "meadow": 1
+          },
+          "recipe_crafts": {
+            "knife": 1,
+            "water_filter": 1
+          },
+          "use_counts": {},
+          "action_counts": {
+            "search": 16,
+            "craft": 2
+          },
+          "hazard_triggers": 13,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 1,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": 2,
+            "food_tool": null,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "C_hunger_decay_after_2_searches",
+          "seed": 29976221,
+          "game_index": 2,
+          "roster": [
+            "firekeeper_first",
+            "risk_taker",
+            "forager_first",
+            "conservative"
+          ],
+          "rounds_played": 3,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "firekeeper_first",
+              "score": 8,
+              "meters": {
+                "hunger": 3,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 10
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": 1,
+                "fire": 3,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 4,
+                "rest": 1
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "lean_to": 2,
+                "smoke_tool": 1,
+                "campfire": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "risk_taker",
+              "score": 6,
+              "meters": {
+                "hunger": 6,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 7
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 2,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 2,
+                "use": 4,
+                "rest": 1
+              },
+              "zone_visits": {
+                "river": 1,
+                "meadow": 1
+              },
+              "craft_counts": {
+                "axe": 1,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 4
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "forager_first",
+              "score": 2,
+              "meters": {
+                "hunger": 0,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 5
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 4,
+                "meadow": 1
+              },
+              "craft_counts": {
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "conservative",
+              "score": 6,
+              "meters": {
+                "hunger": 3,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 6
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 3
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {
+                "smoke_tool": 3
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 11,
+            "river": 1,
+            "meadow": 2
+          },
+          "recipe_crafts": {
+            "lean_to": 2,
+            "axe": 1,
+            "smoke_tool": 4,
+            "fishing_pole": 1,
+            "torch": 1,
+            "campfire": 1
+          },
+          "use_counts": {
+            "fishing_pole": 4
+          },
+          "action_counts": {
+            "search": 14,
+            "craft": 10,
+            "rest": 2,
+            "use": 4
+          },
+          "hazard_triggers": 5,
+          "hazard_prevented": 2,
+          "raw_food_consumption": 0,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": 1,
+            "fire": 3,
+            "water_treatment": null,
+            "food_tool": 2,
+            "rescue_signal": null
+          }
+        }
+      ]
+    },
+    {
+      "variant_name": "D_easier_snare",
+      "games": 3,
+      "rescue_rate": 0.0,
+      "wipeout_rate": 1.0,
+      "average_rounds": 2.6666666666666665,
+      "average_survivors": 3.0,
+      "average_final_scores": {
+        "firekeeper": 7.0,
+        "forager": 1.6666666666666667,
+        "hunter": 3.0,
+        "pathfinder": 1.3333333333333333
+      },
+      "win_rate_by_profile": {
+        "firekeeper": 0.0,
+        "forager": 0.0,
+        "hunter": 0.0,
+        "pathfinder": 0.0
+      },
+      "death_rate_by_cause": {
+        "hunger": 0.6666666666666666,
+        "warmth": 0.3333333333333333,
+        "hydration": 0.0,
+        "morale": 0.0
+      },
+      "zone_visit_frequency": {
+        "forest": 27,
+        "river": 2,
+        "meadow": 2,
+        "highground": 3
+      },
+      "recipe_craft_frequency": {
+        "smoke_tool": 6,
+        "forage_kit": 4,
+        "campfire": 3,
+        "fishing_pole": 3
+      },
+      "first_engine_rounds": {
+        "fire": 2.0,
+        "food_tool": 1.5
+      },
+      "raw_food_consumption": 1,
+      "unsafe_water_consumption": 0,
+      "hazard_trigger_frequency": 22,
+      "hazard_prevented_frequency": 0,
+      "use_frequency_by_item": {
+        "fishing_pole": 10
+      },
+      "action_spend": {
+        "search": 11.333333333333334,
+        "craft": 5.333333333333333,
+        "use": 3.3333333333333335,
+        "rest": 1.3333333333333333,
+        "cook": 0.0,
+        "signal": 0.0,
+        "stoke": 0.3333333333333333,
+        "sleep": 0.6666666666666666
+      },
+      "games_detail": [
+        {
+          "variant_name": "D_easier_snare",
+          "seed": 14103331,
+          "game_index": 0,
+          "roster": [
+            "adaptive",
+            "firekeeper_first",
+            "risk_taker",
+            "conservative"
+          ],
+          "rounds_played": 5,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "adaptive",
+              "score": 16,
+              "meters": {
+                "hunger": 0,
+                "warmth": 4,
+                "hydration": 5,
+                "morale": 4
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": 2,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 6,
+                "craft": 7,
+                "stoke": 1
+              },
+              "zone_visits": {
+                "forest": 6
+              },
+              "craft_counts": {
+                "smoke_tool": 2,
+                "forage_kit": 2,
+                "campfire": 3
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "firekeeper_first",
+              "score": 3,
+              "meters": {
+                "hunger": 4,
+                "warmth": 4,
+                "hydration": 5,
+                "morale": 7
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 2,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "rest": 3,
+                "craft": 1,
+                "use": 4
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 4
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "risk_taker",
+              "score": 6,
+              "meters": {
+                "hunger": 6,
+                "warmth": 2,
+                "hydration": 5,
+                "morale": 2
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 2,
+                "use": 6,
+                "rest": 1
+              },
+              "zone_visits": {
+                "river": 2,
+                "meadow": 1
+              },
+              "craft_counts": {
+                "forage_kit": 1,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 6
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "conservative",
+              "score": 4,
+              "meters": {
+                "hunger": 1,
+                "warmth": 4,
+                "hydration": 5,
+                "morale": 5
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 6,
+                "craft": 2,
+                "sleep": 2
+              },
+              "zone_visits": {
+                "forest": 6
+              },
+              "craft_counts": {
+                "smoke_tool": 2
+              },
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 15,
+            "river": 2,
+            "meadow": 1
+          },
+          "recipe_crafts": {
+            "smoke_tool": 4,
+            "forage_kit": 3,
+            "campfire": 3,
+            "fishing_pole": 2
+          },
+          "use_counts": {
+            "fishing_pole": 10
+          },
+          "action_counts": {
+            "search": 18,
+            "craft": 12,
+            "rest": 4,
+            "use": 10,
+            "sleep": 2,
+            "stoke": 1
+          },
+          "hazard_triggers": 9,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 1,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": 2,
+            "water_treatment": null,
+            "food_tool": 2,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "D_easier_snare",
+          "seed": 14208060,
+          "game_index": 1,
+          "roster": [
+            "rescuer",
+            "stabilizer",
+            "adaptive",
+            "conservative"
+          ],
+          "rounds_played": 2,
+          "end_reason": "warmth",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "rescuer",
+              "score": 3,
+              "meters": {
+                "hunger": 6,
+                "warmth": 0,
+                "hydration": 8,
+                "morale": 6
+              },
+              "death_cause": "warmth",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 1
+              },
+              "zone_visits": {
+                "highground": 3
+              },
+              "craft_counts": {
+                "forage_kit": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "stabilizer",
+              "score": 2,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "adaptive",
+              "score": 3,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 1,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "conservative",
+              "score": 0,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "highground": 3,
+            "forest": 6
+          },
+          "recipe_crafts": {
+            "forage_kit": 1,
+            "smoke_tool": 1,
+            "fishing_pole": 1
+          },
+          "use_counts": {},
+          "action_counts": {
+            "search": 9,
+            "craft": 3
+          },
+          "hazard_triggers": 5,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 0,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": 1,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "D_easier_snare",
+          "seed": 14312789,
+          "game_index": 2,
+          "roster": [
+            "stabilizer",
+            "conservative",
+            "forager_first",
+            "rescuer"
+          ],
+          "rounds_played": 1,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "stabilizer",
+              "score": 2,
+              "meters": {
+                "hunger": 5,
+                "warmth": 5,
+                "hydration": 9,
+                "morale": 7
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "conservative",
+              "score": 0,
+              "meters": {
+                "hunger": 5,
+                "warmth": 5,
+                "hydration": 9,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "forager_first",
+              "score": 0,
+              "meters": {
+                "hunger": 0,
+                "warmth": 5,
+                "hydration": 9,
+                "morale": 3
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3
+              },
+              "zone_visits": {
+                "forest": 2,
+                "meadow": 1
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "rescuer",
+              "score": 0,
+              "meters": {
+                "hunger": 9,
+                "warmth": 5,
+                "hydration": 9,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {},
+              "zone_visits": {},
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 6,
+            "meadow": 1
+          },
+          "recipe_crafts": {
+            "smoke_tool": 1
+          },
+          "use_counts": {},
+          "action_counts": {
+            "search": 7,
+            "craft": 1
+          },
+          "hazard_triggers": 8,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 0,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": null,
+            "rescue_signal": null
+          }
+        }
+      ]
+    },
+    {
+      "variant_name": "E_easier_fishing_pole",
+      "games": 3,
+      "rescue_rate": 0.0,
+      "wipeout_rate": 1.0,
+      "average_rounds": 2.3333333333333335,
+      "average_survivors": 3.0,
+      "average_final_scores": {
+        "firekeeper": 4.666666666666667,
+        "forager": 1.0,
+        "hunter": 3.0,
+        "pathfinder": 1.0
+      },
+      "win_rate_by_profile": {
+        "firekeeper": 0.0,
+        "forager": 0.0,
+        "hunter": 0.0,
+        "pathfinder": 0.0
+      },
+      "death_rate_by_cause": {
+        "hunger": 1.0,
+        "warmth": 0.0,
+        "hydration": 0.0,
+        "morale": 0.0
+      },
+      "zone_visit_frequency": {
+        "forest": 31,
+        "highground": 7,
+        "river": 4,
+        "meadow": 2
+      },
+      "recipe_craft_frequency": {
+        "campfire": 2,
+        "smoke_tool": 4,
+        "axe": 1,
+        "forage_kit": 2,
+        "lean_to": 1,
+        "fishing_pole": 1,
+        "signal_mirror": 1
+      },
+      "first_engine_rounds": {
+        "shelter": 3.0,
+        "fire": 1.0,
+        "food_tool": 3.0,
+        "rescue_signal": 1.0
+      },
+      "raw_food_consumption": 3,
+      "unsafe_water_consumption": 0,
+      "hazard_trigger_frequency": 28,
+      "hazard_prevented_frequency": 0,
+      "use_frequency_by_item": {
+        "fishing_pole": 1,
+        "signal_mirror": 1
+      },
+      "action_spend": {
+        "search": 14.666666666666666,
+        "craft": 4.0,
+        "use": 0.6666666666666666,
+        "rest": 0.6666666666666666,
+        "cook": 0.0,
+        "signal": 0.3333333333333333,
+        "stoke": 0.0,
+        "sleep": 0.3333333333333333
+      },
+      "games_detail": [
+        {
+          "variant_name": "E_easier_fishing_pole",
+          "seed": 20847691,
+          "game_index": 0,
+          "roster": [
+            "conservative",
+            "rescuer",
+            "hunter_first",
+            "firekeeper_first"
+          ],
+          "rounds_played": 3,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "conservative",
+              "score": 10,
+              "meters": {
+                "hunger": 5,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 10
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": 3,
+                "fire": 1,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 5
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "campfire": 2,
+                "smoke_tool": 2,
+                "lean_to": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "rescuer",
+              "score": 3,
+              "meters": {
+                "hunger": 1,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 7
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 7,
+                "craft": 1
+              },
+              "zone_visits": {
+                "highground": 7
+              },
+              "craft_counts": {
+                "axe": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "hunter_first",
+              "score": 9,
+              "meters": {
+                "hunger": 3,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 3,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 3,
+                "use": 1
+              },
+              "zone_visits": {
+                "river": 3,
+                "forest": 2
+              },
+              "craft_counts": {
+                "forage_kit": 2,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 1
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "firekeeper_first",
+              "score": 0,
+              "meters": {
+                "hunger": 0,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 2
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "rest": 2,
+                "sleep": 1
+              },
+              "zone_visits": {
+                "forest": 5
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 11,
+            "highground": 7,
+            "river": 3
+          },
+          "recipe_crafts": {
+            "campfire": 2,
+            "smoke_tool": 2,
+            "axe": 1,
+            "forage_kit": 2,
+            "lean_to": 1,
+            "fishing_pole": 1
+          },
+          "use_counts": {
+            "fishing_pole": 1
+          },
+          "action_counts": {
+            "search": 21,
+            "craft": 9,
+            "rest": 2,
+            "sleep": 1,
+            "use": 1
+          },
+          "hazard_triggers": 8,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 0,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": 3,
+            "fire": 1,
+            "water_treatment": null,
+            "food_tool": 3,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "E_easier_fishing_pole",
+          "seed": 20952420,
+          "game_index": 1,
+          "roster": [
+            "stabilizer",
+            "firekeeper_first",
+            "conservative",
+            "forager_first"
+          ],
+          "rounds_played": 2,
+          "end_reason": "hunger",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "stabilizer",
+              "score": 2,
+              "meters": {
+                "hunger": 0,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 2
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "firekeeper_first",
+              "score": 0,
+              "meters": {
+                "hunger": 2,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 1
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "conservative",
+              "score": 0,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "forager_first",
+              "score": 0,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 2
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3
+              },
+              "zone_visits": {
+                "forest": 1,
+                "meadow": 2
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 2,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 10,
+            "meadow": 2
+          },
+          "recipe_crafts": {
+            "smoke_tool": 1
+          },
+          "use_counts": {},
+          "action_counts": {
+            "search": 12,
+            "craft": 1
+          },
+          "hazard_triggers": 11,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 2,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": null,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "E_easier_fishing_pole",
+          "seed": 21057149,
+          "game_index": 2,
+          "roster": [
+            "stabilizer",
+            "adaptive",
+            "forager_first",
+            "risk_taker"
+          ],
+          "rounds_played": 2,
+          "end_reason": "hunger",
+          "shared_rescue": 8,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "stabilizer",
+              "score": 2,
+              "meters": {
+                "hunger": 0,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 0
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 4
+              },
+              "craft_counts": {
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "adaptive",
+              "score": 0,
+              "meters": {
+                "hunger": 3,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 3
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "forager_first",
+              "score": 0,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 5
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "risk_taker",
+              "score": 3,
+              "meters": {
+                "hunger": 8,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": 1
+              },
+              "actions_spent": {
+                "search": 1,
+                "craft": 1,
+                "use": 1
+              },
+              "zone_visits": {
+                "river": 1
+              },
+              "craft_counts": {
+                "signal_mirror": 1
+              },
+              "use_counts": {
+                "signal_mirror": 1
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 10,
+            "river": 1
+          },
+          "recipe_crafts": {
+            "smoke_tool": 1,
+            "signal_mirror": 1
+          },
+          "use_counts": {
+            "signal_mirror": 1
+          },
+          "action_counts": {
+            "search": 11,
+            "craft": 2,
+            "use": 1,
+            "signal": 1
+          },
+          "hazard_triggers": 9,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 1,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": null,
+            "rescue_signal": 1
+          }
+        }
+      ]
+    },
+    {
+      "variant_name": "F_current_hunger_plus_easier_camp_stew",
+      "games": 3,
+      "rescue_rate": 0.0,
+      "wipeout_rate": 1.0,
+      "average_rounds": 3.0,
+      "average_survivors": 3.0,
+      "average_final_scores": {
+        "firekeeper": 6.333333333333333,
+        "forager": 4.666666666666667,
+        "hunter": 2.6666666666666665,
+        "pathfinder": 3.6666666666666665
+      },
+      "win_rate_by_profile": {
+        "firekeeper": 0.0,
+        "forager": 0.0,
+        "hunter": 0.0,
+        "pathfinder": 0.0
+      },
+      "death_rate_by_cause": {
+        "hunger": 0.3333333333333333,
+        "warmth": 0.0,
+        "hydration": 0.0,
+        "morale": 0.6666666666666666
+      },
+      "zone_visit_frequency": {
+        "forest": 34,
+        "meadow": 4,
+        "river": 5,
+        "highground": 3
+      },
+      "recipe_craft_frequency": {
+        "forage_kit": 5,
+        "fishing_pole": 2,
+        "lean_to": 2,
+        "herb_kit": 3,
+        "torch": 2,
+        "signal_mirror": 1,
+        "smoke_tool": 2,
+        "snare": 2,
+        "axe": 3
+      },
+      "first_engine_rounds": {
+        "food_tool": 2.0,
+        "shelter": 1.0,
+        "rescue_signal": 2.0
+      },
+      "raw_food_consumption": 7,
+      "unsafe_water_consumption": 0,
+      "hazard_trigger_frequency": 23,
+      "hazard_prevented_frequency": 1,
+      "use_frequency_by_item": {
+        "signal_mirror": 2,
+        "fishing_pole": 6
+      },
+      "action_spend": {
+        "search": 15.333333333333334,
+        "craft": 7.333333333333333,
+        "use": 2.6666666666666665,
+        "rest": 1.3333333333333333,
+        "cook": 0.0,
+        "signal": 0.6666666666666666,
+        "stoke": 0.0,
+        "sleep": 1.0
+      },
+      "games_detail": [
+        {
+          "variant_name": "F_current_hunger_plus_easier_camp_stew",
+          "seed": 37823291,
+          "game_index": 0,
+          "roster": [
+            "forager_first",
+            "firekeeper_first",
+            "risk_taker",
+            "hunter_first"
+          ],
+          "rounds_played": 2,
+          "end_reason": "morale",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "forager_first",
+              "score": 3,
+              "meters": {
+                "hunger": 7,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 2
+              },
+              "craft_counts": {
+                "forage_kit": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "firekeeper_first",
+              "score": 0,
+              "meters": {
+                "hunger": 3,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 0
+              },
+              "death_cause": "morale",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "risk_taker",
+              "score": 0,
+              "meters": {
+                "hunger": 6,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2
+              },
+              "zone_visits": {
+                "meadow": 2
+              },
+              "craft_counts": {},
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "hunter_first",
+              "score": 3,
+              "meters": {
+                "hunger": 7,
+                "warmth": 4,
+                "hydration": 8,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 1,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 1
+              },
+              "zone_visits": {
+                "river": 2
+              },
+              "craft_counts": {
+                "fishing_pole": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 5,
+            "meadow": 2,
+            "river": 2
+          },
+          "recipe_crafts": {
+            "forage_kit": 1,
+            "fishing_pole": 1
+          },
+          "use_counts": {},
+          "action_counts": {
+            "search": 9,
+            "craft": 2
+          },
+          "hazard_triggers": 6,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 1,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": 1,
+            "rescue_signal": null
+          }
+        },
+        {
+          "variant_name": "F_current_hunger_plus_easier_camp_stew",
+          "seed": 37928020,
+          "game_index": 1,
+          "roster": [
+            "conservative",
+            "forager_first",
+            "firekeeper_first",
+            "rescuer"
+          ],
+          "rounds_played": 3,
+          "end_reason": "hunger",
+          "shared_rescue": 12,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "conservative",
+              "score": 12,
+              "meters": {
+                "hunger": 5,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 10
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": 1,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 5,
+                "rest": 1
+              },
+              "zone_visits": {
+                "forest": 3
+              },
+              "craft_counts": {
+                "lean_to": 2,
+                "forage_kit": 2,
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "forager_first",
+              "score": 4,
+              "meters": {
+                "hunger": 3,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 9
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 3,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 5,
+                "craft": 3
+              },
+              "zone_visits": {
+                "forest": 5
+              },
+              "craft_counts": {
+                "herb_kit": 2,
+                "snare": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "firekeeper_first",
+              "score": 2,
+              "meters": {
+                "hunger": 0,
+                "warmth": 5,
+                "hydration": 7,
+                "morale": 3
+              },
+              "death_cause": "hunger",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 6,
+                "rest": 2,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 6
+              },
+              "craft_counts": {
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "rescuer",
+              "score": 6,
+              "meters": {
+                "hunger": 7,
+                "warmth": 3,
+                "hydration": 7,
+                "morale": 8
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": 2
+              },
+              "actions_spent": {
+                "search": 2,
+                "craft": 2,
+                "use": 2
+              },
+              "zone_visits": {
+                "highground": 2
+              },
+              "craft_counts": {
+                "forage_kit": 1,
+                "signal_mirror": 1
+              },
+              "use_counts": {
+                "signal_mirror": 2
+              },
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 14,
+            "highground": 2
+          },
+          "recipe_crafts": {
+            "lean_to": 2,
+            "herb_kit": 2,
+            "forage_kit": 3,
+            "torch": 1,
+            "signal_mirror": 1,
+            "smoke_tool": 1,
+            "snare": 1
+          },
+          "use_counts": {
+            "signal_mirror": 2
+          },
+          "action_counts": {
+            "search": 16,
+            "craft": 11,
+            "rest": 3,
+            "use": 2,
+            "signal": 2
+          },
+          "hazard_triggers": 6,
+          "hazard_prevented": 1,
+          "raw_food_consumption": 1,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": 1,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": 3,
+            "rescue_signal": 2
+          }
+        },
+        {
+          "variant_name": "F_current_hunger_plus_easier_camp_stew",
+          "seed": 38032749,
+          "game_index": 2,
+          "roster": [
+            "stabilizer",
+            "hunter_first",
+            "risk_taker",
+            "conservative"
+          ],
+          "rounds_played": 4,
+          "end_reason": "morale",
+          "shared_rescue": 0,
+          "survivors": 3,
+          "winner_player": null,
+          "winner_profile": null,
+          "player_results": [
+            {
+              "name": "Player 1",
+              "profile": "firekeeper",
+              "policy": "stabilizer",
+              "score": 4,
+              "meters": {
+                "hunger": 3,
+                "warmth": 5,
+                "hydration": 6,
+                "morale": 4
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": 2,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 4,
+                "craft": 2,
+                "sleep": 1
+              },
+              "zone_visits": {
+                "forest": 3,
+                "meadow": 1
+              },
+              "craft_counts": {
+                "snare": 1,
+                "smoke_tool": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 0,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 2",
+              "profile": "forager",
+              "policy": "hunter_first",
+              "score": 10,
+              "meters": {
+                "hunger": 1,
+                "warmth": 5,
+                "hydration": 6,
+                "morale": 4
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 7,
+                "craft": 4,
+                "sleep": 1
+              },
+              "zone_visits": {
+                "river": 3,
+                "forest": 4
+              },
+              "craft_counts": {
+                "axe": 3,
+                "herb_kit": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 3",
+              "profile": "hunter",
+              "policy": "risk_taker",
+              "score": 6,
+              "meters": {
+                "hunger": 7,
+                "warmth": 3,
+                "hydration": 6,
+                "morale": 6
+              },
+              "death_cause": null,
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 3,
+                "craft": 2,
+                "use": 6,
+                "rest": 1
+              },
+              "zone_visits": {
+                "highground": 1,
+                "meadow": 1,
+                "forest": 1
+              },
+              "craft_counts": {
+                "forage_kit": 1,
+                "fishing_pole": 1
+              },
+              "use_counts": {
+                "fishing_pole": 6
+              },
+              "raw_food_consumption": 1,
+              "unsafe_water_consumption": 0
+            },
+            {
+              "name": "Player 4",
+              "profile": "pathfinder",
+              "policy": "conservative",
+              "score": 2,
+              "meters": {
+                "hunger": 2,
+                "warmth": 3,
+                "hydration": 6,
+                "morale": 0
+              },
+              "death_cause": "morale",
+              "first_engine_rounds": {
+                "shelter": null,
+                "fire": null,
+                "water_treatment": null,
+                "food_tool": null,
+                "rescue_signal": null
+              },
+              "actions_spent": {
+                "search": 7,
+                "sleep": 1,
+                "craft": 1
+              },
+              "zone_visits": {
+                "forest": 7
+              },
+              "craft_counts": {
+                "torch": 1
+              },
+              "use_counts": {},
+              "raw_food_consumption": 3,
+              "unsafe_water_consumption": 0
+            }
+          ],
+          "zone_visits": {
+            "forest": 15,
+            "river": 3,
+            "highground": 1,
+            "meadow": 2
+          },
+          "recipe_crafts": {
+            "axe": 3,
+            "forage_kit": 1,
+            "snare": 1,
+            "fishing_pole": 1,
+            "herb_kit": 1,
+            "torch": 1,
+            "smoke_tool": 1
+          },
+          "use_counts": {
+            "fishing_pole": 6
+          },
+          "action_counts": {
+            "search": 21,
+            "craft": 9,
+            "use": 6,
+            "sleep": 3,
+            "rest": 1
+          },
+          "hazard_triggers": 11,
+          "hazard_prevented": 0,
+          "raw_food_consumption": 5,
+          "unsafe_water_consumption": 0,
+          "engine_firsts": {
+            "shelter": null,
+            "fire": null,
+            "water_treatment": null,
+            "food_tool": 2,
+            "rescue_signal": null
+          }
+        }
+      ]
+    }
+  ]
+}

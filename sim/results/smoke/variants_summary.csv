@@ -1,0 +1,7 @@
+variant,games,rescue_rate,wipeout_rate,average_rounds,average_survivors,raw_food_consumption,unsafe_water_consumption,hazard_triggers,hazard_prevented
+A_current_rules,3,0.6667,0.3333,2.333,3.667,6,0,25,1
+B_no_round_end_hunger_decay,3,0.0,1.0,4.0,3.0,6,0,25,2
+C_hunger_decay_after_2_searches,3,0.0,1.0,2.667,3.0,1,0,26,2
+D_easier_snare,3,0.0,1.0,2.667,3.0,1,0,22,0
+E_easier_fishing_pole,3,0.0,1.0,2.333,3.0,3,0,28,0
+F_current_hunger_plus_easier_camp_stew,3,0.0,1.0,3.0,3.0,7,0,23,1

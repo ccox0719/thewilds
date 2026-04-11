@@ -1,0 +1,26 @@
+{
+  "games": 25,
+  "players": 4,
+  "seed": 1337,
+  "variant": {
+    "name": "custom_balance_lab",
+    "description": "Exported from the Balance Lab in index.html",
+    "search_hunger_cost": true,
+    "round_end_hunger_decay": "none",
+    "round_end_hunger_threshold": 2,
+    "morale_action_pool": false,
+    "rescue_target": 20,
+    "starting_meters": {
+      "hunger": 9,
+      "warmth": 5,
+      "hydration": 9,
+      "morale": 9
+    },
+    "spoilage_mode": "standard",
+    "recipe_threshold_overrides": {
+      "snare": 3,
+      "fishing_pole": 4,
+      "camp_stew": 3
+    }
+  }
+}
