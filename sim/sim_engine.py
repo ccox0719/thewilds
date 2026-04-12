@@ -528,6 +528,8 @@ class SimulationEngine:
             return
         current.actions_left = self.starting_actions(current.meters, variant)
         current.searches_this_round = 0
+        free_use_used = False
+        free_cook_used = False
         while current.actions_left > 0 and not game.game_over:
             self.check_game_state(game, players, variant)
             if game.game_over:
@@ -544,6 +546,30 @@ class SimulationEngine:
             plan = policy.choose_action(current, game, self)
             if plan.kind == "consume":
                 self.execute_free_consume(current, plan, rng, stats)
+                self.check_game_state(game, players, variant)
+                if current.death_cause is not None:
+                    return
+                continue
+            # Zone-use and cook are free follow-through actions in this ruleset.
+            # Cap them to once per turn each so the AI cannot loop forever.
+            if plan.kind == "use":
+                if free_use_used:
+                    break
+                executed = self.execute_plan(game, players, current, policy, variant, rng, plan, stats)
+                if not executed:
+                    break
+                free_use_used = True
+                self.check_game_state(game, players, variant)
+                if current.death_cause is not None:
+                    return
+                continue
+            if plan.kind == "cook":
+                if free_cook_used:
+                    break
+                executed = self.execute_plan(game, players, current, policy, variant, rng, plan, stats)
+                if not executed:
+                    break
+                free_cook_used = True
                 self.check_game_state(game, players, variant)
                 if current.death_cause is not None:
                     return

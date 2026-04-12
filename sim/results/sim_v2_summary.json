@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "version": "v2",
+    "games_per_scenario": 500,
+    "player_count": 4,
+    "master_seed": 1337,
+    "scenario_count": 1
+  },
+  "variants": [
+    {
+      "variant": "B_current_rules",
+      "games": 500,
+      "survival_rate": 0.24,
+      "wipeout_rate": 0.76,
+      "rescue_rate": 0.214,
+      "main_cause_of_death": "hydration",
+      "average_rounds": 12.166
+    }
+  ]
+}
