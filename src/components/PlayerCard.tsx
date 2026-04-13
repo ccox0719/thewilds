@@ -33,7 +33,6 @@ export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = 
       player={player}
       state={state}
       isCurrentTurn={isCurrentTurn}
-      seatLabel={seatLabel}
       score={score}
       survivalPreview={survivalPreview}
       activeTags={activeTags}
@@ -182,13 +181,12 @@ interface CompactProps {
   player: PlayerState;
   state: GameState;
   isCurrentTurn?: boolean;
-  seatLabel?: string;
   score: number;
   survivalPreview: ReturnType<typeof previewEndOfRoundOutcome>;
   activeTags: readonly string[];
 }
 
-function CompactPlayerCard({ player, isCurrentTurn, seatLabel, score, survivalPreview }: CompactProps) {
+function CompactPlayerCard({ player, isCurrentTurn, score, survivalPreview }: CompactProps) {
   return (
     <div className={`player-card-compact${isCurrentTurn ? ' current-turn' : ''}${player.collapsed ? ' collapsed' : ''}`}>
       <div className="flex justify-between align-center">

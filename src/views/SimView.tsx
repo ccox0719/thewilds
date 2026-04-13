@@ -3,7 +3,6 @@ import type { AIStrategy, BatchSimulationResult, SimulationResult } from '../typ
 import { runGameSimulation, runBatchSimulation } from '../engine/simulation';
 import { scenarios } from '../data/scenarios';
 import { profiles } from '../data/profiles';
-import { config } from '../data/config';
 import { randomSeed } from '../utils/rng';
 
 type BatchCount = 10 | 100 | 1000;
@@ -384,13 +383,3 @@ function StatChip({ label, value, color }: { label: string; value: string; color
     </div>
   );
 }
-
-function formatScoreBreakdown(player: SimulationResult['players'][number]): string {
-  const rescuePoints = (player.rescueScore * config.scoring.rescueMultiplier).toFixed(1);
-  const vitalityPoints = Math.max(0, player.finalVitality).toFixed(1);
-  const buildPoints = (player.persistentBuilds * config.scoring.persistentBuildBonus).toFixed(1);
-  return `${rescuePoints}/${vitalityPoints}/${buildPoints}`;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-void formatScoreBreakdown;

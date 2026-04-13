@@ -341,7 +341,7 @@ function ScenariosTab() {
 /* ── Config tab ── */
 function ConfigTab() {
   const scoring = config.scoring;
-  const pressure = config.pressure ?? {};
+  const aiWeights = config.aiWeights;
 
   return (
     <>
@@ -361,10 +361,10 @@ function ConfigTab() {
           ))}
         </div>
 
-        {Object.keys(pressure).length > 0 && (
+        {Object.keys(aiWeights).length > 0 && (
           <div className="card flex-col gap-2" style={{ flex: '1 1 200px' }}>
-            <h3>Pressure</h3>
-            {Object.entries(pressure).map(([k, v]) => (
+            <h3>AI Weights</h3>
+            {Object.entries(aiWeights).map(([k, v]) => (
               <ConfRow key={k} label={k} value={String(v)} />
             ))}
           </div>
