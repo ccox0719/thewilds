@@ -1,0 +1,489 @@
+:root {
+  --print-page-width: 8.5in;
+  --print-page-height: 11in;
+  --print-card-width: 2.5in;
+  --print-card-height: 3.5in;
+}
+
+.print-app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #101014;
+  color: #171717;
+}
+
+.print-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 16px;
+  background: #1a1a1e;
+  border-bottom: 1px solid #2e2e36;
+}
+
+.print-toolbar__eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a0a0aa;
+}
+
+.print-toolbar__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f4f4f7;
+}
+
+.print-toolbar__subtitle {
+  font-size: 12px;
+  color: #9f9fa8;
+}
+
+.print-template-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 16px;
+  background: #141419;
+  border-bottom: 1px solid #2b2b33;
+}
+
+.print-template-description {
+  padding: 8px 16px 0;
+  font-size: 12px;
+  color: #bbb;
+}
+
+.print-preview {
+  flex: 1;
+  padding: 20px 16px 40px;
+  overflow: auto;
+  background:
+    radial-gradient(circle at top left, rgba(107, 156, 221, 0.12), transparent 35%),
+    linear-gradient(180deg, #0f0f12 0%, #16161b 100%);
+}
+
+.print-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.print-page {
+  width: var(--print-page-width);
+  min-height: var(--print-page-height);
+  margin: 0 auto;
+  padding: 0.35in;
+  background: #fff;
+  color: #111;
+  border: 1px solid #d7d7d7;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.3);
+  break-after: page;
+  page-break-after: always;
+}
+
+.print-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #111;
+}
+
+.print-page__eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #555;
+}
+
+.print-page__title {
+  font-size: 20px;
+  line-height: 1.1;
+  color: #111;
+}
+
+.print-page__subtitle,
+.print-page__footer {
+  font-size: 11px;
+  color: #555;
+}
+
+.print-page__footer {
+  text-align: right;
+}
+
+.print-page__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.print-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, var(--print-card-width));
+  justify-content: center;
+  gap: 0.1in;
+}
+
+.print-card {
+  width: var(--print-card-width);
+  height: var(--print-card-height);
+  padding: 0.12in;
+  border: 1.5px solid #111;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 10.5px;
+  line-height: 1.25;
+}
+
+.print-card__top {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #bbb;
+}
+
+.print-card__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+
+.print-card__subtitle {
+  font-size: 10px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.print-card__header-note {
+  font-size: 10px;
+  color: #333;
+  font-weight: 700;
+}
+
+.print-card__body {
+  flex: 1;
+  padding-top: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.print-card__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.print-card__effect {
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+}
+
+.print-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #333;
+}
+
+.print-card__meta--muted {
+  color: #666;
+}
+
+.print-card__footer {
+  padding-top: 6px;
+  border-top: 1px solid #bbb;
+  font-size: 9px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.print-reference-grid,
+.print-token-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.print-rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.print-rules-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.print-rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.print-rules-item {
+  padding: 8px;
+  border: 1px solid #dedede;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.print-rules-small {
+  font-size: 10px;
+  color: #666;
+}
+
+.print-reference-block {
+  border: 1px solid #c7c7c7;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+.print-reference-block h2 {
+  margin-bottom: 8px;
+  color: #111;
+  font-size: 15px;
+}
+
+.print-reference-block ul,
+.print-reference-block ol {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.print-reference-profiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.print-reference-profile {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  background: #fff;
+  font-size: 11px;
+}
+
+.print-board-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.print-board {
+  min-height: 4.1in;
+  border: 1.5px solid #111;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.print-board__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #bbb;
+}
+
+.print-board__seat {
+  font-size: 10px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.print-board__name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+.print-board__perk {
+  font-size: 11px;
+  color: #444;
+  text-align: right;
+}
+
+.print-board__row {
+  display: grid;
+  grid-template-columns: 0.9in 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.print-board__label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #555;
+}
+
+.print-board__track,
+.print-board__slots,
+.print-board__builds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.print-board__pip,
+.print-board__slot,
+.print-board__build-slot {
+  display: inline-block;
+  border: 1px solid #888;
+  background: #f3f3f3;
+}
+
+.print-board__pip {
+  width: 0.16in;
+  height: 0.16in;
+  border-radius: 999px;
+}
+
+.print-board__slot {
+  width: 0.38in;
+  height: 0.26in;
+  border-radius: 4px;
+}
+
+.print-board__build-slot {
+  width: 0.82in;
+  height: 0.32in;
+  border-radius: 6px;
+}
+
+.print-board__notes {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #bbb;
+  font-size: 11px;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.print-token-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.print-token-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.print-token {
+  width: 100%;
+  min-height: 0.75in;
+  border: 1.5px solid #111;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.print-token__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #111;
+}
+
+.print-token__detail {
+  font-size: 9px;
+  color: #555;
+}
+
+.print-token-caption {
+  font-size: 10px;
+  color: #444;
+}
+
+.print-token .material-pill {
+  color: #111;
+  border: 1px solid #666;
+  background: #fff;
+}
+
+@page {
+  size: letter;
+  margin: 0.35in;
+}
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  .nav,
+  .print-toolbar,
+  .print-template-tabs,
+  .print-template-description {
+    display: none !important;
+  }
+
+  .print-app {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .print-preview {
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .print-page {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .print-stack {
+    gap: 0;
+  }
+
+  .print-board {
+    min-height: 4.1in;
+  }
+
+  .print-card {
+    box-shadow: none;
+  }
+}
