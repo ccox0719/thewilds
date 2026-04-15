@@ -41,6 +41,16 @@
   color: #9f9fa8;
 }
 
+.print-toolbar__audit {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #9cc58d;
+}
+
+.print-toolbar__audit--warn {
+  color: #ffcc72;
+}
+
 .print-template-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -143,6 +153,33 @@
   justify-content: space-between;
   font-size: 10.5px;
   line-height: 1.25;
+}
+
+.print-card--recipe {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(0.12in + 0.14in + 0.08in);
+}
+
+.print-card--one-time .print-card__banner {
+  background: #4f86c6;
+}
+
+.print-card--persistent .print-card__banner {
+  background: #4f9c72;
+}
+
+.print-card--engine .print-card__banner {
+  background: #c89235;
+}
+
+.print-card__banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.14in;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .print-card__top {

@@ -107,7 +107,6 @@ export function validateConfig(): string[] {
   if (config.startingVitality <= 0) errors.push('startingVitality must be > 0');
   if (config.simulationCeiling <= 0) errors.push('simulationCeiling must be > 0');
   if (config.marketCapSize <= 0) errors.push('marketCapSize must be > 0');
-  if (config.thirstDamageScale <= 0 || config.thirstDamageScale > 1) errors.push('thirstDamageScale must be between 0 and 1');
   if (config.pressureSchedule.length === 0) errors.push('pressureSchedule must not be empty');
   if (Object.keys(config.rescueThresholds).length === 0) errors.push('rescueThresholds must not be empty');
   if (config.scoring.rescueMultiplier <= 0) errors.push('rescueMultiplier must be > 0');
@@ -125,14 +124,14 @@ export function recipeValue(recipe: Recipe, context: ValueContext): number {
 
   const rescueEffect = recipe.effects.find((e) => e.type === 'rescue');
   const vitalityEffect = recipe.effects.find((e) => e.type === 'vitality');
-  const engineEffect = recipe.type === 'persistentEngine' ? 1.5 : 0;
+  const engineEffect = recipe.type === 'persistentEngine' ? 2 : 0;
 
-  if (rescueEffect) value += rescueEffect.amount * 1.5;
+  if (rescueEffect) value += rescueEffect.amount * 2;
   if (vitalityEffect) value += vitalityEffect.amount * 2;
-  if (recipe.satisfiesCheck) value += 1.5;
+  if (recipe.satisfiesCheck) value += 2;
   if (engineEffect > 0) value += engineEffect * Math.max(1, context.playerCount - 1);
-  if (recipe.id === 'simple-signal') value += Math.max(0, 8 - context.round) * 0.25;
-  if (recipe.id === 'signal-beacon') value += Math.max(0, 8 - context.round) * 0.4;
+  if (recipe.id === 'simple-signal') value += Math.max(0, 8 - context.round);
+  if (recipe.id === 'signal-beacon') value += Math.max(0, 8 - context.round);
   if (context.scenario.temperaturePressure !== 0 && (recipe.id === 'lean-to' || recipe.id === 'campfire')) value += 1;
 
   return value / totalCost;

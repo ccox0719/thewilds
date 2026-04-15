@@ -36,12 +36,19 @@ function familyLabel(family: string): string {
   return map[family] ?? family;
 }
 
+function typeClass(type: string): string {
+  if (type === 'persistentEngine') return 'type-engine';
+  if (type === 'persistent') return 'type-persistent';
+  return 'type-one-time';
+}
+
 export function RecipeCard({ recipe, player, state, onCraft, showCraftButton = true }: RecipeCardProps) {
   const canAfford = canCraftRecipe(player, recipe, state);
   const cost = getEffectiveRecipeCost(player, recipe, state);
 
   return (
-    <div className={`recipe-card ${canAfford ? 'can-afford' : 'cannot-afford'}`}>
+    <div className={`recipe-card ${typeClass(recipe.type)} ${canAfford ? 'can-afford' : 'cannot-afford'}`}>
+      <div className="recipe-card-banner" aria-hidden="true" />
       <div className="recipe-card-header">
         <span className="recipe-card-name">{recipe.name}</span>
         <div className="recipe-card-badges">
@@ -52,7 +59,7 @@ export function RecipeCard({ recipe, player, state, onCraft, showCraftButton = t
       </div>
 
       <div className="recipe-card-cost">
-        <span className="text-dim text-xs" style={{ marginRight: 2 }}>Cost:</span>
+        <span className="text-dim text-xs" style={{ marginRight: 2 }}>⊙</span>
         {Object.entries(cost).map(([mat, qty]) => (
           <MaterialPill key={mat} material={mat as MaterialType} count={qty as number} />
         ))}
@@ -60,7 +67,7 @@ export function RecipeCard({ recipe, player, state, onCraft, showCraftButton = t
 
       {recipe.requiresTags.length > 0 && (
         <div className="recipe-card-requires">
-          <span className="text-dim text-xs">Needs:</span>
+          <span className="text-dim text-xs">↳</span>
           {recipe.requiresTags.map((tag: Tag) => (
             <span key={tag} className="tag active" title={getTagTooltip(tag)}>{tag}</span>
           ))}
@@ -69,13 +76,13 @@ export function RecipeCard({ recipe, player, state, onCraft, showCraftButton = t
 
       {recipe.satisfiesCheck && (
         <div className="text-xs text-muted">
-          Satisfies: <span className="tag safe">{recipe.satisfiesCheck}</span>
+          ✓ <span className="tag safe">{recipe.satisfiesCheck}</span>
         </div>
       )}
 
       {recipe.tags.length > 0 && (
         <div className="recipe-card-requires">
-          <span className="text-dim text-xs">Grants:</span>
+          <span className="text-dim text-xs">+</span>
           {recipe.tags.map((tag: Tag) => (
             <span key={tag} className="tag active" title={getTagTooltip(tag)}>{tag}</span>
           ))}
@@ -93,7 +100,7 @@ export function RecipeCard({ recipe, player, state, onCraft, showCraftButton = t
                   : 'var(--text-muted)',
               }}
             >
-              {e.type} +{e.amount}{e.duration ? ` (${e.duration})` : ''}{' '}
+              {e.type === 'rescue' ? '⚑' : e.type === 'vitality' ? '♥' : e.type} +{e.amount}{e.duration ? ` (${e.duration})` : ''}{' '}
             </span>
           ))}
         </div>

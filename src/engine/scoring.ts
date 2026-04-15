@@ -19,7 +19,7 @@ export interface ScoreBreakdown {
 export function getScoreBreakdown(player: PlayerState): ScoreBreakdown {
   const scoring = config.scoring;
 
-  const rescuePoints = player.rescueScore * scoring.rescueMultiplier;
+  const rescuePoints = player.collapsed ? 0 : player.rescueScore * scoring.rescueMultiplier;
   const vitalityPoints = player.collapsed ? 0 : Math.max(0, player.vitality);
 
   const persistentBuilds = player.builtRecipes.filter((id) => {

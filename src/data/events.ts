@@ -207,8 +207,8 @@ export function getRoundEventForScenario(scenario: Scenario, round: number, seed
   const weights = candidates.map((event) => {
     let weight = event.family === 'escalation' ? 3 : event.family === 'opportunity' ? 2 : 1;
     if (event.id.includes('clear-skies')) weight += 1;
-    if (event.id.includes('cold-front') || event.id.includes('heat-wave')) weight += Math.max(0, round - 6) * 0.25;
-    if (event.id.includes('abundant-forage')) weight += Math.max(0, 6 - round) * 0.35;
+    if (event.id.includes('cold-front') || event.id.includes('heat-wave')) weight += Math.max(0, round - 6);
+    if (event.id.includes('abundant-forage')) weight += Math.max(0, 6 - round);
     if (scenario.id === 'rocky-highlands' && event.id.startsWith('rocky-highlands')) weight += 2;
     if (scenario.id === 'volcanic' && event.id.startsWith('volcanic')) weight += 2;
     if (scenario.id === 'river-delta' && event.id.startsWith('river-delta')) weight += 2;

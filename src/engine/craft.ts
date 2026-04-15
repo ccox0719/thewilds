@@ -213,10 +213,9 @@ export function resolveThirstCheck(
 
   const baseDamage = config.pressureSchedule[state.round - 1] ?? config.pressureSchedule.at(-1)!;
   const eventBonus = getEventPressureBonus(state.currentEvent, 'thirst');
-  const rawDamage = Math.floor((baseDamage + eventBonus) * config.thirstDamageScale);
   return {
     player,
-    vitDamage: eventBonus < 0 ? Math.max(0, rawDamage) : Math.max(1, rawDamage),
+    vitDamage: Math.max(1, baseDamage + eventBonus),
     satisfied: false,
   };
 }
@@ -558,7 +557,7 @@ function chooseCheapestMaterial(cost: Partial<Record<MaterialType, number>>): Ma
 }
 
 function isMaterialType(value: string): value is MaterialType {
-  return ['Wood', 'Fiber', 'Stone', 'Food', 'Water', 'Fire', 'Rations', 'CleanWater', 'Fuel', 'Cordage'].includes(value);
+  return ['Wood', 'Fiber', 'Stone', 'Food', 'Water', 'Rations', 'CleanWater', 'Fuel', 'Cordage'].includes(value);
 }
 
 function applyBuildPerkHooks(state: GameState, player: PlayerState, recipe: Recipe): GameState {

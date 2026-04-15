@@ -44,7 +44,7 @@ export function resolveMarketOverflow(market: MarketState, cap: number): MarketS
 
 export function runDraftPhase(state: GameState): GameState {
   const playerCount = state.players.length;
-  const marketDrawCount = playerCount * 2 + 2;
+  const marketDrawCount = playerCount * 2 + 4;
 
   const { drawn: marketDraw, newState: afterMarketDraw } = drawFromBag(state, marketDrawCount);
   const newMarket: MarketState = {

@@ -4,7 +4,6 @@ export type MaterialType =
   | 'Stone'
   | 'Food'
   | 'Water'
-  | 'Fire'
   | 'Rations'
   | 'CleanWater'
   | 'Fuel'
@@ -347,7 +346,6 @@ export interface BalanceConfig {
   simulationCeiling: number;
   materialsPrivateDrawPerRound: number;
   marketCapSize: number;
-  thirstDamageScale: number;
   hungerMissesPerDamage: number;
   tier2UnlockCondition: string;
   pressureSchedule: number[];

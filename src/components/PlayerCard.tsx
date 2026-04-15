@@ -10,6 +10,7 @@ import { getTagTooltip } from '../data/tagInfo';
 import { getRecipeById } from '../data/recipes';
 import { getSpecialCardById } from '../data/specialCards';
 import { playerHasTag } from '../engine/craft';
+import { useLongPressTooltip } from '../hooks/useLongPressTooltip';
 
 interface Props {
   player: PlayerState;
@@ -21,6 +22,21 @@ interface Props {
 
 const ALL_TAGS = ['Shelter', 'SturdyShelter', 'HearthActive', 'SustainedFire', 'FoodSource', 'Tool', 'SignalEngine'] as const;
 const MAX_VITALITY = 10;
+
+function TagBadge({ label, tooltip, className = 'tag active', children }: {
+  label: string;
+  tooltip?: string;
+  className?: string;
+  children?: React.ReactNode;
+}) {
+  const { handlers, tooltip: tooltipNode } = useLongPressTooltip(tooltip ?? label);
+  return (
+    <>
+      <span className={className} title={tooltip} {...handlers}>{children ?? label}</span>
+      {tooltipNode}
+    </>
+  );
+}
 
 export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = false }: Props) {
   const score = scorePlayer(player, state);
@@ -79,6 +95,7 @@ export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = 
       <StatusIconRow
         hungerSatisfied={survivalPreview.hungerSatisfied}
         hungerDamage={survivalPreview.hungerDamage}
+        hungerDebt={player.hungerDebt}
         thirstSatisfied={survivalPreview.thirstSatisfied}
         thirstDamage={survivalPreview.thirstDamage}
         warmthSatisfied={survivalPreview.warmthSatisfied}
@@ -86,10 +103,22 @@ export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = 
         vitalityDelta={survivalPreview.vitalityDelta}
       />
 
-      {/* Score row */}
-      <div className="score-row">
-        <span className="score-chip rescue">⚑ {player.rescueScore} rescue</span>
-        <span className="score-chip score">★ {score} pts</span>
+      {/* Score bars */}
+      <div className="flex-col gap-2">
+        <StatBar
+          value={player.rescueScore}
+          max={Math.max(player.rescueScore, Math.ceil(state.groupRescueThreshold / state.players.length))}
+          label="⚑ Rescue"
+          variant="rescue"
+          size="sm"
+        />
+        <StatBar
+          value={score}
+          max={Math.max(score, 30)}
+          label="★ Score"
+          variant="accent"
+          size="sm"
+        />
       </div>
 
       {/* Inventory */}
@@ -110,7 +139,7 @@ export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = 
           <div className="section-label">Active Tags</div>
           <div className="flex gap-1 wrap">
             {activeTags.map((tag) => (
-              <span key={tag} className="tag active" title={getTagTooltip(tag)}>{tag}</span>
+              <TagBadge key={tag} label={tag} tooltip={getTagTooltip(tag)} />
             ))}
           </div>
         </div>
@@ -157,16 +186,16 @@ export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = 
               const card = getSpecialCardById(owned.id);
               if (!card) return null;
               return (
-                <span
+                <TagBadge
                   key={`${owned.source}-${owned.id}-${owned.earnedRound ?? 'start'}`}
-                  className="tag active"
-                  title={`${card.name}: ${card.printEffectText}`}
+                  label={card.name}
+                  tooltip={`${card.name}: ${card.printEffectText}`}
                 >
                   {card.name}
                   <span className="text-dim" style={{ marginLeft: 4 }}>
                     {owned.source === 'starting' ? 'start' : `R${owned.earnedRound ?? '?'}`}
                   </span>
-                </span>
+                </TagBadge>
               );
             })}
           </div>

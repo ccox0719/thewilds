@@ -2,6 +2,16 @@ import { recipes } from '../data/recipes';
 import { specialCards } from '../data/specialCards';
 import { chunk } from './printUtils';
 import { PrintCard, PrintPage } from './PrintFrame';
+import {
+  formatMaterialCost,
+  formatFamilyName,
+  formatRecipeRequirements,
+  formatMaintenanceText,
+  formatTypeName,
+  formatTagName,
+  summarizeRecipeEffects,
+  summarizeSpecialCardEffects,
+} from './printFacts';
 
 type Mode = 'recipes' | 'specialties';
 
@@ -65,28 +75,28 @@ export function CardsPrintView({ mode }: Props) {
 }
 
 function RecipeCard({ recipe }: { recipe: (typeof recipes)[number] }) {
-  const prereq = [
-    recipe.requiresTags.length ? `Prereq: ${recipe.requiresTags.join(', ')}` : null,
-    recipe.requiresBuilds.length ? `Builds: ${recipe.requiresBuilds.join(', ')}` : null,
+  const requirements = formatRecipeRequirements(recipe) || undefined;
+  const maintenance = formatMaintenanceText(recipe);
+  const footer = [
+    `Tier ${recipe.tier} · ${formatTypeName(recipe.type)}`,
+    maintenance,
   ].filter(Boolean).join(' · ');
-
-  const effects = [
-    `Family: ${recipe.family}`,
-    `Tier ${recipe.tier} · ${recipe.type}`,
-    recipe.designNotes,
-  ];
 
   return (
     <PrintCard
       title={recipe.printTitle}
-      headerNote={prereq || undefined}
-      subtitle={recipe.printCostText}
-      footer={recipe.satisfiesCheck ? `Satisfies: ${recipe.satisfiesCheck}` : undefined}
+      className={`print-card--recipe ${recipe.type === 'persistentEngine' ? 'print-card--engine' : recipe.type === 'persistent' ? 'print-card--persistent' : 'print-card--one-time'}`}
+      headerNote={requirements}
+      subtitle={formatMaterialCost(recipe.cost)}
+      footer={footer || undefined}
     >
+      <div className="print-card__banner" aria-hidden="true" />
       <div className="print-card__stack">
-        <div className="print-card__effect">{recipe.printEffectText}</div>
+        <div className="print-card__effect">{summarizeRecipeEffects(recipe).join('. ')}</div>
         <div className="print-card__meta">
-          {effects.map((line) => <div key={line}>{line}</div>)}
+          <div>Family: {formatFamilyName(recipe.family)}</div>
+          <div>Grants: {recipe.tags.length ? recipe.tags.map((tag) => formatTagName(tag)).join(', ') : 'None'}</div>
+          {recipe.satisfiesCheck && <div>Satisfies: {formatTagName(recipe.satisfiesCheck)}</div>}
         </div>
       </div>
     </PrintCard>
@@ -94,7 +104,7 @@ function RecipeCard({ recipe }: { recipe: (typeof recipes)[number] }) {
 }
 
 function SpecialtyCard({ card }: { card: (typeof specialCards)[number] }) {
-  const effects = card.effects.map((effect) => summarizeSpecialtyEffect(effect));
+  const effects = summarizeSpecialCardEffects(card);
   return (
     <PrintCard
       title={card.name}
@@ -102,33 +112,12 @@ function SpecialtyCard({ card }: { card: (typeof specialCards)[number] }) {
       footer={card.id}
     >
       <div className="print-card__stack">
-        <div className="print-card__effect">{card.printEffectText}</div>
+        <div className="print-card__effect">{effects.join('. ')}</div>
         <div className="print-card__meta">
-          {effects.map((line, index) => <div key={`${card.id}-${index}`}>{line}</div>)}
+          <div>Family: {formatFamilyName(card.family)}</div>
+          <div>Source: {card.source}</div>
         </div>
-        <div className="print-card__meta print-card__meta--muted">{card.designNotes}</div>
       </div>
     </PrintCard>
   );
-}
-
-function summarizeSpecialtyEffect(effect: (typeof specialCards)[number]['effects'][number]): string {
-  switch (effect.type) {
-    case 'recipeCostReduction':
-      return `Reduces ${effect.targetRecipeId ?? effect.targetFamily ?? 'matching'} cost by ${effect.amount}${effect.material ? ` ${effect.material}` : ''}`;
-    case 'recipeRescueBonus':
-      return `Adds +${effect.amount} Rescue to ${effect.targetRecipeId ?? effect.targetFamily ?? 'matching'} recipes`;
-    case 'recipeVitalityBonus':
-      return `Adds +${effect.amount} Vitality to ${effect.targetRecipeId ?? effect.targetFamily ?? 'matching'} recipes`;
-    case 'recipeMaterialGain':
-      return `Adds +${effect.amount} ${effect.material} to ${effect.targetRecipeId ?? effect.targetFamily ?? 'matching'} recipes`;
-    case 'recipeIncomeBonus':
-      return `Adds +${effect.amount} ${effect.material} income to ${effect.targetRecipeId ?? effect.targetFamily ?? 'matching'} recipes`;
-    case 'warmthDamageReduction':
-      return `Reduces warmth damage by ${effect.amount}`;
-    case 'unlockRecipe':
-      return `Unlocks ${effect.recipeId}`;
-    default:
-      return 'Specialty effect';
-  }
 }

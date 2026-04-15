@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { AIStrategy, GameState, MaterialType } from '../types';
+import { useLongPressTooltip } from '../hooks/useLongPressTooltip';
 import { createNewGame } from '../engine/state';
 import { prepareRound, resolveCraftTurn, resolveDraftTurn, resolveIncomePhase, resolvePressureAndAdvance, resolveMaintenancePhase } from '../engine/round';
 import { runDraftPhase } from '../engine/draft';
@@ -10,7 +11,6 @@ import { profiles } from '../data/profiles';
 import { MaterialPill } from '../components/MaterialPill';
 import { RescueBar } from '../components/RescueBar';
 import { PlayerCard } from '../components/PlayerCard';
-import { CommandPanel } from '../components/CommandPanel';
 import { RecipeCard } from '../components/RecipeCard';
 import { scorePlayer } from '../engine/scoring';
 import { randomSeed } from '../utils/rng';
@@ -28,6 +28,65 @@ interface AdvanceResult {
   game: GameState;
   phase: Phase;
   decisionIndex: number;
+}
+
+function EventChip({ event }: { event: GameState['currentEvent'] }) {
+  const { handlers, tooltip } = useLongPressTooltip(event?.description);
+  if (!event) return null;
+  const bg =
+    event.family === 'escalation' ? 'var(--danger-dim)' :
+    event.family === 'opportunity' ? 'var(--success-dim)' : 'var(--surface3)';
+  const borderColor =
+    event.family === 'escalation' ? 'var(--danger-border)' :
+    event.family === 'opportunity' ? 'var(--success-border)' : 'var(--border)';
+  const color =
+    event.family === 'escalation' ? 'var(--danger)' :
+    event.family === 'opportunity' ? 'var(--success)' : 'var(--text-muted)';
+  return (
+    <>
+      <span
+        className="chip"
+        style={{ background: bg, borderColor, color }}
+        title={event.description}
+        {...handlers}
+      >
+        {event.family === 'escalation' ? '⚠ ' : event.family === 'opportunity' ? '★ ' : ''}
+        {event.name}
+      </span>
+      {tooltip}
+    </>
+  );
+}
+
+function MarketSlotItem({
+  mat,
+  roundDrawn,
+  pickable,
+  onPick,
+}: {
+  mat: MaterialType;
+  roundDrawn: number;
+  pickable: boolean;
+  onPick: () => void;
+}) {
+  const tooltipText = `${mat} · drawn R${roundDrawn}`;
+  const { handlers, tooltip } = useLongPressTooltip(tooltipText);
+  return (
+    <>
+      <div
+        className={`market-slot${pickable ? ' pickable' : ''}`}
+        onClick={() => pickable && onPick()}
+        role={pickable ? 'button' : undefined}
+        tabIndex={pickable ? 0 : undefined}
+        onKeyDown={(e) => pickable && e.key === 'Enter' && onPick()}
+        title={tooltipText}
+        {...handlers}
+      >
+        <MaterialPill material={mat} />
+      </div>
+      {tooltip}
+    </>
+  );
 }
 
 export function PlayView() {
@@ -164,26 +223,7 @@ export function PlayView() {
         <div className="game-header-left">
           <span className="round-badge">Round {game.round}</span>
           <span className="scenario-name">{game.scenario.name}</span>
-          {game.currentEvent && (
-            <span
-              className={`chip ${game.currentEvent.family === 'escalation' ? '' : ''}`}
-              style={{
-                background: game.currentEvent.family === 'escalation'
-                  ? 'var(--danger-dim)' : game.currentEvent.family === 'opportunity'
-                  ? 'var(--success-dim)' : 'var(--surface3)',
-                borderColor: game.currentEvent.family === 'escalation'
-                  ? 'var(--danger-border)' : game.currentEvent.family === 'opportunity'
-                  ? 'var(--success-border)' : 'var(--border)',
-                color: game.currentEvent.family === 'escalation'
-                  ? 'var(--danger)' : game.currentEvent.family === 'opportunity'
-                  ? 'var(--success)' : 'var(--text-muted)',
-              }}
-              title={game.currentEvent.description}
-            >
-              {game.currentEvent.family === 'escalation' ? '⚠ ' : game.currentEvent.family === 'opportunity' ? '★ ' : ''}
-              {game.currentEvent.name}
-            </span>
-          )}
+          <EventChip event={game.currentEvent} />
         </div>
 
         <div className="game-header-center">
@@ -225,7 +265,6 @@ export function PlayView() {
                 isCurrentTurn={currentTurnPlayerId === HUMAN_PLAYER_ID}
                 seatLabel="You"
               />
-              <CommandPanel player={humanPlayer} state={game} />
             </>
           )}
         </div>
@@ -234,48 +273,23 @@ export function PlayView() {
         <div className="play-action-col">
 
           {/* Market */}
-          <div className="card flex-col gap-3">
-            <div className="flex justify-between align-center">
-              <h3>Center Market</h3>
-              <span className="text-xs text-muted">
-                {game.market.available.length}/6 · Bag: {game.bagRemaining.length} left
-              </span>
-            </div>
-
+          <div className="market-strip">
             {game.market.available.length === 0 ? (
               <span className="text-sm text-muted">Market empty</span>
             ) : (
-              <div className="market-grid">
-                {game.market.available.map((mat, i) => (
-                  <div
-                    key={`${mat}-${i}`}
-                    className={`market-slot${isHumanDraftTurn ? ' pickable' : ''}`}
-                    onClick={() => isHumanDraftTurn && handleDraftPick(mat)}
-                    role={isHumanDraftTurn ? 'button' : undefined}
-                    tabIndex={isHumanDraftTurn ? 0 : undefined}
-                    onKeyDown={(e) => isHumanDraftTurn && e.key === 'Enter' && handleDraftPick(mat)}
-                  >
-                    <MaterialPill material={mat} />
-                    <span className="market-slot-age">R{game.market.roundDrawn[i]}</span>
-                  </div>
-                ))}
-              </div>
+              game.market.available.map((mat, i) => (
+                <MarketSlotItem
+                  key={`${mat}-${i}`}
+                  mat={mat}
+                  roundDrawn={game.market.roundDrawn[i]}
+                  pickable={isHumanDraftTurn}
+                  onPick={() => handleDraftPick(mat)}
+                />
+              ))
             )}
-
-            <div className="flex gap-2 align-center">
-              {isHumanDraftTurn ? (
-                <>
-                  <span className="text-xs text-accent">Pick a material — or pass.</span>
-                  <button onClick={() => handleDraftPick(null)}>Pass Draft</button>
-                </>
-              ) : isHumanCraftTurn ? (
-                <span className="text-xs text-muted">Craft phase — choose a recipe below.</span>
-              ) : (
-                <span className="text-xs text-muted">
-                  {game.gameOver ? 'Game over.' : `↻ ${currentPlayer?.name ?? '—'} is deciding...`}
-                </span>
-              )}
-            </div>
+            {isHumanDraftTurn && (
+              <button className="market-pass" onClick={() => handleDraftPick(null)}>Pass</button>
+            )}
           </div>
 
           {/* Craft panel — below market */}
@@ -306,7 +320,7 @@ export function PlayView() {
 
               {lockedRecipes.length > 0 && (
                 <div>
-                  <div className="section-label">Locked (can't afford)</div>
+                  <div className="section-label">⊘ Locked</div>
                   <div className="recipe-cards">
                     {lockedRecipes.map((recipe) => (
                       <RecipeCard
@@ -343,8 +357,8 @@ export function PlayView() {
                     <span className="flex gap-3 text-xs">
                       <span className="text-rescue">⚑ {p.rescueScore}</span>
                       <span className="text-vitality">♥ {p.vitality}</span>
-                      <span className="text-muted">{p.builtRecipes.length} builds</span>
-                      <span className="bold">{scorePlayer(p, game)} pts</span>
+                      <span className="text-muted">⚒ {p.builtRecipes.length}</span>
+                      <span className="bold">★ {scorePlayer(p, game)}</span>
                     </span>
                   </div>
                 ))}
@@ -405,7 +419,7 @@ export function PlayView() {
       {/* ── AI players strip ── */}
       <div className="play-ai-row">
         <span className="text-xs text-dim" style={{ alignSelf: 'center', marginRight: 4 }}>
-          Opponents:
+          ⊹
         </span>
         {game.players
           .filter((p) => p.isAI)

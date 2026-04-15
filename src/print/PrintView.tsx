@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { printTemplates, defaultPrintTemplateId, type PrintTemplateId } from './registry';
+import { validateDataIntegrity } from '../engine/state';
 
 export function PrintView() {
   const [templateId, setTemplateId] = useState<PrintTemplateId>(defaultPrintTemplateId);
@@ -8,6 +9,7 @@ export function PrintView() {
     [templateId],
   );
   const TemplateComponent = template.Component;
+  const auditErrors = useMemo(() => validateDataIntegrity(), []);
 
   const printNow = () => {
     window.print();
@@ -21,6 +23,9 @@ export function PrintView() {
           <div className="print-toolbar__title">Print Preview</div>
           <div className="print-toolbar__subtitle">
             Browser preview for US Letter. Use the print dialog to export PDFs.
+          </div>
+          <div className={`print-toolbar__audit${auditErrors.length ? ' print-toolbar__audit--warn' : ''}`}>
+            Live data audit: {auditErrors.length ? `${auditErrors.length} issue${auditErrors.length === 1 ? '' : 's'} found` : 'passed'}
           </div>
         </div>
 

@@ -3,7 +3,7 @@ import { PrintPage, PrintToken } from './PrintFrame';
 import type { MaterialType, Tag } from '../types';
 import { getTagTooltip } from '../data/tagInfo';
 
-const MATERIALS: MaterialType[] = ['Wood', 'Fiber', 'Stone', 'Food', 'Water', 'Fire', 'Rations', 'CleanWater', 'Fuel', 'Cordage'];
+const MATERIALS: MaterialType[] = ['Wood', 'Fiber', 'Stone', 'Food', 'Water', 'Rations', 'CleanWater', 'Fuel', 'Cordage'];
 const TAGS: Tag[] = ['Shelter', 'SturdyShelter', 'HearthActive', 'SustainedFire', 'FoodSource', 'Tool', 'SignalEngine'];
 
 export function TokensPrintView() {

@@ -29,8 +29,9 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
 
   if (recipe.id === 'campfire') {
     score += weights.firePriority;
-    if (strategy !== 'rescueFocused') score += 6;
-    if (!playerHasTag(player, state, 'HearthActive')) score += 8;
+    if (strategy !== 'rescueFocused') score += 8;
+    if (!playerHasTag(player, state, 'HearthActive')) score += 12;
+    if (risks.includes('warmth')) score += 6;
   }
 
   if (recipe.family === 'shelter-climate') {
@@ -46,10 +47,10 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
   }
 
   if (recipe.family === 'processing') {
-    score += 2;
+    score += 3;
     if (playerHasTag(player, state, 'Tool')) score += 4;
-    if (roundsLeft > 4) score += 1;
-    if (recipe.id === 'tool-bench') score += 5;
+    if (roundsLeft > 4) score += 2;
+    if (recipe.id === 'tool-bench') score += 6;
   }
 
   const costReductionEffects = recipe.effects.filter((effect) => effect.type === 'costReduction');
@@ -92,19 +93,20 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
 
   if (recipe.id === 'snare') {
     score += weights.snarePriority;
-    score += Math.max(0, 6 - state.round) * 1.5;
+    score += Math.max(0, 6 - state.round);
   }
 
   if (recipe.id === 'signal-platform') {
     score += weights.signalPlatformPriority;
-    if (roundsLeft > 3) score += 6;
+    if (roundsLeft > 3) score += 8;
     if (risks.length === 0) score += 8;
+    if (playerHasTag(player, state, 'SignalEngine')) score += 10;
     score += 12;
   }
 
   if (recipe.id === 'signal-beacon') {
     score += weights.beaconPriority;
-    if (roundsLeft <= 5) score += 10;
+    if (roundsLeft <= 5) score += 12;
     if (playerHasTag(player, state, 'SignalEngine')) score += 14;
   }
 
@@ -143,7 +145,7 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
 
   if (recipe.id === 'signal-platform') {
     if (risks.length === 0) score += 5;
-    if (roundsLeft <= 5) score += 4;
+    if (roundsLeft <= 5) score += 6;
     if (player.profile.id === 'scout') score += 2;
   }
 
@@ -173,7 +175,7 @@ export function chooseDraftPick(player: PlayerState, market: MarketState, state:
     let score = needed[material] ?? 0;
 
     if (strategy === 'cautious' && (material === 'Food' || material === 'Water')) score += 4;
-    if (strategy === 'rescueFocused' && (material === 'Stone' || material === 'Fire')) score += 2;
+    if (strategy === 'rescueFocused' && (material === 'Stone' || material === 'Fiber')) score += 2;
     if (player.profile.id === 'builder' && (material === 'Wood' || material === 'Fiber' || material === 'Stone')) score += 2;
     if (material === 'Water' && risks.includes('thirst')) score += 10;
     if (material === 'Food' && risks.includes('hunger')) score += 2;
@@ -228,7 +230,7 @@ export function explainDraftPick(
 
   if (pick === 'Water' && risks.includes('thirst')) return 'Took Water to cover thirst pressure';
   if (pick === 'Food' && risks.includes('hunger')) return 'Took Food to slow hunger pressure';
-  if (pick === 'Fire' && !playerHasTag(player, state, 'HearthActive')) return 'Took Fire to open cooking and warmth';
+  if ((pick === 'Wood' || pick === 'Fiber') && !playerHasTag(player, state, 'HearthActive')) return `Took ${pick} to open cooking and warmth`;
 
   if (pick === topNeed) {
     return `Took ${pick} for current build plans`;

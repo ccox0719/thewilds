@@ -1,16 +1,16 @@
 import type { MaterialType } from '../types';
+import { useLongPressTooltip } from '../hooks/useLongPressTooltip';
 
-const MATERIAL_SYMBOLS: Record<MaterialType, string> = {
-  Wood: '≡',
-  Fiber: '∿',
-  Stone: '◆',
-  Food: '✦',
-  Water: '◈',
-  Fire: '◉',
-  Rations: '⊕',
-  CleanWater: '◈',
-  Fuel: '◉',
-  Cordage: '∞',
+const MATERIAL_ICONS: Record<MaterialType, string> = {
+  Wood:       '🪵',
+  Fiber:      '🌿',
+  Stone:      '🪨',
+  Food:       '🍖',
+  Water:      '💧',
+  Rations:    '🥫',
+  CleanWater: '💦',
+  Fuel:       '🔥',
+  Cordage:    '🪢',
 };
 
 interface Props {
@@ -19,15 +19,17 @@ interface Props {
 }
 
 export function MaterialPill({ material, count }: Props) {
-  const symbol = MATERIAL_SYMBOLS[material];
+  const icon = MATERIAL_ICONS[material];
+  const { handlers, tooltip } = useLongPressTooltip(material);
   return (
-    <span className={`material-pill material-${material}`}>
-      <span style={{ opacity: 0.75 }}>{symbol}</span>
-      <span>{material}</span>
-      {count !== undefined && count > 1 && (
-        <span className="mat-qty">×{count}</span>
-      )}
-      {count === 1 && null}
-    </span>
+    <>
+      <span className={`material-pill material-${material}`} title={material} {...handlers}>
+        <span>{icon}</span>
+        {count !== undefined && count > 1 && (
+          <span className="mat-qty">×{count}</span>
+        )}
+      </span>
+      {tooltip}
+    </>
   );
 }

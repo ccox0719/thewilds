@@ -8,6 +8,7 @@ import { getTagTooltip } from '../data/tagInfo';
 import type { Tag } from '../types';
 import { chunk } from './printUtils';
 import { PrintPage } from './PrintFrame';
+import { formatEventDuration, formatPressureSchedule, formatRescueThresholds, formatWeatherCategory, summarizeSpecialCardEffects } from './printFacts';
 
 type LearnSection = {
   title: string;
@@ -20,8 +21,8 @@ export function RulesPrintView() {
     {
       title: 'Game Objective',
       paragraphs: [
-        'The goal is to finish the game with the highest score. You score by keeping Vitality, building useful camp cards, and contributing to rescue.',
-        'The shared rescue track can end the game early. When it fills up, the game stops and the highest-scoring surviving player wins.',
+        'Finish with the highest score. You score by staying alive, building persistent camp cards, and pushing the rescue track forward.',
+        'The shared rescue track can end the game early. If it fills up during the round, finish that round sequence, then stop before the next round begins. The highest-scoring surviving player wins.',
       ],
     },
     {
@@ -29,16 +30,17 @@ export function RulesPrintView() {
       bullets: [
         'Choose one scenario.',
         'Choose a profile for each seat.',
-        'Each player starts with full Vitality, an empty inventory, one starting specialty card, and their profile perk ready to use.',
-        'Shuffle the scenario bag, fill the market, and place the rescue track in the middle of the table.',
+        `Each player starts with ${config.startingVitality} Vitality, an empty inventory, one starting specialty card, and their profile perk ready to use.`,
+        `Shuffle the scenario bag, fill the market to ${config.marketCapSize} materials, and place the rescue track in the middle of the table.`,
+        `Each active player gets ${config.materialsPrivateDrawPerRound} private bag draw during the draft phase.`,
         'The standard print setup uses five seats.',
       ],
     },
     {
       title: 'Round Overview',
       bullets: [
-        'Start of round: reveal the current event and reset temporary round status.',
-        'Draft phase: take materials from the shared market and receive one hidden draw from the bag.',
+        'Start of round: reveal 1 weather card and reset temporary round status.',
+        'Draft phase: refresh the market, take materials from the shared market, and receive one hidden draw from the bag.',
         'Income: built engines produce their income.',
         'Maintenance: pay upkeep for advanced builds that require it.',
         'Craft phase: each seat may craft one recipe or pass.',
@@ -59,7 +61,8 @@ export function RulesPrintView() {
       title: 'How Crafting Works',
       bullets: [
         'On your craft turn, choose one recipe you can afford or pass.',
-        'Pay the printed cost after any discounts.',
+        'Pay the live cost after any discounts from built cards, specialty cards, or round events.',
+        'Tier 2 recipes are locked until you have Shelter or HearthActive.',
         'A recipe may require tags or earlier builds before you can craft it.',
         'One-time recipes resolve once and are then used up.',
         'Persistent recipes stay in play and may give income, rescue, tags, or other ongoing benefits.',
@@ -78,19 +81,19 @@ export function RulesPrintView() {
     {
       title: 'How Survival Checks Work',
       bullets: [
-        'Hunger: spend 1 Food or 1 Ration. If you have neither, you add hunger debt. Every 3 hunger misses deal 1 Vitality damage.',
-        'Thirst: spend 1 Water or 1 Clean Water. If you have neither, you take Vitality damage based on the current pressure.',
-        'Warmth: if the weather is cold or hot, use shelter or fire protection to avoid temperature damage. Strong shelter and fire cards cancel this damage, and some specialty cards reduce it further.',
+        `Hunger: spend 1 Food or 1 Ration. If you have neither, you add hunger debt. Every ${config.hungerMissesPerDamage} hunger misses deal 1 Vitality damage.`,
+        `Thirst: spend 1 Water or 1 Clean Water. If you have neither, you take Vitality damage based on the current pressure schedule (${formatPressureSchedule()}).`,
+        'Warmth: positive pressure is cold and negative pressure is heat. Shelter, fire, and specialty cards stop or reduce damage depending on the direction of the pressure.',
         'If you pass all three survival checks, you regain 1 Vitality at the end of the round.',
-        'In Forest, a Lean-To or Campfire usually handles the mild cold pressure.',
+        'Cold pressure comes from the scenario and any event temperature shift. Heat pressure only happens when the combined value goes below zero.',
       ],
     },
     {
       title: 'How Rescue Ends the Game',
       bullets: [
-        'Any rescue points you gain also advance the shared rescue track.',
-        'When the shared rescue track reaches the rescue threshold, the game ends immediately.',
-        'The rescue threshold depends on player count and scenario.',
+        'Any Rescue you gain also advances the shared rescue track.',
+        'When the shared rescue track reaches the rescue threshold, finish the current round sequence, then stop before the next round begins.',
+        `The rescue threshold depends on player count and scenario: ${formatRescueThresholds()}.`,
       ],
     },
     {
@@ -166,17 +169,8 @@ export function RulesPrintView() {
             <ul>
               <li>Hunger uses Food or Rations.</li>
               <li>Thirst uses Water or Clean Water.</li>
-              <li>Warmth uses shelter or fire protection.</li>
+              <li>Warmth uses Shelter, HearthActive, Sustained Fire, or specialty reductions depending on cold or heat.</li>
               <li>Passing all three checks restores 1 Vitality.</li>
-            </ul>
-          </section>
-          <section className="print-reference-block">
-            <h2>Scoring Reminder</h2>
-            <ul>
-              <li>Rescue points are multiplied by 1.5.</li>
-              <li>Remaining Vitality scores directly.</li>
-              <li>Each persistent build is worth 2 points.</li>
-              <li>Healthy finish bonus: +4 at 5 Vitality or more.</li>
             </ul>
           </section>
           <section className="print-reference-block">
@@ -213,7 +207,14 @@ export function RulesPrintView() {
                 <div key={scenario.id} className="print-rules-item">
                   <div className="bold">{scenario.name}</div>
                   <div>{scenario.description}</div>
-                  <div className="print-rules-small">{scenarioSummary(scenario.id)}</div>
+                  <div className="print-rules-small">
+                    Temperature pressure: {scenario.temperaturePressure > 0 ? `cold ${scenario.temperaturePressure}` : scenario.temperaturePressure < 0 ? `heat ${Math.abs(scenario.temperaturePressure)}` : 'neutral'}
+                    {' · '}
+                    Rescue adjustment: {scenario.rescueThresholdAdjust ?? 0}
+                  </div>
+                  <div className="print-rules-small">
+                    Bag: {Object.entries(scenario.bagComposition).map(([material, count]) => `${count} ${material}`).join(', ')}
+                  </div>
                 </div>
               ))}
             </div>
@@ -225,7 +226,7 @@ export function RulesPrintView() {
               {specialCards.map((card) => (
                 <div key={card.id} className="print-rules-item">
                   <div className="bold">{card.name}</div>
-                  <div>{card.printEffectText}</div>
+                  <div>{summarizeSpecialCardEffects(card).join('. ')}</div>
                   <div className="print-rules-small">{card.source === 'starting' ? 'Starting specialty card' : 'Earned when you build the matching advanced card'}</div>
                 </div>
               ))}
@@ -245,9 +246,22 @@ export function RulesPrintView() {
           </section>
 
           <section className="print-reference-block">
-            <h2>Event Families</h2>
+            <h2>Weather Cards</h2>
             <div className="print-rules-list">
-              {Object.entries(countEventsByFamily()).map(([family, count]) => (
+              {WEATHER_CARDS.map((event) => (
+                <div key={event.id} className="print-rules-item">
+                  <div className="bold">{event.name}</div>
+                  <div>{formatWeatherCategory(event.family)} · {formatEventDuration()} · {event.description}</div>
+                  <div className="print-rules-small">{event.scenarioIds.join(', ')}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="print-reference-block">
+            <h2>Weather Categories</h2>
+            <div className="print-rules-list">
+              {Object.entries(countWeatherByFamily()).map(([family, count]) => (
                 <div key={family} className="print-rules-item">
                   <div className="bold">{family}</div>
                   <div>{count} events</div>
@@ -280,28 +294,12 @@ function countRecipesByFamily(): Record<string, number> {
   }, {});
 }
 
-function countEventsByFamily(): Record<string, number> {
+function countWeatherByFamily(): Record<string, number> {
   return roundEvents.reduce<Record<string, number>>((acc, event) => {
-    acc[event.family] = (acc[event.family] ?? 0) + 1;
+    const label = formatWeatherCategory(event.family);
+    acc[label] = (acc[label] ?? 0) + 1;
     return acc;
   }, {});
-}
-
-function scenarioSummary(id: string): string {
-  switch (id) {
-    case 'forest':
-      return 'Baseline start: mild cold, broad supplies, and a balanced first camp.';
-    case 'rocky-highlands':
-      return 'Stone-rich, food-tight terrain that rewards sturdy building and careful water use.';
-    case 'river-delta':
-      return 'Water-rich wetlands with easier thirst management and strong food turns.';
-    case 'volcanic':
-      return 'The harshest map: hot ground, tight recovery, and heavy pressure on every mistake.';
-    case 'desert':
-      return 'Hot and dry with frequent water pressure and a strong need for shelter.';
-    default:
-      return '';
-  }
 }
 
 const GLOSSARY = [
@@ -315,3 +313,4 @@ const GLOSSARY = [
 ];
 
 const COMMON_TAGS: Tag[] = ['Shelter', 'SturdyShelter', 'HearthActive', 'SustainedFire', 'FoodSource', 'Tool', 'SignalEngine'];
+const WEATHER_CARDS = roundEvents;
