@@ -1,5 +1,4 @@
 import type { RoundEventDefinition, RoundEventInstance, Scenario, SurvivalCheck } from '../types';
-import { createRNG } from '../utils/rng';
 
 export const roundEvents: RoundEventDefinition[] = [
   {
@@ -194,7 +193,7 @@ export const roundEvents: RoundEventDefinition[] = [
   },
 ];
 
-export function getRoundEventForScenario(scenario: Scenario, round: number, seed: number): RoundEventInstance | null {
+export function getRoundEventForScenario(scenario: Scenario, round: number, _seed: number): RoundEventInstance | null {
   const candidates = roundEvents.filter((event) => {
     if (!event.scenarioIds.includes(scenario.id)) return false;
     if (event.startRound !== undefined && round < event.startRound) return false;
@@ -203,26 +202,9 @@ export function getRoundEventForScenario(scenario: Scenario, round: number, seed
   });
   if (candidates.length === 0) return null;
 
-  const rng = createRNG(seed + round * 1009 + scenario.id.length * 97);
-  const weights = candidates.map((event) => {
-    let weight = event.family === 'escalation' ? 3 : event.family === 'opportunity' ? 2 : 1;
-    if (event.id.includes('clear-skies')) weight += 1;
-    if (event.id.includes('cold-front') || event.id.includes('heat-wave')) weight += Math.max(0, round - 6);
-    if (event.id.includes('abundant-forage')) weight += Math.max(0, 6 - round);
-    if (scenario.id === 'rocky-highlands' && event.id.startsWith('rocky-highlands')) weight += 2;
-    if (scenario.id === 'volcanic' && event.id.startsWith('volcanic')) weight += 2;
-    if (scenario.id === 'river-delta' && event.id.startsWith('river-delta')) weight += 2;
-    return weight;
-  });
-  const total = weights.reduce((sum, value) => sum + value, 0);
-  let pick = rng.next() * total;
-  for (let i = 0; i < candidates.length; i += 1) {
-    pick -= weights[i];
-    if (pick <= 0) {
-      return { ...candidates[i], round };
-    }
-  }
-  return { ...candidates[candidates.length - 1], round };
+  // Roll a dice: pick uniformly at random from eligible events
+  const index = Math.floor(Math.random() * candidates.length);
+  return { ...candidates[index], round };
 }
 
 export function getEventPressureBonus(event: RoundEventInstance | null, check: SurvivalCheck): number {
