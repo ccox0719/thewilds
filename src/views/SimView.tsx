@@ -72,7 +72,7 @@ export function SimView() {
   };
 
   const downloadBatchCSV = (result: BatchSimulationResult) => {
-    const rows = [['profile', 'avgScore', 'avgRescue', 'avgVitality', 'survivalPct', 'perkUsagePct', 'firstTier2Round'].join(',')];
+    const rows = [['profile', 'avgScore', 'avgRescue', 'avgVitality', 'survivalPct', 'perkUsagePct', 'firstTier2Round', 'firstTier3Round'].join(',')];
     for (const [profile, stats] of Object.entries(result.byProfile)) {
       rows.push([
         profile,
@@ -82,6 +82,7 @@ export function SimView() {
         stats.survivalPercent,
         stats.perkUsagePercent,
         stats.firstTier2RecipeAvgRound.toFixed(2),
+        stats.firstTier3RecipeAvgRound.toFixed(2),
       ].join(','));
     }
     const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
@@ -283,6 +284,7 @@ export function SimView() {
                   <th style={{ textAlign: 'center' }}>Survival%</th>
                   <th style={{ textAlign: 'center' }}>Perk%</th>
                   <th style={{ textAlign: 'center' }}>1st T2</th>
+                  <th style={{ textAlign: 'center' }}>1st T3</th>
                 </tr>
               </thead>
               <tbody>
@@ -294,6 +296,7 @@ export function SimView() {
                     <td style={{ textAlign: 'center', color: 'var(--vitality)' }}>{stats.avgVitality.toFixed(1)}</td>
                     <td style={{ textAlign: 'center' }}>{stats.survivalPercent}%</td>
                     <td style={{ textAlign: 'center' }}>{stats.perkUsagePercent}%</td>
+                    <td style={{ textAlign: 'center' }}>{stats.firstTier3RecipeAvgRound.toFixed(1) || '—'}</td>
                     <td style={{ textAlign: 'center' }}>{stats.firstTier2RecipeAvgRound.toFixed(1) || '—'}</td>
                   </tr>
                 ))}
@@ -361,6 +364,19 @@ export function SimView() {
             <div className="section-label">Recipe Craft Frequency (all)</div>
             <div className="flex gap-2 wrap">
               {Object.entries(batchResult.recipeUsageFrequency)
+                .sort(([, a], [, b]) => b - a)
+                .map(([id, n]) => (
+                  <span key={id} className="tag">
+                    {id}: <span style={{ color: 'var(--rescue)' }}>{n}</span>
+                  </span>
+                ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="section-label">Recipe Craft Frequency (tier 3)</div>
+            <div className="flex gap-2 wrap">
+              {Object.entries(batchResult.tier3RecipeUsageFrequency)
                 .sort(([, a], [, b]) => b - a)
                 .map(([id, n]) => (
                   <span key={id} className="tag">

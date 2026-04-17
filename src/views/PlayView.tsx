@@ -294,14 +294,15 @@ export function PlayView() {
 
           {/* Craft panel — below market */}
           {!game.gameOver && isHumanCraftTurn && (
-            <div className="card flex-col gap-3">
+            <div className="card flex-col gap-3 craft-panel">
               <div className="flex justify-between align-center">
                 <h3>Craft</h3>
                 <button onClick={() => handleCraftPick(null)}>Pass Craft</button>
               </div>
 
-              {affordableRecipes.length > 0 && (
-                <div>
+              <div className="craft-panel__lists">
+                {affordableRecipes.length > 0 && (
+                  <div>
                   <div className="section-label">Available</div>
                   <div className="recipe-cards">
                     {affordableRecipes.map((recipe) => (
@@ -315,11 +316,11 @@ export function PlayView() {
                       />
                     ))}
                   </div>
-                </div>
-              )}
+                  </div>
+                )}
 
-              {lockedRecipes.length > 0 && (
-                <div>
+                {lockedRecipes.length > 0 && (
+                  <div>
                   <div className="section-label">⊘ Locked</div>
                   <div className="recipe-cards">
                     {lockedRecipes.map((recipe) => (
@@ -332,8 +333,9 @@ export function PlayView() {
                       />
                     ))}
                   </div>
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
 
               {availableRecipes.length === 0 && (
                 <span className="text-sm text-muted">No recipes available this round.</span>

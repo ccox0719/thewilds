@@ -44,6 +44,15 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
     );
     const firstTier2RecipeRound = firstTier2Log?.round ?? null;
 
+    const tier3RecipeIds = recipes.filter((r) => r.tier === 3).map((r) => r.id);
+    const firstTier3Log = state.log.find(
+      (entry) =>
+        entry.playerId === player.id &&
+        entry.action === 'craft' &&
+        tier3RecipeIds.some((id) => entry.detail.includes(recipes.find((r) => r.id === id)?.name ?? '')),
+    );
+    const firstTier3RecipeRound = firstTier3Log?.round ?? null;
+
     return {
       playerId: player.id,
       profile: player.profile.id,
@@ -57,6 +66,7 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
       perkUsed: player.perkUsed,
       builtRecipes: player.builtRecipes,
       firstTier2RecipeRound,
+      firstTier3RecipeRound,
       checkFailuresByRound: collectCheckFailuresByRound(state, player.id),
     };
   });
@@ -71,6 +81,10 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
   const tier2RecipeIds = new Set(recipes.filter((r) => r.tier === 2).map((r) => r.id));
   const tier2RecipeUsageFrequency = Object.fromEntries(
     Object.entries(recipeUsageFrequency).filter(([id]) => tier2RecipeIds.has(id)),
+  ) as Record<string, number>;
+  const tier3RecipeIds = new Set(recipes.filter((r) => r.tier === 3).map((r) => r.id));
+  const tier3RecipeUsageFrequency = Object.fromEntries(
+    Object.entries(recipeUsageFrequency).filter(([id]) => tier3RecipeIds.has(id)),
   ) as Record<string, number>;
 
   const { eventFrequencyByFamily, eventFrequencyById } = collectEventTelemetry(state.scenario, state.rngSeed, state.round);
@@ -88,6 +102,7 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
     players: playerResults,
     recipeUsageFrequency,
     tier2RecipeUsageFrequency,
+    tier3RecipeUsageFrequency,
     eventFrequencyByFamily,
     eventFrequencyById,
     maintenanceFailureCount,
@@ -129,6 +144,7 @@ export function runBatchSimulation(simConfig: SimulationConfig, count: number): 
 
   const recipeUsageFrequency: Record<string, number> = {};
   const tier2RecipeUsageFrequency: Record<string, number> = {};
+  const tier3RecipeUsageFrequency: Record<string, number> = {};
   const eventFrequencyByFamily: Record<RoundEventFamily, number> = {
     opportunity: 0,
     escalation: 0,
@@ -145,6 +161,9 @@ export function runBatchSimulation(simConfig: SimulationConfig, count: number): 
     }
     for (const [id, count] of Object.entries(result.tier2RecipeUsageFrequency)) {
       tier2RecipeUsageFrequency[id] = (tier2RecipeUsageFrequency[id] ?? 0) + count;
+    }
+    for (const [id, count] of Object.entries(result.tier3RecipeUsageFrequency)) {
+      tier3RecipeUsageFrequency[id] = (tier3RecipeUsageFrequency[id] ?? 0) + count;
     }
     for (const [family, count] of Object.entries(result.eventFrequencyByFamily) as [RoundEventFamily, number][]) {
       eventFrequencyByFamily[family] += count;
@@ -188,6 +207,7 @@ export function runBatchSimulation(simConfig: SimulationConfig, count: number): 
       survivalPercent: pct(pp.filter((p) => !p.collapsed).length, pp.length),
       perkUsagePercent: pct(pp.filter((p) => p.perkUsed).length, pp.length),
       firstTier2RecipeAvgRound: avg(pp.filter((p) => p.firstTier2RecipeRound !== null).map((p) => p.firstTier2RecipeRound!)),
+      firstTier3RecipeAvgRound: avg(pp.filter((p) => p.firstTier3RecipeRound !== null).map((p) => p.firstTier3RecipeRound!)),
     };
   }
 
@@ -210,6 +230,7 @@ export function runBatchSimulation(simConfig: SimulationConfig, count: number): 
     checkFailureFrequency,
     recipeUsageFrequency,
     tier2RecipeUsageFrequency,
+    tier3RecipeUsageFrequency,
     eventFrequencyByFamily,
     eventFrequencyById,
     maintenanceFailureCount,

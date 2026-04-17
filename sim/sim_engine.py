@@ -615,7 +615,7 @@ class SimulationEngine:
         if variant.search_hunger_cost and (
             variant.search_hunger_cost_limit is None or player.searches_this_round < variant.search_hunger_cost_limit
         ):
-            player.meters["hunger"] = clamp(player.meters["hunger"] - 1, 0, 10)
+            player.meters["hunger"] = clamp(player.meters["hunger"] - max(0, variant.search_hunger_cost_amount), 0, 10)
         room_left = max(0, self.get_hand_limit(player) - len(player.hand))
         actual_draw_count = min(self.get_explore_draw_count(player, zone_id), room_left)
         if actual_draw_count <= 0:
@@ -1196,16 +1196,22 @@ class SimulationEngine:
         has_camp_infrastructure = any(item["id"] in SHELTER_IDS | FIRE_IDS | RESCUE_IDS for item in player.tableau)
         for item in player.tableau:
             effect = item.get("effect") or {}
-            if isinstance(effect.get("warmthPerRound"), int):
-                player.meters["warmth"] = clamp(player.meters["warmth"] + effect["warmthPerRound"], 0, 10)
+            warmth_per_round = effect.get("warmthPerRound") if isinstance(effect.get("warmthPerRound"), int) else 0
+            if item["id"] in FIRE_IDS:
+                warmth_per_round = variant.fire_warmth_per_round
+            if warmth_per_round:
+                player.meters["warmth"] = clamp(player.meters["warmth"] + warmth_per_round, 0, 10)
             if isinstance(effect.get("hungerPerRound"), int):
                 player.meters["hunger"] = clamp(player.meters["hunger"] + effect["hungerPerRound"], 0, 10)
             if isinstance(effect.get("rescuePerRound"), int):
                 game.shared_rescue = clamp(game.shared_rescue + effect["rescuePerRound"], 0, variant.rescue_target)
             if isinstance(effect.get("pointsPerRound"), int):
                 player.score += effect["pointsPerRound"]
-            if isinstance(effect.get("passiveHydration"), int):
-                player.meters["hydration"] = clamp(player.meters["hydration"] + effect["passiveHydration"], 0, 10)
+            passive_hydration = effect.get("passiveHydration") if isinstance(effect.get("passiveHydration"), int) else 0
+            if item["id"] in {"water_filter", "water_rig", "water_cache"}:
+                passive_hydration = variant.water_passive_hydration
+            if passive_hydration:
+                player.meters["hydration"] = clamp(player.meters["hydration"] + passive_hydration, 0, 10)
             if isinstance(effect.get("foodPerRoundChance"), (int, float)):
                 source_zone = effect.get("foodSourceZone")
                 if (not source_zone or source_zone == player.last_explored_zone) and rng.random() < effect["foodPerRoundChance"]:

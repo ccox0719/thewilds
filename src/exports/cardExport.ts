@@ -73,5 +73,10 @@ export function exportRulesSummary(): string {
     lines.push(`  ${recipe.printTitle}: ${formatMaterialCost(recipe.cost)} — ${summarizeRecipeEffects(recipe).join('. ')}`);
   }
 
+  lines.push('', 'TIER 3 RECIPES:');
+  for (const recipe of recipes.filter((r) => r.tier === 3)) {
+    lines.push(`  ${recipe.printTitle}: ${formatMaterialCost(recipe.cost)} â€” ${summarizeRecipeEffects(recipe).join('. ')}`);
+  }
+
   return lines.join('\n');
 }

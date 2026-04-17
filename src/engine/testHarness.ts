@@ -79,6 +79,7 @@ function main() {
   console.log(`Maintenance: failures=${batch.maintenanceFailureCount} downtime=${batch.maintenanceDowntimeCount}`);
   console.log(`Special card awards: ${JSON.stringify(batch.specialCardGrantFrequency)}`);
   console.log(`Tier 2 recipe usage: ${JSON.stringify(batch.tier2RecipeUsageFrequency)}`);
+  console.log(`Tier 3 recipe usage: ${JSON.stringify(batch.tier3RecipeUsageFrequency)}`);
   console.log('By profile:', JSON.stringify(batch.byProfile, null, 2));
   console.log('Recipe freq:', batch.recipeUsageFrequency);
   console.log('Collapse timing:', batch.collapseTimingDistribution);

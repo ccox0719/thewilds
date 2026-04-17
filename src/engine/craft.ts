@@ -12,15 +12,28 @@ export function hasTier2Unlock(player: PlayerState, state: GameState): boolean {
 export function getAvailableRecipes(player: PlayerState, state: GameState): Recipe[] {
   if (player.collapsed || state.gameOver) return [];
   const tier2Unlocked = hasTier2Unlock(player, state);
+  const hasHearth = playerHasTag(player, state, 'HearthActive');
+  const hasFoodSource = playerHasTag(player, state, 'FoodSource');
+  const hasSignalEngine = playerHasTag(player, state, 'SignalEngine');
+  const hasTool = playerHasTag(player, state, 'Tool');
+  const hasFuelEngine = playerHasTag(player, state, 'SustainedFire');
 
   return recipes.filter((recipe) => {
     if (recipe.tier === 2 && !tier2Unlocked) return false;
-    if (recipe.tier === 3) return false;
     if (recipe.persistent && player.builtRecipes.includes(recipe.id)) return false;
+    if (hasHearth && isFireStarterRecipe(recipe)) return false;
+    if (hasFoodSource && recipe.id === 'snare') return false;
+    if (hasSignalEngine && recipe.id === 'simple-signal') return false;
+    if (hasTool && recipe.id === 'basic-tool') return false;
+    if (hasFuelEngine && recipe.id === 'dry-fuel') return false;
     if (!recipe.requiresTags.every((tag) => playerHasTag(player, state, tag))) return false;
     if (!recipe.requiresBuilds.every((id) => player.builtRecipes.includes(id))) return false;
     return true;
   });
+}
+
+function isFireStarterRecipe(recipe: Recipe): boolean {
+  return recipe.id === 'bow-drill' || recipe.id === 'flint-spark' || recipe.id === 'brush-ember';
 }
 
 export function canCraftRecipe(player: PlayerState, recipe: Recipe, state: GameState): boolean {

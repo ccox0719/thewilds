@@ -30,8 +30,36 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
   if (recipe.id === 'campfire') {
     score += weights.firePriority;
     if (strategy !== 'rescueFocused') score += 8;
-    if (!playerHasTag(player, state, 'HearthActive')) score += 12;
     if (risks.includes('warmth')) score += 6;
+    if (roundsLeft > 5) score += 2;
+    if (playerHasTag(player, state, 'HearthActive')) score += 8;
+  }
+
+  if (recipe.id === 'bow-drill') {
+    score += weights.firePriority + 2;
+    if (!playerHasTag(player, state, 'HearthActive')) score += 12;
+    if (strategy === 'cautious') score += 4;
+    if (player.profile.id === 'builder') score += 2;
+  }
+
+  if (recipe.id === 'flint-spark') {
+    score += weights.firePriority + 1;
+    if (!playerHasTag(player, state, 'HearthActive')) score += 11;
+    if (risks.includes('warmth')) score += 4;
+    if (roundsLeft > 4) score += 2;
+  }
+
+  if (recipe.id === 'brush-ember') {
+    score += weights.firePriority;
+    if (!playerHasTag(player, state, 'HearthActive')) score += 13;
+    if (strategy === 'cautious') score += 2;
+    if (roundsLeft <= 4) score += 3;
+  }
+
+  if (recipe.id === 'storm-hearth') {
+    score += weights.firePriority + 6;
+    if (risks.includes('warmth')) score += 12;
+    if (playerHasTag(player, state, 'SustainedFire')) score += 6;
   }
 
   if (recipe.family === 'shelter-climate') {
@@ -43,7 +71,14 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
   if (recipe.family === 'food-engine') {
     score += 2;
     if (risks.includes('hunger')) score += 8;
-    if (recipe.id === 'drying-rack') score += 4;
+    if (recipe.id === 'drying-rack') score += 2;
+    if (recipe.id === 'beast-larder') score += 6;
+    if (recipe.id === 'smokehouse') score += 5;
+    if (recipe.id === 'hunters-blind') score += 9;
+    if (recipe.id === 'hunters-blind' && playerHasTag(player, state, 'FoodSource')) score += 14;
+    if (recipe.id === 'hunters-blind' && risks.includes('hunger')) score += 8;
+    if (recipe.id === 'hunters-blind' && player.profile.id === 'trapper') score += 4;
+    if (recipe.id === 'beast-larder' && playerHasTag(player, state, 'FoodSource')) score += 2;
   }
 
   if (recipe.family === 'processing') {
@@ -51,6 +86,13 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
     if (playerHasTag(player, state, 'Tool')) score += 4;
     if (roundsLeft > 4) score += 2;
     if (recipe.id === 'tool-bench') score += 6;
+    if (recipe.id === 'traveler-kit') score += 5;
+    if (recipe.id === 'master-cordage') score += 4;
+  }
+
+  if (recipe.family === 'recovery') {
+    score += 4;
+    if (player.vitality <= 5) score += 10;
   }
 
   const costReductionEffects = recipe.effects.filter((effect) => effect.type === 'costReduction');
@@ -62,7 +104,7 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
   }
 
   if (recipe.family === 'signal-rescue') {
-    score += 10;
+    score += 12;
     if (strategy === 'rescueFocused') score += 4;
     if (roundsLeft > 4) score += 4;
   }
@@ -94,6 +136,8 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
   if (recipe.id === 'snare') {
     score += weights.snarePriority;
     score += Math.max(0, 6 - state.round);
+    if (risks.includes('hunger')) score += 5;
+    if (player.profile.id === 'trapper') score += 3;
   }
 
   if (recipe.id === 'signal-platform') {
@@ -105,15 +149,34 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
   }
 
   if (recipe.id === 'signal-beacon') {
-    score += weights.beaconPriority;
-    if (roundsLeft <= 5) score += 12;
-    if (playerHasTag(player, state, 'SignalEngine')) score += 14;
+    score += weights.beaconPriority + 4;
+    if (roundsLeft <= 5) score += 16;
+    if (playerHasTag(player, state, 'SignalEngine')) score += 18;
+    if (playerHasTag(player, state, 'SustainedFire')) score += 4;
+    if (risks.length === 0) score += 4;
   }
 
   if (recipe.id === 'signal-lens') {
-    score += weights.signalPlatformPriority + 8;
-    if (playerHasTag(player, state, 'SignalEngine')) score += 14;
-    if (roundsLeft > 4) score += 6;
+    score += weights.signalPlatformPriority + 12;
+    if (playerHasTag(player, state, 'SignalEngine')) score += 18;
+    if (roundsLeft > 4) score += 8;
+  }
+
+  if (recipe.id === 'signal-pyre') {
+    score += weights.signalPlatformPriority + 15;
+    if (playerHasTag(player, state, 'SignalEngine')) score += 16;
+    if (roundsLeft <= 6) score += 10;
+    if (strategy === 'rescueFocused') score += 8;
+    if (state.groupRescueTrack >= state.groupRescueThreshold / 2) score += 6;
+    if (playerHasTag(player, state, 'SustainedFire')) score += 8;
+  }
+
+  if (recipe.id === 'ridge-watch') {
+    score += weights.signalPlatformPriority + 9;
+    if (playerHasTag(player, state, 'SignalEngine')) score += 12;
+    if (roundsLeft > 4) score += 5;
+    if (strategy === 'rescueFocused') score += 4;
+    if (state.groupRescueTrack < state.groupRescueThreshold / 2) score += 2;
   }
 
   if (recipe.id === 'cooked-meal' || recipe.id === 'boiled-water') {
@@ -122,6 +185,16 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
     if (risks.length > 0) score += 8;
     if (player.vitality <= 4) score += 6;
     if (recipe.id === 'boiled-water' && risks.includes('thirst')) score += 10;
+  }
+
+  if (recipe.id === 'rain-still') {
+    score += weights.stabilizePriority + 7;
+    if (risks.includes('thirst')) score += 14;
+  }
+
+  if (recipe.id === 'medicine-cache') {
+    score += weights.vitalityPriority + 8;
+    if (player.vitality <= 5) score += 12;
   }
 
   if (recipe.id === 'sturdy-shelter' || recipe.id === 'sustained-fire') {

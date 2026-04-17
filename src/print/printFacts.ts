@@ -68,6 +68,9 @@ export function formatMaintenanceText(recipe: Recipe): string | null {
 export function formatRecipeRequirements(recipe: Recipe): string | null {
   const parts: string[] = [];
 
+  if (recipe.tier === 3) {
+    parts.push('Tier 3 epic recipe');
+  }
   if (recipe.tier === 2) {
     parts.push('Tier 2 unlock: Shelter or HearthActive');
   }

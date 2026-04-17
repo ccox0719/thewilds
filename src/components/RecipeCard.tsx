@@ -42,6 +42,13 @@ function typeClass(type: string): string {
   return 'type-one-time';
 }
 
+function tierLabel(tier: number): string | null {
+  if (tier === 1) return 'T1';
+  if (tier === 2) return 'T2';
+  if (tier === 3) return 'T3';
+  return null;
+}
+
 export function RecipeCard({ recipe, player, state, onCraft, showCraftButton = true }: RecipeCardProps) {
   const canAfford = canCraftRecipe(player, recipe, state);
   const cost = getEffectiveRecipeCost(player, recipe, state);
@@ -54,7 +61,7 @@ export function RecipeCard({ recipe, player, state, onCraft, showCraftButton = t
         <div className="recipe-card-badges">
           <span className={typeChipClass(recipe.type)}>{typeLabel(recipe.type)}</span>
           <span className="chip family">{familyLabel(recipe.family)}</span>
-          {recipe.tier === 2 && <span className="chip tier2">T2</span>}
+          {tierLabel(recipe.tier) && <span className={`chip tier${recipe.tier}`}>{tierLabel(recipe.tier)}</span>}
         </div>
       </div>
 

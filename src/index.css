@@ -214,6 +214,7 @@ label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
   flex: 1;
   overflow: hidden;
   align-items: start;
+  min-height: 0;
 }
 .play-camp-col {
   display: flex;
@@ -222,6 +223,7 @@ label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
   overflow-y: auto;
   max-height: 100%;
   padding-right: 2px;
+  min-height: 0;
 }
 .play-action-col {
   display: flex;
@@ -229,6 +231,7 @@ label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
   gap: 8px;
   overflow-y: auto;
   max-height: 100%;
+  min-height: 0;
 }
 .play-log-col {
   display: flex;
@@ -236,6 +239,7 @@ label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
   gap: 8px;
   overflow-y: auto;
   max-height: 100%;
+  min-height: 0;
 }
 .play-ai-row {
   display: flex;
@@ -459,6 +463,16 @@ label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
 
 /* ===== RECIPE CARDS ===== */
 .recipe-cards { display: flex; flex-direction: column; gap: 6px; }
+.craft-panel { min-height: 0; }
+.craft-panel__lists {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+  max-height: calc(100vh - 290px);
+  padding-right: 4px;
+}
 .recipe-card {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -539,6 +553,7 @@ label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
 .chip.family { background: var(--surface3); border-color: var(--border); color: var(--text-dim); }
 .chip.tier1 { background: var(--surface3); border-color: var(--border); color: var(--text-dim); }
 .chip.tier2 { background: rgba(196, 128, 40, 0.12); border-color: var(--warn-border); color: var(--warn); }
+.chip.tier3 { background: rgba(232, 192, 80, 0.14); border-color: rgba(232, 192, 80, 0.55); color: var(--rescue); }
 
 /* ===== LONG-PRESS TOOLTIP ===== */
 .lp-tooltip {
@@ -829,10 +844,17 @@ label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
     overflow: visible;
     padding: 8px;
     gap: 8px;
+    min-height: auto;
   }
   .play-camp-col,
   .play-action-col,
   .play-log-col {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+    min-height: auto;
+  }
+  .craft-panel__lists {
     max-height: none;
     overflow-y: visible;
     padding-right: 0;

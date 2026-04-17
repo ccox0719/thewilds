@@ -39,9 +39,9 @@ export function ReferenceSheetsPrintView() {
           <section className="print-reference-block">
             <h2>Weather</h2>
             <ul>
-              <li>Reveal 1 weather card at the start of each round.</li>
-              <li>The weather card lasts that round only.</li>
-              <li>Each card should show a name, one-line effect, and duration.</li>
+              <li>At the start of each round, roll 1 die to determine the active weather card from the eligible pool.</li>
+              <li>Eligible cards are those matching the current scenario and round window.</li>
+              <li>The weather card lasts that round only, then the next round's roll replaces it.</li>
               <li>Table categories: {WEATHER_CATEGORIES.join(', ')}.</li>
             </ul>
             <div className="print-rules-small" style={{ marginTop: 8 }}>

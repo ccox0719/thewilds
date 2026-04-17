@@ -250,6 +250,7 @@ export interface SimulationResult {
   players: SimulationPlayerResult[];
   recipeUsageFrequency: Record<string, number>;
   tier2RecipeUsageFrequency: Record<string, number>;
+  tier3RecipeUsageFrequency: Record<string, number>;
   eventFrequencyByFamily: Record<RoundEventFamily, number>;
   eventFrequencyById: Record<string, number>;
   maintenanceFailureCount: number;
@@ -273,6 +274,7 @@ export interface SimulationPlayerResult {
   perkUsed: boolean;
   builtRecipes: string[];
   firstTier2RecipeRound: number | null;
+  firstTier3RecipeRound: number | null;
   checkFailuresByRound: Record<number, SurvivalCheck[]>;
 }
 
@@ -293,6 +295,7 @@ export interface BatchSimulationResult {
   checkFailureFrequency: Record<SurvivalCheck, number>;
   recipeUsageFrequency: Record<string, number>;
   tier2RecipeUsageFrequency: Record<string, number>;
+  tier3RecipeUsageFrequency: Record<string, number>;
   eventFrequencyByFamily: Record<RoundEventFamily, number>;
   eventFrequencyById: Record<string, number>;
   maintenanceFailureCount: number;
@@ -309,6 +312,7 @@ export interface ProfileBatchStats {
   survivalPercent: number;
   perkUsagePercent: number;
   firstTier2RecipeAvgRound: number;
+  firstTier3RecipeAvgRound: number;
 }
 
 export type AIStrategy = 'cautious' | 'balanced' | 'rescueFocused';

@@ -85,7 +85,7 @@
   width: var(--print-page-width);
   min-height: var(--print-page-height);
   margin: 0 auto;
-  padding: 0.35in;
+  padding: 0.4in;
   background: #fff;
   color: #111;
   border: 1px solid #d7d7d7;
@@ -137,7 +137,7 @@
   display: grid;
   grid-template-columns: repeat(3, var(--print-card-width));
   justify-content: center;
-  gap: 0.1in;
+  gap: 0.08in;
 }
 
 .print-card {
@@ -476,8 +476,8 @@
 }
 
 @page {
-  size: letter;
-  margin: 0.35in;
+  size: letter portrait;
+  margin: 0;
 }
 
 @media print {
@@ -502,18 +502,24 @@
     background: #fff !important;
   }
 
+  .print-stack {
+    display: block;
+  }
+
   .print-page {
-    width: auto;
+    width: 8.5in;
     min-height: auto;
     margin: 0;
+    padding: 0.4in;
     border: none;
     box-shadow: none;
+    overflow: hidden;
     break-after: page;
     page-break-after: always;
   }
 
-  .print-stack {
-    gap: 0;
+  .print-card-grid {
+    gap: 0.05in;
   }
 
   .print-board {

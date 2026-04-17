@@ -10,6 +10,7 @@ class ScenarioVariant:
     description: str
     search_hunger_cost: bool = True
     search_hunger_cost_limit: int | None = None
+    search_hunger_cost_amount: int = 1
     round_end_hunger_decay: str = "none"
     round_end_hunger_threshold: int = 2
     morale_action_pool: bool = False
@@ -18,6 +19,8 @@ class ScenarioVariant:
     rescue_use_bonus: int = 0
     passive_rescue_per_round: int = 0
     food_tool_hunger_bonus: int = 0
+    fire_warmth_per_round: int = 1
+    water_passive_hydration: int = 1
     starting_meters: Dict[str, int] = field(default_factory=lambda: {
         "hunger": 9,
         "warmth": 5,
@@ -51,12 +54,14 @@ def scenario_variant_from_dict(data: Dict[str, Any]) -> ScenarioVariant:
     starting_meters = data.get("starting_meters") or data.get("startingMeters") or {}
     overrides = data.get("recipe_threshold_overrides") or data.get("recipeThresholdOverrides") or {}
     search_hunger_cost_limit = data.get("search_hunger_cost_limit", data.get("searchHungerCostLimit"))
+    search_hunger_cost_amount = data.get("search_hunger_cost_amount", data.get("searchHungerCostAmount", 1))
     morale_loss_cap_per_round = data.get("morale_loss_cap_per_round", data.get("moraleLossCapPerRound"))
     return ScenarioVariant(
         name=str(data.get("name", "custom_balance_variant")),
         description=str(data.get("description", "")),
         search_hunger_cost=bool(data.get("search_hunger_cost", data.get("searchHungerCost", True))),
         search_hunger_cost_limit=int(search_hunger_cost_limit) if search_hunger_cost_limit is not None else None,
+        search_hunger_cost_amount=int(search_hunger_cost_amount),
         round_end_hunger_decay=str(data.get("round_end_hunger_decay", data.get("roundEndHungerDecay", "none"))),
         round_end_hunger_threshold=int(data.get("round_end_hunger_threshold", data.get("roundEndHungerThreshold", 2))),
         morale_action_pool=bool(data.get("morale_action_pool", data.get("moraleActionPool", False))),
@@ -65,6 +70,8 @@ def scenario_variant_from_dict(data: Dict[str, Any]) -> ScenarioVariant:
         rescue_use_bonus=int(data.get("rescue_use_bonus", data.get("rescueUseBonus", 0))),
         passive_rescue_per_round=int(data.get("passive_rescue_per_round", data.get("passiveRescuePerRound", 0))),
         food_tool_hunger_bonus=int(data.get("food_tool_hunger_bonus", data.get("foodToolHungerBonus", 0))),
+        fire_warmth_per_round=int(data.get("fire_warmth_per_round", data.get("fireWarmthPerRound", 1))),
+        water_passive_hydration=int(data.get("water_passive_hydration", data.get("waterPassiveHydration", 1))),
         starting_meters={
             "hunger": int(starting_meters.get("hunger", 9)),
             "warmth": int(starting_meters.get("warmth", 5)),
@@ -82,6 +89,7 @@ def scenario_variant_to_dict(variant: ScenarioVariant) -> Dict[str, Any]:
         "description": variant.description,
         "search_hunger_cost": variant.search_hunger_cost,
         "search_hunger_cost_limit": variant.search_hunger_cost_limit,
+        "search_hunger_cost_amount": variant.search_hunger_cost_amount,
         "round_end_hunger_decay": variant.round_end_hunger_decay,
         "round_end_hunger_threshold": variant.round_end_hunger_threshold,
         "morale_action_pool": variant.morale_action_pool,
@@ -90,6 +98,8 @@ def scenario_variant_to_dict(variant: ScenarioVariant) -> Dict[str, Any]:
         "rescue_use_bonus": variant.rescue_use_bonus,
         "passive_rescue_per_round": variant.passive_rescue_per_round,
         "food_tool_hunger_bonus": variant.food_tool_hunger_bonus,
+        "fire_warmth_per_round": variant.fire_warmth_per_round,
+        "water_passive_hydration": variant.water_passive_hydration,
         "starting_meters": dict(variant.starting_meters),
         "spoilage_mode": variant.spoilage_mode,
         "recipe_threshold_overrides": dict(variant.recipe_threshold_overrides),

@@ -1,0 +1,289 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.tree{padding:16px;font-family:var(--font-sans);color:var(--color-text-primary)}
+.tier-band{border:0.5px solid var(--color-border-secondary);border-radius:12px;padding:14px 16px 18px;margin-bottom:20px}
+.tier-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:2px}
+.tier-sub{font-size:12px;color:var(--color-text-tertiary);margin-bottom:14px}
+.section-label{font-size:11px;color:var(--color-text-tertiary);margin-bottom:8px;margin-top:2px}
+.divider{border-top:0.5px dashed var(--color-border-tertiary);margin:12px 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:4px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:10px 12px;min-width:138px;flex:1;transition:border-color .15s}
+.card:hover{border-color:var(--color-border-primary)}
+.card.t1f{border-top:2px solid #1D9E75}
+.card.t1h{border-top:2px solid #BA7517}
+.card.t2{border-top:2px solid #7F77DD}
+.card.t3{border-top:2px solid #E8C050}
+.card-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.card-provides{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;line-height:1.4}
+.card-cost{font-size:11px;color:var(--color-text-tertiary);padding-top:6px;border-top:0.5px solid var(--color-border-tertiary)}
+.pill{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;margin-bottom:5px;line-height:1.6}
+.ph{background:#FAEEDA;color:#633806}
+.pr{background:#EEEDFE;color:#3C3489}
+.pf{background:#E1F5EE;color:#085041}
+.prereq{font-size:11px;color:var(--color-text-tertiary);margin-top:5px;padding-top:4px;display:flex;align-items:center;gap:5px}
+.prereq::before{content:'';display:inline-block;width:10px;height:0;border-top:1.5px dashed var(--color-border-secondary);flex-shrink:0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:4px;padding:10px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:8px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary)}
+.legend-pip{width:18px;height:3px;border-radius:2px}
+</style>
+
+<div class="tree">
+
+<div class="tier-band">
+  <div class="tier-label">Tier 1</div>
+  <div class="tier-sub">Available from the start</div>
+
+  <div class="section-label">Fire starters — any one activates the hearth</div>
+  <div class="row">
+    <div class="card t1f">
+      <span class="pill pf">fire starter</span>
+      <div class="card-name">Bow Drill</div>
+      <div class="card-provides">Creates fire via friction · reliable in wet conditions</div>
+      <div class="card-cost">1 wood + 1 fiber</div>
+    </div>
+    <div class="card t1f">
+      <span class="pill pf">fire starter</span>
+      <div class="card-name">Flint Spark</div>
+      <div class="card-provides">Creates fire via spark · fast but needs dry tinder</div>
+      <div class="card-cost">1 stone + 1 fiber</div>
+    </div>
+    <div class="card t1f">
+      <span class="pill pf">fire starter</span>
+      <div class="card-name">Brush Ember</div>
+      <div class="card-provides">Creates fire from friction bundle · cheapest option</div>
+      <div class="card-cost">2 fiber</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">No prereqs</div>
+  <div class="row">
+    <div class="card t1f">
+      <div class="card-name">Lean-To</div>
+      <div class="card-provides">Basic shelter · satisfies Shelter prereq for T2</div>
+      <div class="card-cost">1 wood + 1 fiber</div>
+    </div>
+    <div class="card t1f">
+      <div class="card-name">Snare</div>
+      <div class="card-provides">Passive food source · catches small game</div>
+      <div class="card-cost">2 fiber + 1 wood</div>
+    </div>
+    <div class="card t1f">
+      <div class="card-name">Basic Tool</div>
+      <div class="card-provides">Improves resource yield · enables Tool Bench</div>
+      <div class="card-cost">1 wood + 1 stone</div>
+    </div>
+    <div class="card t1f">
+      <div class="card-name">Simple Signal</div>
+      <div class="card-provides">Basic rescue visibility</div>
+      <div class="card-cost">1 stone + 1 fiber</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Requires active hearth</div>
+  <div class="row">
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Campfire</div>
+      <div class="card-provides">Sturdier fire structure · requires an existing hearth</div>
+      <div class="card-cost">1 wood + 1 stone</div>
+    </div>
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Cooked Meal</div>
+      <div class="card-provides">Better hunger recovery than raw food</div>
+      <div class="card-cost">1 ration</div>
+    </div>
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Boiled Water</div>
+      <div class="card-provides">Safe hydration · removes contamination</div>
+      <div class="card-cost">1 water</div>
+    </div>
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Filtered Water</div>
+      <div class="card-provides">Converts dirty water to safe</div>
+      <div class="card-cost">1 water + 1 wood + 1 stone</div>
+    </div>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Preserved Rations</div>
+      <div class="card-provides">Long-shelf food · reduces spoilage loss</div>
+      <div class="card-cost">1 food + 1 wood + 1 fiber</div>
+    </div>
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Dry Fuel</div>
+      <div class="card-provides">Efficient fuel · extends fire duration</div>
+      <div class="card-cost">2 wood + 1 fiber</div>
+    </div>
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Braided Cordage</div>
+      <div class="card-provides">Crafting component for signal chain</div>
+      <div class="card-cost">2 fiber</div>
+    </div>
+    <div class="card t1h">
+      <span class="pill ph">hearth</span>
+      <div class="card-name">Signal Platform</div>
+      <div class="card-provides">Signal engine branch opener · starts from Simple Signal</div>
+      <div class="card-cost">1 wood + 1 stone</div>
+    </div>
+  </div>
+</div>
+
+<div class="tier-band" style="border-color:var(--color-border-primary)">
+  <div class="tier-label">Tier 2</div>
+  <div class="tier-sub">Unlock: build a shelter or activate a hearth</div>
+
+  <div class="row">
+    <div class="card t2">
+      <span class="pill pr">req. hearth</span>
+      <div class="card-name">Water Catcher</div>
+      <div class="card-provides">Passive overnight water collection</div>
+      <div class="card-cost">1 wood + 1 fiber + 1 stone</div>
+    </div>
+    <div class="card t2">
+      <span class="pill pr">req. hearth</span>
+      <div class="card-name">Drying Rack</div>
+      <div class="card-provides">Preserves meat passively · frees the hearth</div>
+      <div class="card-cost">2 wood + 1 fiber</div>
+    </div>
+    <div class="card t2">
+      <span class="pill pr">req. Basic Tool</span>
+      <div class="card-name">Tool Bench</div>
+      <div class="card-provides">Crafting station · unlocks advanced recipes</div>
+      <div class="card-cost">1 wood + 2 stone</div>
+      <div class="prereq">from Basic Tool</div>
+    </div>
+    <div class="card t2">
+      <span class="pill pr">req. Lean-To</span>
+      <div class="card-name">Sturdy Shelter</div>
+      <div class="card-provides">Better rest · weather resistance</div>
+      <div class="card-cost">2 wood + 1 stone</div>
+      <div class="prereq">from Lean-To</div>
+    </div>
+    <div class="card t2">
+      <span class="pill pr">req. Campfire</span>
+      <div class="card-name">Sustained Fire</div>
+      <div class="card-provides">Long-burn fire · required for signal chain</div>
+      <div class="card-cost">1 stone + 1 fuel</div>
+      <div class="prereq">from Campfire</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Signal chain</div>
+  <div class="row">
+    <div class="card t2">
+      <span class="pill pr">req. Signal Engine</span>
+      <div class="card-name">Signal Beacon</div>
+      <div class="card-provides">High-visibility rescue signal · direct rescue branch from the signal lane</div>
+      <div class="card-cost">1 wood + 1 stone</div>
+      <div class="prereq">from the signal branch</div>
+    </div>
+    <div class="card t2">
+      <span class="pill pr">req. Signal Engine</span>
+      <div class="card-name">Signal Lens</div>
+      <div class="card-provides">Amplifies signal range significantly · sharpens rescue output</div>
+      <div class="card-cost">1 cordage + 1 stone</div>
+      <div class="prereq">from Braided Cordage</div>
+    </div>
+    <div style="flex:3"></div>
+  </div>
+</div>
+
+<div class="tier-band" style="border-color:var(--color-border-primary)">
+  <div class="tier-label">Tier 3</div>
+  <div class="tier-sub">Epic late-game builds that chain off prior structures</div>
+
+  <div class="row">
+    <div class="card t3">
+      <span class="pill pr">req. Drying Rack</span>
+      <div class="card-name">Beast Larder</div>
+      <div class="card-provides">Deep pantry · stronger long-term food output</div>
+      <div class="card-cost">2 wood + 1 stone + 1 cordage + 1 food</div>
+    </div>
+    <div class="card t3">
+      <span class="pill pr">req. Sustained Fire</span>
+      <div class="card-name">Storm Hearth</div>
+      <div class="card-provides">Epic fire core · improves shelter-climate builds</div>
+      <div class="card-cost">2 stone + 1 wood + 1 fuel</div>
+    </div>
+    <div class="card t3">
+      <span class="pill pr">req. Snare + Food Source</span>
+      <div class="card-name">Hunter's Blind</div>
+      <div class="card-provides">Concealed hunt post · stronger food flow from the hunt branch</div>
+      <div class="card-cost">2 wood + 2 fiber</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <div class="card t3">
+      <span class="pill pr">req. Sustained Fire + Signal Engine</span>
+      <div class="card-name">Signal Pyre</div>
+      <div class="card-provides">Late-game signal amplifier · capstone of the signal lane</div>
+      <div class="card-cost">2 wood + 1 fuel + 1 stone</div>
+    </div>
+    <div class="card t3">
+      <span class="pill pr">req. Water Catcher</span>
+      <div class="card-name">Rain Still</div>
+      <div class="card-provides">Refined water system · produces clean water</div>
+      <div class="card-cost">1 wood + 1 stone + 1 fiber + 1 water</div>
+    </div>
+    <div class="card t3">
+      <span class="pill pr">req. Tool Bench</span>
+      <div class="card-name">Traveler Kit</div>
+      <div class="card-provides">Compact field kit · improves processing reach</div>
+      <div class="card-cost">1 wood + 1 cordage + 1 fiber + 1 food</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <div class="card t3">
+      <span class="pill pr">req. Drying Rack</span>
+      <div class="card-name">Medicine Cache</div>
+      <div class="card-provides">Protected recovery supply · stabilizes hard turns</div>
+      <div class="card-cost">1 food + 1 water + 1 cordage + 1 stone</div>
+    </div>
+    <div class="card t3">
+      <span class="pill pr">req. Signal Engine</span>
+      <div class="card-name">Ridge Watch</div>
+      <div class="card-provides">High lookout · optional branch off the signal lane</div>
+      <div class="card-cost">2 stone + 1 wood + 1 fiber</div>
+    </div>
+    <div class="card t3">
+      <span class="pill pr">req. Drying Rack</span>
+      <div class="card-name">Smokehouse</div>
+      <div class="card-provides">Smoked pantry · steadier ration income</div>
+      <div class="card-cost">2 wood + 1 stone + 1 food</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <div class="card t3">
+      <span class="pill pr">req. Braided Cordage</span>
+      <div class="card-name">Master Cordage</div>
+      <div class="card-provides">Refined cord batch · late-game processing boost</div>
+      <div class="card-cost">3 fiber + 1 wood</div>
+    </div>
+    <div style="flex:3"></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-pip" style="background:#1D9E75"></div>Tier 1 free</div>
+  <div class="legend-item"><div class="legend-pip" style="background:#BA7517"></div>Tier 1 + hearth</div>
+  <div class="legend-item"><div class="legend-pip" style="background:#7F77DD"></div>Tier 2 branch</div>
+  <div class="legend-item"><div class="legend-pip" style="background:#E8C050"></div>Tier 3 epic</div>
+</div>
+
+</div>
+
+
+

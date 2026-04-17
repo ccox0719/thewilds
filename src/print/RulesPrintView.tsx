@@ -63,6 +63,7 @@ export function RulesPrintView() {
         'On your craft turn, choose one recipe you can afford or pass.',
         'Pay the live cost after any discounts from built cards, specialty cards, or round events.',
         'Tier 2 recipes are locked until you have Shelter or HearthActive.',
+        'Tier 3 recipes are epic late-game builds that usually require earlier structures before they appear.',
         'A recipe may require tags or earlier builds before you can craft it.',
         'One-time recipes resolve once and are then used up.',
         'Persistent recipes stay in play and may give income, rescue, tags, or other ongoing benefits.',
