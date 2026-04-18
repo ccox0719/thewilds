@@ -16,6 +16,11 @@ export const profiles: Profile[] = [
     },
     designNotes:
       'Economy profile. Reduces cost on a key persistent build. Best used on Signal Platform or Sturdy Shelter.',
+    theme: {
+      accent: '#7B5C2A',
+      light: '#fdf6ec',
+      roleLabel: 'Economy & Infrastructure',
+    },
   },
   {
     id: 'provider',
@@ -31,6 +36,11 @@ export const profiles: Profile[] = [
     },
     designNotes:
       'Emergency survival profile. Turns one bad survival round into a narrower recovery window.',
+    theme: {
+      accent: '#2D6A4F',
+      light: '#eef7f2',
+      roleLabel: 'Emergency Resilience',
+    },
   },
   {
     id: 'trapper',
@@ -46,6 +56,11 @@ export const profiles: Profile[] = [
     },
     designNotes:
       'Food security profile. Immediate Food on Snare build helps it survive the opening pressure.',
+    theme: {
+      accent: '#7B3F2C',
+      light: '#fdf0eb',
+      roleLabel: 'Food Security',
+    },
   },
   {
     id: 'scout',
@@ -61,6 +76,11 @@ export const profiles: Profile[] = [
     },
     designNotes:
       'Signal acceleration profile. Small bonus on the first signal action that keeps the identity focused on rescue.',
+    theme: {
+      accent: '#1D4E89',
+      light: '#ebf3fd',
+      roleLabel: 'Signal & Rescue',
+    },
   },
 ];
 

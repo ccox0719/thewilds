@@ -3,6 +3,8 @@ import { PlayView } from './views/PlayView';
 import { SimView } from './views/SimView';
 import { DebugView } from './views/DebugView';
 import { PrintView } from './print/PrintView';
+import { PrintStandalonePage } from './print/PrintStandalonePage';
+import { getPrintParam } from './print/printStandalone';
 
 type View = 'play' | 'sim' | 'debug' | 'print';
 
@@ -15,6 +17,8 @@ const NAV_ITEMS: { id: View; label: string }[] = [
 
 export default function App() {
   const [view, setView] = useState<View>('play');
+  const printParam = getPrintParam();
+  if (printParam) return <PrintStandalonePage id={printParam} />;
 
   return (
     <div className="app-container">

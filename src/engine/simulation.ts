@@ -7,10 +7,11 @@ import type {
   GameState,
   SurvivalCheck,
   RoundEventFamily,
+  RecipeFamily,
 } from '../types';
 import { createNewGame } from './state';
 import { runFullRound } from './round';
-import { scorePlayer } from './scoring';
+import { getScoreBreakdown, scorePlayer } from './scoring';
 import { recipes } from '../data/recipes';
 import { getRoundEventForScenario } from '../data/events';
 
@@ -32,6 +33,7 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
   }
 
   const playerResults: SimulationPlayerResult[] = state.players.map((player) => {
+    const breakdown = getScoreBreakdown(player, state);
     const finalScore = scorePlayer(player, state);
     const persistentBuilds = player.builtRecipes.filter((id) => recipes.find((r) => r.id === id)?.persistent).length;
 
@@ -58,8 +60,13 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
       profile: player.profile.id,
       aiStrategy: player.aiStrategy ?? 'balanced',
       finalScore,
+      craftPoints: breakdown.craftPoints,
+      usePoints: breakdown.usePoints,
       rescueScore: player.rescueScore,
+      rescuePoints: breakdown.rescuePoints,
       finalVitality: player.vitality,
+      survivalPoints: breakdown.survivalPoints,
+      enginePoints: breakdown.enginePoints,
       persistentBuilds,
       collapsed: player.collapsed,
       collapseRound: player.collapseRound,
@@ -72,9 +79,19 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
   });
 
   const recipeUsageFrequency: Record<string, number> = {};
+  const recipeFamilyFrequency: Record<RecipeFamily, number> = {
+    survival: 0,
+    'food-engine': 0,
+    processing: 0,
+    'shelter-climate': 0,
+    'signal-rescue': 0,
+    recovery: 0,
+  };
   for (const player of state.players) {
     for (const recipeId of player.builtRecipes) {
       recipeUsageFrequency[recipeId] = (recipeUsageFrequency[recipeId] ?? 0) + 1;
+      const family = recipes.find((recipe) => recipe.id === recipeId)?.family;
+      if (family) recipeFamilyFrequency[family] += 1;
     }
   }
 
@@ -87,7 +104,7 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
     Object.entries(recipeUsageFrequency).filter(([id]) => tier3RecipeIds.has(id)),
   ) as Record<string, number>;
 
-  const { eventFrequencyByFamily, eventFrequencyById } = collectEventTelemetry(state.scenario, state.rngSeed, state.round);
+  const { eventFrequencyByFamily, eventFrequencyById } = collectEventTelemetry(state.scenario, state.round);
   const { maintenanceFailureCount, maintenanceDowntimeCount } = collectMaintenanceTelemetry(state);
   const { specialCardGrantFrequency, specialCardOwnershipFrequency } = collectSpecialCardTelemetry(state);
 
@@ -103,6 +120,7 @@ export function runGameSimulation(simConfig: SimulationConfig): SimulationResult
     recipeUsageFrequency,
     tier2RecipeUsageFrequency,
     tier3RecipeUsageFrequency,
+    recipeFamilyFrequency,
     eventFrequencyByFamily,
     eventFrequencyById,
     maintenanceFailureCount,
@@ -145,6 +163,14 @@ export function runBatchSimulation(simConfig: SimulationConfig, count: number): 
   const recipeUsageFrequency: Record<string, number> = {};
   const tier2RecipeUsageFrequency: Record<string, number> = {};
   const tier3RecipeUsageFrequency: Record<string, number> = {};
+  const recipeFamilyFrequency: Record<RecipeFamily, number> = {
+    survival: 0,
+    'food-engine': 0,
+    processing: 0,
+    'shelter-climate': 0,
+    'signal-rescue': 0,
+    recovery: 0,
+  };
   const eventFrequencyByFamily: Record<RoundEventFamily, number> = {
     opportunity: 0,
     escalation: 0,
@@ -158,6 +184,9 @@ export function runBatchSimulation(simConfig: SimulationConfig, count: number): 
   for (const result of results) {
     for (const [id, count] of Object.entries(result.recipeUsageFrequency)) {
       recipeUsageFrequency[id] = (recipeUsageFrequency[id] ?? 0) + count;
+    }
+    for (const [family, count] of Object.entries(result.recipeFamilyFrequency) as [RecipeFamily, number][]) {
+      recipeFamilyFrequency[family] += count;
     }
     for (const [id, count] of Object.entries(result.tier2RecipeUsageFrequency)) {
       tier2RecipeUsageFrequency[id] = (tier2RecipeUsageFrequency[id] ?? 0) + count;
@@ -231,6 +260,7 @@ export function runBatchSimulation(simConfig: SimulationConfig, count: number): 
     recipeUsageFrequency,
     tier2RecipeUsageFrequency,
     tier3RecipeUsageFrequency,
+    recipeFamilyFrequency,
     eventFrequencyByFamily,
     eventFrequencyById,
     maintenanceFailureCount,
@@ -269,7 +299,6 @@ function pct(count: number, total: number): number {
 
 function collectEventTelemetry(
   scenario: GameState['scenario'],
-  seed: number,
   roundsPlayed: number,
 ): { eventFrequencyByFamily: Record<RoundEventFamily, number>; eventFrequencyById: Record<string, number> } {
   const eventFrequencyByFamily: Record<RoundEventFamily, number> = {
@@ -280,7 +309,7 @@ function collectEventTelemetry(
   const eventFrequencyById: Record<string, number> = {};
 
   for (let round = 1; round <= roundsPlayed; round += 1) {
-    const event = getRoundEventForScenario(scenario, round, seed);
+    const event = getRoundEventForScenario(scenario, round);
     if (!event) continue;
     eventFrequencyByFamily[event.family] += 1;
     eventFrequencyById[event.id] = (eventFrequencyById[event.id] ?? 0) + 1;

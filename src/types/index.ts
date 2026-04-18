@@ -157,11 +157,18 @@ export interface Perk {
   triggerCondition: string;
 }
 
+export interface ProfileTheme {
+  accent: string;
+  light: string;
+  roleLabel: string;
+}
+
 export interface Profile {
   id: string;
   name: string;
   perk: Perk;
   designNotes: string;
+  theme: ProfileTheme;
 }
 
 export interface PlayerState {
@@ -230,6 +237,8 @@ export interface Scenario {
   temperaturePressure: number;
   rescueThresholdAdjust?: number;
   description: string;
+  identityTags?: string[];
+  playstyleHint?: string;
 }
 
 export interface LogEntry {
@@ -251,6 +260,7 @@ export interface SimulationResult {
   recipeUsageFrequency: Record<string, number>;
   tier2RecipeUsageFrequency: Record<string, number>;
   tier3RecipeUsageFrequency: Record<string, number>;
+  recipeFamilyFrequency: Record<RecipeFamily, number>;
   eventFrequencyByFamily: Record<RoundEventFamily, number>;
   eventFrequencyById: Record<string, number>;
   maintenanceFailureCount: number;
@@ -266,8 +276,13 @@ export interface SimulationPlayerResult {
   profile: string;
   aiStrategy: string;
   finalScore: number;
+  craftPoints: number;
+  usePoints: number;
   rescueScore: number;
+  rescuePoints: number;
   finalVitality: number;
+  survivalPoints: number;
+  enginePoints: number;
   persistentBuilds: number;
   collapsed: boolean;
   collapseRound: number | null;
@@ -296,6 +311,7 @@ export interface BatchSimulationResult {
   recipeUsageFrequency: Record<string, number>;
   tier2RecipeUsageFrequency: Record<string, number>;
   tier3RecipeUsageFrequency: Record<string, number>;
+  recipeFamilyFrequency: Record<RecipeFamily, number>;
   eventFrequencyByFamily: Record<RoundEventFamily, number>;
   eventFrequencyById: Record<string, number>;
   maintenanceFailureCount: number;
@@ -355,10 +371,19 @@ export interface BalanceConfig {
   pressureSchedule: number[];
   rescueThresholds: Record<string, number>;
   scoring: {
-    rescueMultiplier: number;
+    craftPointsByTier: Record<RecipeTier, number>;
+    usePointsPerImmediateEffect: number;
+    usePointsCap: number;
+    rescuePointsStep: number;
+    rescuePointsCap: number;
+    survivalPointsStep: number;
+    survivalPointsCap: number;
     healthyVitalityThreshold: number;
     healthyVitalityBonus: number;
+    lateSurvivalFloorRound: number;
+    lateSurvivalFloorPoints: number;
     persistentBuildBonus: number;
+    persistentBuildCap: number;
   };
   aiWeights: {
     shelterPriority: number;

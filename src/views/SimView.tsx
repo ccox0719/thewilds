@@ -113,6 +113,17 @@ export function SimView() {
             <select value={scenarioId} onChange={(e) => setScenarioId(e.target.value)}>
               {scenarios.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
+            <div className="text-xs text-dim">
+              {scenarios.find((s) => s.id === scenarioId)?.description ?? ''}
+            </div>
+            <div className="flex gap-1 wrap">
+              {scenarios.find((s) => s.id === scenarioId)?.identityTags?.map((tag) => (
+                <span key={tag} className="tag active">{tag}</span>
+              ))}
+            </div>
+            <div className="text-xs text-muted">
+              {scenarios.find((s) => s.id === scenarioId)?.playstyleHint ?? ''}
+            </div>
           </div>
         </div>
 
@@ -212,7 +223,12 @@ export function SimView() {
                   <tr key={p.playerId} style={{ borderBottom: '1px solid var(--border)' }}>
                     <td style={{ padding: '4px 6px' }}>{p.playerId}</td>
                     <td>{p.profile}</td>
-                    <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{p.finalScore}</td>
+                    <td style={{ textAlign: 'center' }}>
+                      <div style={{ fontWeight: 'bold' }}>{p.finalScore}</div>
+                      <div className="text-xs text-dim">
+                        C{p.craftPoints} U{p.usePoints} R{p.rescuePoints} S{p.survivalPoints} E{p.enginePoints}
+                      </div>
+                    </td>
                     <td style={{ textAlign: 'center', color: 'var(--rescue)' }}>{p.rescueScore}</td>
                     <td style={{ textAlign: 'center', color: 'var(--vitality)' }}>{p.finalVitality}</td>
                     <td style={{ textAlign: 'center' }}>{p.persistentBuilds}</td>
@@ -326,6 +342,16 @@ export function SimView() {
                 <div key={check} className="sim-metric">
                   <span className="sim-metric-label">{check}</span>
                   <span className="sim-metric-value" style={{ color: 'var(--danger)' }}>{count}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="sim-section" style={{ flex: '1 1 180px' }}>
+              <div className="section-label">Strategy Lanes</div>
+              {Object.entries(batchResult.recipeFamilyFrequency).map(([family, count]) => (
+                <div key={family} className="sim-metric">
+                  <span className="sim-metric-label">{family}</span>
+                  <span className="sim-metric-value" style={{ color: 'var(--accent)' }}>{count}</span>
                 </div>
               ))}
             </div>

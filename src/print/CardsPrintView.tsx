@@ -12,6 +12,12 @@ import {
   summarizeRecipeEffects,
   summarizeSpecialCardEffects,
 } from './printFacts';
+import {
+  getRecipeActionLabel,
+  getRecipeZoneKey,
+  getRecipeZoneLabel,
+  getZoneGlyph,
+} from '../data/iconography';
 
 type Mode = 'recipes' | 'specialties';
 
@@ -94,6 +100,7 @@ function RecipeCard({ recipe }: { recipe: (typeof recipes)[number] }) {
       <div className="print-card__stack">
         <div className="print-card__effect">{summarizeRecipeEffects(recipe).join('. ')}</div>
         <div className="print-card__meta">
+          <div>Route: {getZoneGlyph(getRecipeZoneKey(recipe.family))} {getRecipeZoneLabel(recipe.family)} / {getRecipeActionLabel(recipe.family)}</div>
           <div>Family: {formatFamilyName(recipe.family)}</div>
           <div>Grants: {recipe.tags.length ? recipe.tags.map((tag) => formatTagName(tag)).join(', ') : 'None'}</div>
           {recipe.satisfiesCheck && <div>Satisfies: {formatTagName(recipe.satisfiesCheck)}</div>}

@@ -111,6 +111,16 @@ export function runSurvivalPressurePhase(state: GameState): GameState {
     }
   }
 
+  currentState = {
+    ...currentState,
+    players: currentState.players.map((player) => {
+      if ((player.inventory.Water ?? 0) === 0) return player;
+      const inventory = { ...player.inventory };
+      delete inventory.Water;
+      return { ...player, inventory };
+    }),
+  };
+
   return currentState;
 }
 

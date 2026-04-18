@@ -1,9 +1,11 @@
+import { getMeterGlyph } from '../data/iconography';
+
 interface StatBarProps {
   value: number;
   max: number;
   label?: string;
   showValues?: boolean;
-  /** For vitality: color shifts green → yellow → red based on ratio */
+  /** For vitality: color shifts green -> yellow -> red based on ratio */
   variant?: 'vitality' | 'rescue' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   /** If provided, shows a red overlay from projectedValue% to value% */
@@ -39,11 +41,22 @@ export function StatBar({
       ? Math.max(0, Math.min(100, Math.round((Math.max(0, projectedValue) / max) * 100)))
       : null;
 
+  const icon = variant === 'vitality'
+    ? getMeterGlyph('vitality')
+    : variant === 'rescue'
+      ? getMeterGlyph('rescue')
+      : getMeterGlyph('accent');
+
   return (
     <div className="stat-bar">
       {(label || showValues) && (
         <div className="stat-bar-header">
-          {label && <span className="stat-bar-label">{label}</span>}
+          {label && (
+            <span className="stat-bar-label">
+              <span className="stat-bar-label-icon" aria-hidden="true">{icon}</span>
+              <span>{label}</span>
+            </span>
+          )}
           {showValues && (
             <span className="stat-bar-value" style={{ color: fillColor }}>
               {clampedValue} / {max}
@@ -63,3 +76,4 @@ export function StatBar({
     </div>
   );
 }
+

@@ -1,9 +1,9 @@
 // Quick console test harness — run with: npx tsx src/engine/testHarness.ts
 import { createNewGame } from './state';
 import { runFullRound } from './round';
-import { scorePlayer } from './scoring';
+import { getScoreBreakdown, scorePlayer } from './scoring';
 import { validateRecipes, validateSpecialCards, validateScenarios, validateConfig } from './validation';
-import { runBatchSimulation } from './simulation';
+import { runBatchSimulation, runGameSimulation } from './simulation';
 import { scenarios } from '../data/scenarios';
 import { profiles } from '../data/profiles';
 import { getRoundEventForScenario } from '../data/events';
@@ -52,7 +52,10 @@ function main() {
   console.log(`\n=== GAME OVER — Round ${state.round} ===`);
   console.log(`End condition: ${state.endCondition ?? 'none'} | Group rescue: ${state.groupRescueTrack}/${state.groupRescueThreshold} | Winner: ${state.winner ?? 'none'}`);
   for (const p of state.players) {
-    console.log(`  ${p.name}: score=${scorePlayer(p, state)} rescue=${p.rescueScore} vitality=${p.vitality} collapsed=${p.collapsed}`);
+    const breakdown = getScoreBreakdown(p, state);
+    console.log(
+      `  ${p.name}: score=${scorePlayer(p, state)} craft=${breakdown.craftPoints} use=${breakdown.usePoints} rescue=${breakdown.rescuePoints} survival=${breakdown.survivalPoints} engine=${breakdown.enginePoints} collapsed=${p.collapsed}`,
+    );
   }
   console.log(`Events by family: ${JSON.stringify(collectEventFamilyCounts(state), null, 2)}`);
   console.log(`Maintenance failures: ${state.log.filter((entry) => entry.action === 'maintenance').length}`);
@@ -81,7 +84,10 @@ function main() {
   console.log(`Tier 2 recipe usage: ${JSON.stringify(batch.tier2RecipeUsageFrequency)}`);
   console.log(`Tier 3 recipe usage: ${JSON.stringify(batch.tier3RecipeUsageFrequency)}`);
   console.log('By profile:', JSON.stringify(batch.byProfile, null, 2));
+  console.log('Score spread probe:', JSON.stringify(collectScoreSpread(liveProfiles), null, 2));
+  console.log('Scenario balance:', JSON.stringify(collectScenarioBalance(liveProfiles), null, 2));
   console.log('Recipe freq:', batch.recipeUsageFrequency);
+  console.log('Recipe families:', batch.recipeFamilyFrequency);
   console.log('Collapse timing:', batch.collapseTimingDistribution);
 }
 
@@ -94,7 +100,7 @@ function collectEventFamilyCounts(state: ReturnType<typeof createNewGame> & { lo
     neutral: 0,
   };
   for (let round = 1; round <= state.round; round += 1) {
-    const event = getRoundEventForScenario(state.scenario, round, state.rngSeed);
+    const event = getRoundEventForScenario(state.scenario, round);
     if (!event) continue;
     counts[event.family] += 1;
   }
@@ -110,4 +116,66 @@ function collectAwardCounts(state: ReturnType<typeof createNewGame> & { players:
     }
   }
   return counts;
+}
+
+function collectScoreSpread(liveProfiles: (typeof profiles)[number][]) {
+  const forest = scenarios.find((s) => s.id === 'forest')!;
+  const runs = 100;
+  let totalSpread = 0;
+  let totalStdDev = 0;
+  let totalTopGap = 0;
+  let minSpread = Number.POSITIVE_INFINITY;
+  let maxSpread = 0;
+
+  for (let i = 0; i < runs; i += 1) {
+    const result = runGameSimulation({
+      playerCount: 5,
+      scenario: forest,
+      profiles: liveProfiles,
+      aiStrategies: ['balanced', 'balanced', 'balanced', 'balanced', 'balanced'],
+      rngSeed: 1 + i * 997,
+    });
+    const scores = result.players.map((p) => p.finalScore);
+    const sorted = [...scores].sort((a, b) => b - a);
+    const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const variance = scores.reduce((sum, score) => sum + ((score - mean) ** 2), 0) / scores.length;
+    const spread = sorted[0] - sorted[sorted.length - 1];
+
+    totalSpread += spread;
+    totalStdDev += Math.sqrt(variance);
+    totalTopGap += sorted[0] - sorted[1];
+    minSpread = Math.min(minSpread, spread);
+    maxSpread = Math.max(maxSpread, spread);
+  }
+
+  return {
+    runs,
+    avgSpread: totalSpread / runs,
+    avgStdDev: totalStdDev / runs,
+    avgTopGap: totalTopGap / runs,
+    minSpread,
+    maxSpread,
+  };
+}
+
+function collectScenarioBalance(liveProfiles: (typeof profiles)[number][]) {
+  const aiStrategies: ('balanced' | 'cautious' | 'rescueFocused')[] = ['balanced', 'balanced', 'balanced', 'balanced', 'balanced'];
+  return scenarios.map((scenario) => {
+    const batch = runBatchSimulation({
+      playerCount: 5,
+      scenario,
+      profiles: liveProfiles,
+      aiStrategies,
+      rngSeed: 1,
+    }, 50);
+
+    return {
+      scenario: scenario.id,
+      avgScore: batch.avgScore,
+      survivalPercent: batch.survivalPercent,
+      collapsePercent: batch.collapsePercent,
+      rescueReachedPercent: batch.rescueReachedPercent,
+      avgRoundsPlayed: batch.avgRoundsPlayed,
+    };
+  });
 }

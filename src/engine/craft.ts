@@ -224,11 +224,11 @@ export function resolveThirstCheck(
     return { player: { ...player, inventory }, vitDamage: 0, satisfied: true };
   }
 
-  const baseDamage = config.pressureSchedule[state.round - 1] ?? config.pressureSchedule.at(-1)!;
-  const eventBonus = getEventPressureBonus(state.currentEvent, 'thirst');
+  const heatPressure = Math.max(0, state.scenario.temperaturePressure + getEventTemperatureShift(state.currentEvent));
+  const eventBonus = Math.max(0, getEventPressureBonus(state.currentEvent, 'thirst'));
   return {
     player,
-    vitDamage: Math.max(1, baseDamage + eventBonus),
+    vitDamage: Math.max(1, 1 + (heatPressure > 0 ? 1 : 0) + eventBonus),
     satisfied: false,
   };
 }

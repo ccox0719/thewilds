@@ -54,7 +54,7 @@ export function useLongPressTooltip(text: string | undefined) {
       const rect = e.currentTarget.getBoundingClientRect();
       holdTimer.current = setTimeout(() => show(rect), HOLD_DURATION);
     },
-    onTouchEnd: (_e: React.TouchEvent<HTMLElement>) => {
+    onTouchEnd: () => {
       // If tooltip is showing, let it auto-dismiss; otherwise cancel hold
       if (pos === null) hide();
       else clearHold();

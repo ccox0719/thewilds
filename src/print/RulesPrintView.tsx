@@ -1,14 +1,15 @@
 import { config } from '../data/config';
+import { getMaterialGlyph, getMeterGlyph, getRecipeFamilyGlyph, getRecipeTypeGlyph, getTagGlyph } from '../data/iconography';
 import { profiles } from '../data/profiles';
 import { recipes } from '../data/recipes';
 import { scenarios } from '../data/scenarios';
 import { specialCards } from '../data/specialCards';
 import { roundEvents } from '../data/events';
 import { getTagTooltip } from '../data/tagInfo';
-import type { Tag } from '../types';
+import type { RecipeFamily, Tag } from '../types';
 import { chunk } from './printUtils';
 import { PrintPage } from './PrintFrame';
-import { formatEventDuration, formatPressureSchedule, formatRescueThresholds, formatWeatherCategory, summarizeSpecialCardEffects } from './printFacts';
+import { formatEventDuration, formatRescueThresholds, formatWeatherCategory, summarizeSpecialCardEffects } from './printFacts';
 
 type LearnSection = {
   title: string;
@@ -21,8 +22,8 @@ export function RulesPrintView() {
     {
       title: 'Game Objective',
       paragraphs: [
-        'Finish with the highest score. You score by staying alive, building persistent camp cards, and pushing the rescue track forward.',
-        'The shared rescue track can end the game early. If it fills up during the round, finish that round sequence, then stop before the next round begins. The highest-scoring surviving player wins.',
+        `Finish with the highest score. Score comes from staying alive, building persistent camp cards, and pushing ${getMeterGlyph('rescue')} Rescue forward.`,
+        `The shared ${getMeterGlyph('rescue')} Rescue track can end the game early. If it fills up during the round, finish that round sequence, then stop before the next round begins.`,
       ],
     },
     {
@@ -30,8 +31,8 @@ export function RulesPrintView() {
       bullets: [
         'Choose one scenario.',
         'Choose a profile for each seat.',
-        `Each player starts with ${config.startingVitality} Vitality, an empty inventory, one starting specialty card, and their profile perk ready to use.`,
-        `Shuffle the scenario bag, fill the market to ${config.marketCapSize} materials, and place the rescue track in the middle of the table.`,
+        `Each player starts with ${getMeterGlyph('vitality')} ${config.startingVitality} Vitality, empty inventory, 1 starting specialty card, and their profile perk ready.`,
+        `Shuffle the scenario bag, fill the market to ${config.marketCapSize} materials, and place the ${getMeterGlyph('rescue')} Rescue track in the middle of the table.`,
         `Each active player gets ${config.materialsPrivateDrawPerRound} private bag draw during the draft phase.`,
         'The standard print setup uses five seats.',
       ],
@@ -40,12 +41,12 @@ export function RulesPrintView() {
       title: 'Round Overview',
       bullets: [
         'Start of round: reveal 1 weather card and reset temporary round status.',
-        'Draft phase: refresh the market, take materials from the shared market, and receive one hidden draw from the bag.',
+        'Draft phase: refresh the market, take materials from the shared market, and receive 1 hidden draw.',
         'Income: built engines produce their income.',
         'Maintenance: pay upkeep for advanced builds that require it.',
-        'Craft phase: each seat may craft one recipe or pass.',
-        'Survival phase: resolve hunger, thirst, and warmth.',
-        'End of round: check rescue and collapse, then move to the next round.',
+        'Craft phase: each seat may craft 1 recipe or pass.',
+        `Survival phase: resolve ${getMeterGlyph('hunger')} hunger, ${getMeterGlyph('thirst')} thirst, and ${getMeterGlyph('warmth')} warmth.`,
+        `End of round: check ${getMeterGlyph('rescue')} rescue and collapse, then move on.`,
       ],
     },
     {
@@ -61,13 +62,14 @@ export function RulesPrintView() {
       title: 'How Crafting Works',
       bullets: [
         'On your craft turn, choose one recipe you can afford or pass.',
-        'Pay the live cost after any discounts from built cards, specialty cards, or round events.',
-        'Tier 2 recipes are locked until you have Shelter or HearthActive.',
-        'Tier 3 recipes are epic late-game builds that usually require earlier structures before they appear.',
+        'Pay the live cost after discounts from built cards, specialty cards, or round events.',
+        `Tier 2 recipes are locked until you have ${getTagGlyph('Shelter')} Shelter or ${getTagGlyph('HearthActive')} HearthActive.`,
+        'Tier 3 recipes are late-game builds that usually require earlier structures before they appear.',
         'A recipe may require tags or earlier builds before you can craft it.',
-        'One-time recipes resolve once and are then used up.',
-        'Persistent recipes stay in play and may give income, rescue, tags, or other ongoing benefits.',
-        'Some recipes convert raw materials into refined goods such as Rations, Clean Water, Fuel, or Cordage.',
+        `${getRecipeTypeGlyph('oneTime')} One-time recipes resolve once and are then used up.`,
+        `${getRecipeTypeGlyph('persistent')} Persistent recipes stay in play and may give income, rescue, tags, or other ongoing benefits.`,
+        `Some recipes convert raw materials into refined goods such as ${getMaterialGlyph('Rations')} Rations, ${getMaterialGlyph('CleanWater')} Treated Water, ${getMaterialGlyph('Fuel')} Fuel, or ${getMaterialGlyph('Cordage')} Cordage.`,
+        `Water is unsafe by default: unused raw ${getMaterialGlyph('Water')} Water spoils at the end of the round, while treated ${getMaterialGlyph('CleanWater')} Treated Water can be stockpiled.`,
       ],
     },
     {
@@ -82,25 +84,25 @@ export function RulesPrintView() {
     {
       title: 'How Survival Checks Work',
       bullets: [
-        `Hunger: spend 1 Food or 1 Ration. If you have neither, you add hunger debt. Every ${config.hungerMissesPerDamage} hunger misses deal 1 Vitality damage.`,
-        `Thirst: spend 1 Water or 1 Clean Water. If you have neither, you take Vitality damage based on the current pressure schedule (${formatPressureSchedule()}).`,
-        'Warmth: positive pressure is cold and negative pressure is heat. Shelter, fire, and specialty cards stop or reduce damage depending on the direction of the pressure.',
-        'If you pass all three survival checks, you regain 1 Vitality at the end of the round.',
+        `Hunger: spend 1 ${getMaterialGlyph('Food')} Food or 1 ${getMaterialGlyph('Rations')} Ration. If you have neither, you add hunger debt. Every ${config.hungerMissesPerDamage} misses deal 1 ${getMeterGlyph('vitality')} damage.`,
+        `Thirst: spend 1 ${getMaterialGlyph('CleanWater')} Treated Water to avoid damage. Raw ${getMaterialGlyph('Water')} Water still works for the round, but it spoils if unused. If you have neither, take 1 ${getMeterGlyph('vitality')} damage; hot conditions and some events can add 1 more.`,
+        `${getMeterGlyph('warmth')} Warmth: positive pressure is cold and negative pressure is heat. Shelter, fire, and specialty cards stop or reduce damage depending on pressure direction.`,
+        `If you pass all three survival checks, you regain 1 ${getMeterGlyph('vitality')} at the end of the round.`,
         'Cold pressure comes from the scenario and any event temperature shift. Heat pressure only happens when the combined value goes below zero.',
       ],
     },
     {
       title: 'How Rescue Ends the Game',
       bullets: [
-        'Any Rescue you gain also advances the shared rescue track.',
-        'When the shared rescue track reaches the rescue threshold, finish the current round sequence, then stop before the next round begins.',
+        `Any ${getMeterGlyph('rescue')} Rescue you gain also advances the shared rescue track.`,
+        `When the shared ${getMeterGlyph('rescue')} track reaches the rescue threshold, finish the current round sequence, then stop before the next round begins.`,
         `The rescue threshold depends on player count and scenario: ${formatRescueThresholds()}.`,
       ],
     },
     {
       title: 'Collapse Rules',
       bullets: [
-        'If your Vitality reaches 0 or less, you collapse.',
+        `If your ${getMeterGlyph('vitality')} Vitality reaches 0 or less, you collapse.`,
         'Collapsed players stop taking turns and cannot win.',
         'If every player collapses, the game ends with no winner.',
       ],
@@ -108,10 +110,11 @@ export function RulesPrintView() {
     {
       title: 'Scoring',
       bullets: [
-        `Rescue score is worth ${config.scoring.rescueMultiplier} points per rescue.`,
-        'Your remaining Vitality counts as points if you are still standing.',
-        `Each persistent build is worth ${config.scoring.persistentBuildBonus} points.`,
-        `If you end the game at ${config.scoring.healthyVitalityThreshold} Vitality or more and are not collapsed, you gain a ${config.scoring.healthyVitalityBonus}-point healthy finish bonus.`,
+        `Crafting scores small tier points: T1 ${config.scoring.craftPointsByTier[1]}, T2 ${config.scoring.craftPointsByTier[2]}, T3 ${config.scoring.craftPointsByTier[3]}.`,
+        `Immediate-use recipes can score ${config.scoring.usePointsPerImmediateEffect} point each, up to ${config.scoring.usePointsCap}.`,
+        `${getMeterGlyph('rescue')} Rescue scores 1 point per ${config.scoring.rescuePointsStep}, capped at ${config.scoring.rescuePointsCap}.`,
+        `${getMeterGlyph('vitality')} Survival scores 1 point per ${config.scoring.survivalPointsStep} Vitality, with a ${config.scoring.healthyVitalityBonus}-point stable finish bonus at ${config.scoring.healthyVitalityThreshold}+.`,
+        `Each persistent build scores ${config.scoring.persistentBuildBonus} point, capped at ${config.scoring.persistentBuildCap}.`,
         'Your final score cannot go below 0.',
       ],
     },
@@ -160,7 +163,7 @@ export function RulesPrintView() {
               <li>Refill the market and draft materials.</li>
               <li>Gain engine income.</li>
               <li>Pay upkeep.</li>
-              <li>Craft one recipe on each seat’s turn.</li>
+              <li>Craft one recipe on each seat's turn.</li>
               <li>Resolve hunger, thirst, and warmth.</li>
               <li>Check rescue and collapse.</li>
             </ol>
@@ -168,10 +171,10 @@ export function RulesPrintView() {
           <section className="print-reference-block">
             <h2>Survival Reminder</h2>
             <ul>
-              <li>Hunger uses Food or Rations.</li>
-              <li>Thirst uses Water or Clean Water.</li>
-              <li>Warmth uses Shelter, HearthActive, Sustained Fire, or specialty reductions depending on cold or heat.</li>
-              <li>Passing all three checks restores 1 Vitality.</li>
+              <li>{getMeterGlyph('hunger')} Hunger uses Food or Rations.</li>
+              <li>{getMeterGlyph('thirst')} Thirst uses Treated Water or raw Water. Raw Water is same-round only and spoils if unused; no water costs 1 Vitality.</li>
+              <li>{getMeterGlyph('warmth')} Warmth uses Shelter, HearthActive, Sustained Fire, or specialty reductions depending on cold or heat.</li>
+              <li>{getMeterGlyph('vitality')} Passing all three checks restores 1 Vitality.</li>
             </ul>
           </section>
           <section className="print-reference-block">
@@ -179,7 +182,7 @@ export function RulesPrintView() {
             <ul>
               {COMMON_TAGS.map((tag) => (
                 <li key={tag}>
-                  <span className="bold">{tag}</span>: {getTagTooltip(tag)}
+                  <span className="bold">{getTagGlyph(tag)} {tag}</span>: {getTagTooltip(tag)}
                 </li>
               ))}
             </ul>
@@ -195,7 +198,7 @@ export function RulesPrintView() {
               {profiles.map((profile) => (
                 <div key={profile.id} className="print-rules-item">
                   <div className="bold">{profile.name}</div>
-                  <div>{profile.perk.description}</div>
+                  <div className="print-rules-small">{formatProfileBadge(profile.perk.triggerCondition)} {profile.perk.description}</div>
                 </div>
               ))}
             </div>
@@ -207,14 +210,14 @@ export function RulesPrintView() {
               {scenarios.map((scenario) => (
                 <div key={scenario.id} className="print-rules-item">
                   <div className="bold">{scenario.name}</div>
-                  <div>{scenario.description}</div>
+                  <div className="print-rules-small">{scenario.description}</div>
                   <div className="print-rules-small">
-                    Temperature pressure: {scenario.temperaturePressure > 0 ? `cold ${scenario.temperaturePressure}` : scenario.temperaturePressure < 0 ? `heat ${Math.abs(scenario.temperaturePressure)}` : 'neutral'}
+                    {getMeterGlyph('warmth')} Pressure: {scenario.temperaturePressure > 0 ? `cold ${scenario.temperaturePressure}` : scenario.temperaturePressure < 0 ? `heat ${Math.abs(scenario.temperaturePressure)}` : 'neutral'}
                     {' · '}
-                    Rescue adjustment: {scenario.rescueThresholdAdjust ?? 0}
+                    {getMeterGlyph('rescue')} Adjustment: {scenario.rescueThresholdAdjust ?? 0}
                   </div>
                   <div className="print-rules-small">
-                    Bag: {Object.entries(scenario.bagComposition).map(([material, count]) => `${count} ${material}`).join(', ')}
+                    Bag: {Object.entries(scenario.bagComposition).map(([material, count]) => `${count} ${material}`).join(' · ')}
                   </div>
                 </div>
               ))}
@@ -226,9 +229,13 @@ export function RulesPrintView() {
             <div className="print-rules-list">
               {specialCards.map((card) => (
                 <div key={card.id} className="print-rules-item">
-                  <div className="bold">{card.name}</div>
-                  <div>{summarizeSpecialCardEffects(card).join('. ')}</div>
-                  <div className="print-rules-small">{card.source === 'starting' ? 'Starting specialty card' : 'Earned when you build the matching advanced card'}</div>
+                  <div className="bold">{getRecipeFamilyGlyph(card.family)} {card.name}</div>
+                  <div>{summarizeSpecialCardEffects(card).join(' · ')}</div>
+                  <div className="print-rules-small">
+                    {card.source === 'starting'
+                      ? `${getRecipeTypeGlyph('oneTime')} Starting specialty card`
+                      : `${getRecipeTypeGlyph('persistentEngine')} Earned when you build the matching advanced card`}
+                  </div>
                 </div>
               ))}
             </div>
@@ -239,7 +246,7 @@ export function RulesPrintView() {
             <div className="print-rules-list">
               {Object.entries(countRecipesByFamily()).map(([family, count]) => (
                 <div key={family} className="print-rules-item">
-                  <div className="bold">{family.replace('-', ' ')}</div>
+                  <div className="bold">{getRecipeFamilyGlyph(family as RecipeFamily)} {family.replace('-', ' ')}</div>
                   <div>{count} recipes</div>
                 </div>
               ))}
@@ -249,7 +256,7 @@ export function RulesPrintView() {
           <section className="print-reference-block">
             <h2>Weather Cards</h2>
             <div className="print-rules-list">
-              {WEATHER_CARDS.map((event) => (
+              {roundEvents.map((event) => (
                 <div key={event.id} className="print-rules-item">
                   <div className="bold">{event.name}</div>
                   <div>{formatWeatherCategory(event.family)} · {formatEventDuration()} · {event.description}</div>
@@ -314,4 +321,11 @@ const GLOSSARY = [
 ];
 
 const COMMON_TAGS: Tag[] = ['Shelter', 'SturdyShelter', 'HearthActive', 'SustainedFire', 'FoodSource', 'Tool', 'SignalEngine'];
-const WEATHER_CARDS = roundEvents;
+
+function formatProfileBadge(triggerCondition: string): string {
+  if (triggerCondition.includes('oncePerGame')) return '⟲ Once / game';
+  if (triggerCondition.startsWith('onBuild:snare')) return '🍖 On Snare';
+  if (triggerCondition.startsWith('onBuild:simple-signal')) return '⚑ On Simple Signal';
+  if (triggerCondition.startsWith('onSurvivalPressure')) return '♥ Survival trigger';
+  return '✦ Profile perk';
+}

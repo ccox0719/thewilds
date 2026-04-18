@@ -100,7 +100,6 @@ export const roundEvents: RoundEventDefinition[] = [
     startRound: 1,
     endRound: 12,
     temperatureShift: -1,
-    pressureBonus: { thirst: 1 },
   },
   {
     id: 'desert-dust-storm',
@@ -111,7 +110,6 @@ export const roundEvents: RoundEventDefinition[] = [
     startRound: 4,
     endRound: 12,
     temperatureShift: -1,
-    pressureBonus: { warmth: 1 },
     signalRescueBonus: -1,
   },
   {
@@ -122,9 +120,9 @@ export const roundEvents: RoundEventDefinition[] = [
     scenarioIds: ['volcanic'],
     startRound: 3,
     endRound: 12,
-    pressureBonus: { hunger: 1, thirst: 1 },
-    signalRescueBonus: -2,
-    recipeFamilyCostDelta: { 'signal-rescue': 2, 'shelter-climate': 1 },
+    pressureBonus: { hunger: 1 },
+    signalRescueBonus: -1,
+    recipeFamilyCostDelta: { 'signal-rescue': 1, 'shelter-climate': 1 },
   },
   {
     id: 'volcanic-thermal-burst',
@@ -146,7 +144,7 @@ export const roundEvents: RoundEventDefinition[] = [
     startRound: 6,
     endRound: 12,
     pressureBonus: { warmth: 1 },
-    recipeFamilyCostDelta: { processing: 1, 'signal-rescue': 1 },
+    recipeFamilyCostDelta: { processing: 1 },
   },
   {
     id: 'delta-clear-skies',
@@ -193,7 +191,7 @@ export const roundEvents: RoundEventDefinition[] = [
   },
 ];
 
-export function getRoundEventForScenario(scenario: Scenario, round: number, _seed: number): RoundEventInstance | null {
+export function getRoundEventForScenario(scenario: Scenario, round: number): RoundEventInstance | null {
   const candidates = roundEvents.filter((event) => {
     if (!event.scenarioIds.includes(scenario.id)) return false;
     if (event.startRound !== undefined && round < event.startRound) return false;

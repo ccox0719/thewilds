@@ -322,6 +322,14 @@ function ScenariosTab() {
             </div>
             <div className="text-sm text-muted">{scenario.description}</div>
             <div className="flex gap-1 wrap mt-1">
+              {scenario.identityTags?.map((tag) => (
+                <span key={tag} className="tag active">{tag}</span>
+              ))}
+            </div>
+            {scenario.playstyleHint && (
+              <div className="text-xs text-dim">{scenario.playstyleHint}</div>
+            )}
+            <div className="flex gap-1 wrap mt-1">
               {Object.entries(scenario.bagComposition).map(([mat, qty]) => (
                 <MaterialPill key={mat} material={mat as MaterialType} count={qty as number} />
               ))}

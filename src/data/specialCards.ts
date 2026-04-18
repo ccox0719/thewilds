@@ -6,8 +6,8 @@ export const specialCards: SpecialCardDefinition[] = [
     name: 'Rain Catcher Plan',
     source: 'starting',
     family: 'shelter-climate',
-    designNotes: 'Opens a water-stability lane by making Water Catcher come online more cleanly.',
-    printEffectText: 'Water Catcher produces +1 Water each income.',
+    designNotes: 'Opens a water-stability lane by making Water Catcher come online more cleanly. The water it creates is same-round only.',
+    printEffectText: 'Water Catcher fills +1 Raw Water slot each income.',
     effects: [
       { type: 'recipeIncomeBonus', targetRecipeId: 'water-catcher', amount: 1, material: 'Water' },
     ],
@@ -18,10 +18,9 @@ export const specialCards: SpecialCardDefinition[] = [
     source: 'starting',
     family: 'recovery',
     designNotes: 'Makes prepared food slightly more restorative without turning it into a pure heal card.',
-    printEffectText: 'Cooked Meal and Boiled Water each restore +1 Vitality.',
+    printEffectText: 'Cooked Meal restores +1 Vitality.',
     effects: [
       { type: 'recipeVitalityBonus', targetRecipeId: 'cooked-meal', amount: 1 },
-      { type: 'recipeVitalityBonus', targetRecipeId: 'boiled-water', amount: 1 },
     ],
   },
   {
@@ -65,15 +64,14 @@ export const specialCards: SpecialCardDefinition[] = [
     source: 'earned',
     family: 'processing',
     designNotes: 'An advanced refinement card that turns the water line into a stronger buffer.',
-    printEffectText: 'Filtered Water gains +1 Clean Water. Boiled Water restores +1 Vitality.',
+    printEffectText: 'Filtered Water fills +1 Treated Water slot.',
     effects: [
       { type: 'recipeMaterialGain', targetRecipeId: 'filtered-water', amount: 1, material: 'CleanWater' },
-      { type: 'recipeVitalityBonus', targetRecipeId: 'boiled-water', amount: 1 },
     ],
   },
   {
-    id: 'smokehouse',
-    name: 'Smokehouse',
+    id: 'smokehouse-plan',
+    name: 'Smokehouse Plan',
     source: 'earned',
     family: 'processing',
     designNotes: 'Pushes the food lane from immediate survival into storage and preservation.',
@@ -99,10 +97,10 @@ export const specialCards: SpecialCardDefinition[] = [
     name: 'Beacon Lens',
     source: 'earned',
     family: 'signal-rescue',
-    designNotes: 'Makes the rescue lane pay off harder once the camp is already signal-capable.',
-    printEffectText: 'Signal recipes gain +4 Rescue.',
+    designNotes: 'Makes the rescue lane pay off harder once the camp is already signal-capable, but not to the point of flattening the rest of the build tree.',
+    printEffectText: 'Signal recipes gain +2 Rescue.',
     effects: [
-      { type: 'recipeRescueBonus', targetFamily: 'signal-rescue', amount: 4 },
+      { type: 'recipeRescueBonus', targetFamily: 'signal-rescue', amount: 2 },
     ],
   },
   {
@@ -136,11 +134,11 @@ export function drawStartingSpecialCards(rng: RNG, count: number): OwnedSpecialC
 }
 
 export function getAdvancedSpecialCardForRecipe(recipe: Recipe): SpecialCardDefinition | null {
-  if (recipe.id === 'water-catcher' || recipe.id === 'filtered-water') return getSpecialCardById('water-filter') ?? null;
-  if (recipe.id === 'drying-rack' || recipe.id === 'preserved-rations' || recipe.id === 'snare') return getSpecialCardById('smokehouse') ?? null;
-  if (recipe.id === 'tool-bench' || recipe.id === 'braided-cordage' || recipe.id === 'dry-fuel') return getSpecialCardById('repair-bench') ?? null;
-  if (recipe.id === 'signal-platform' || recipe.id === 'signal-lens' || recipe.id === 'signal-beacon') return getSpecialCardById('beacon-lens') ?? null;
-  if (recipe.id === 'sturdy-shelter' || recipe.id === 'sustained-fire' || recipe.id === 'lean-to' || recipe.id === 'campfire') return getSpecialCardById('insulated-bedding') ?? null;
+  if (recipe.id === 'water-catcher') return getSpecialCardById('water-filter') ?? null;
+  if (recipe.id === 'drying-rack') return getSpecialCardById('smokehouse-plan') ?? null;
+  if (recipe.id === 'tool-bench') return getSpecialCardById('repair-bench') ?? null;
+  if (recipe.id === 'signal-lens') return getSpecialCardById('beacon-lens') ?? null;
+  if (recipe.id === 'sturdy-shelter' || recipe.id === 'sustained-fire') return getSpecialCardById('insulated-bedding') ?? null;
   return null;
 }
 

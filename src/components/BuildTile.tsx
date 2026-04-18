@@ -1,4 +1,5 @@
 import { getRecipeById } from '../data/recipes';
+import { getPersistenceGlyph } from '../data/iconography';
 
 interface BuildTileProps {
   recipeId: string;
@@ -22,7 +23,14 @@ export function BuildTile({ recipeId, isOffline = false }: BuildTileProps) {
       className={`build-tile ${typeClass}`}
       title={recipe.designNotes ?? recipe.printEffectText}
     >
-      <span>{recipe.name}</span>
+      <span className="build-tile-icon" aria-hidden="true">
+        {recipe.type === 'persistentEngine'
+          ? getPersistenceGlyph('engine')
+          : recipe.type === 'persistent'
+            ? getPersistenceGlyph('persistent')
+            : getPersistenceGlyph('oneTime')}
+      </span>
+      <span className="build-tile-name">{recipe.name}</span>
       {isOffline ? (
         <span className="build-tile-type" style={{ color: 'var(--danger)' }}>OFFLINE</span>
       ) : (

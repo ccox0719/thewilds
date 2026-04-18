@@ -9,6 +9,7 @@ import { previewEndOfRoundOutcome } from '../engine/pressure';
 import { getTagTooltip } from '../data/tagInfo';
 import { getRecipeById } from '../data/recipes';
 import { getSpecialCardById } from '../data/specialCards';
+import { getEventTemperatureShift } from '../data/events';
 import { playerHasTag } from '../engine/craft';
 import { useLongPressTooltip } from '../hooks/useLongPressTooltip';
 
@@ -43,6 +44,7 @@ export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = 
   const inventoryEntries = Object.entries(player.inventory) as [MaterialType, number][];
   const survivalPreview = previewEndOfRoundOutcome(player, state);
   const activeTags = ALL_TAGS.filter((tag) => playerHasTag(player, state, tag));
+  const warmthPressure = state.scenario.temperaturePressure + getEventTemperatureShift(state.currentEvent);
 
   if (compact) {
     return <CompactPlayerCard
@@ -100,6 +102,7 @@ export function PlayerCard({ player, state, isCurrentTurn, seatLabel, compact = 
         thirstDamage={survivalPreview.thirstDamage}
         warmthSatisfied={survivalPreview.warmthSatisfied}
         warmthDamage={survivalPreview.warmthDamage}
+        warmthPressure={warmthPressure}
         vitalityDelta={survivalPreview.vitalityDelta}
       />
 

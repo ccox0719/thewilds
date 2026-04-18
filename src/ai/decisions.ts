@@ -2,7 +2,7 @@ import type { PlayerState, MarketState, GameState, Recipe, MaterialType, Surviva
 import { getAvailableRecipes, canCraftRecipe, getEffectiveRecipeCost, playerHasTag } from '../engine/craft';
 import { config } from '../data/config';
 import { getSpecialCardById, cardTargetsRecipe } from '../data/specialCards';
-import { getEventSignalBonus, getEventTemperatureShift } from '../data/events';
+import { getEventPressureBonus, getEventSignalBonus, getEventTemperatureShift } from '../data/events';
 
 export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state: GameState): number {
   const strategy = player.aiStrategy ?? 'balanced';
@@ -179,12 +179,11 @@ export function evaluateRecipeOption(player: PlayerState, recipe: Recipe, state:
     if (state.groupRescueTrack < state.groupRescueThreshold / 2) score += 2;
   }
 
-  if (recipe.id === 'cooked-meal' || recipe.id === 'boiled-water') {
+  if (recipe.id === 'cooked-meal') {
     score += weights.stabilizePriority;
     score += weights.vitalityPriority;
     if (risks.length > 0) score += 8;
     if (player.vitality <= 4) score += 6;
-    if (recipe.id === 'boiled-water' && risks.includes('thirst')) score += 10;
   }
 
   if (recipe.id === 'rain-still') {
@@ -369,10 +368,6 @@ export function explainCraftChoice(player: PlayerState, state: GameState, recipe
   return `Built ${recipe.name} for future flexibility`;
 }
 
-export function simulateSingleTurnLookahead(player: PlayerState, state: GameState): Recipe | null {
-  return chooseCraftAction(player, state);
-}
-
 export function evaluateSurvivalRisk(player: PlayerState, state: GameState): SurvivalCheck[] {
   if (player.collapsed) return [];
 
@@ -393,7 +388,12 @@ export function evaluateSurvivalRisk(player: PlayerState, state: GameState): Sur
 
   const potentialDamage = risks.reduce((total, check) => {
     if (check === 'warmth') return total + Math.abs(state.scenario.temperaturePressure);
-    return total + (config.pressureSchedule[state.round - 1] ?? config.pressureSchedule.at(-1)!);
+    if (check === 'thirst') {
+      const heatPressure = Math.max(0, state.scenario.temperaturePressure + getEventTemperatureShift(state.currentEvent));
+      const eventBonus = Math.max(0, getEventPressureBonus(state.currentEvent, 'thirst'));
+      return total + Math.max(1, 1 + (heatPressure > 0 ? 1 : 0) + eventBonus);
+    }
+    return total + 1;
   }, 0);
 
   if (player.vitality <= potentialDamage + 1) return risks;

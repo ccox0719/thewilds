@@ -1,5 +1,17 @@
 import { config } from '../data/config';
 import { recipes } from '../data/recipes';
+import {
+  formatEffectShort,
+  getEffectGlyph,
+  getMaterialGlyph,
+  getRecipeActionLabel,
+  getRecipeTypeGlyph,
+  getRecipeZoneKey,
+  getRecipeZoneLabel,
+  getSurvivalCheckGlyph,
+  getTagGlyph,
+  getZoneGlyph,
+} from '../data/iconography';
 import type { MaterialType, Recipe, SpecialCardDefinition, SurvivalCheck, Tag } from '../types';
 
 function titleCase(value: string): string {
@@ -45,7 +57,7 @@ export function formatEventDuration(): string {
 export function formatMaterialCost(cost: Partial<Record<MaterialType, number>>): string {
   const parts = Object.entries(cost) as [MaterialType, number][];
   if (parts.length === 0) return 'Free';
-  return parts.map(([material, amount]) => `${amount} ${formatMaterialName(material)}`).join(' + ');
+  return parts.map(([material, amount]) => `${getMaterialGlyph(material)} ×${amount}`).join(' · ');
 }
 
 export function formatBuildList(buildIds: string[]): string {
@@ -68,14 +80,17 @@ export function formatMaintenanceText(recipe: Recipe): string | null {
 export function formatRecipeRequirements(recipe: Recipe): string | null {
   const parts: string[] = [];
 
+  parts.push(`Zone ${getZoneGlyph(getRecipeZoneKey(recipe.family))} ${getRecipeZoneLabel(recipe.family)}`);
+  parts.push(`Action ${getRecipeActionLabel(recipe.family)}`);
+
   if (recipe.tier === 3) {
-    parts.push('Tier 3 epic recipe');
+    parts.push(`${getRecipeTypeGlyph(recipe.type)} Tier 3 epic recipe`);
   }
   if (recipe.tier === 2) {
-    parts.push('Tier 2 unlock: Shelter or HearthActive');
+    parts.push(`Tier 2 unlock: ${getTagGlyph('Shelter')} Shelter or ${getTagGlyph('HearthActive')} HearthActive`);
   }
   if (recipe.requiresTags.length > 0) {
-    parts.push(`Requires ${recipe.requiresTags.map((tag) => formatTagName(tag)).join(', ')}`);
+    parts.push(`Requires ${recipe.requiresTags.map((tag) => `${getTagGlyph(tag)} ${formatTagName(tag)}`).join(', ')}`);
   }
   if (recipe.requiresBuilds.length > 0) {
     parts.push(`Requires builds: ${formatBuildList(recipe.requiresBuilds)}`);
@@ -88,53 +103,15 @@ export function summarizeRecipeEffects(recipe: Recipe): string[] {
   const lines: string[] = [];
 
   for (const tag of recipe.tags) {
-    lines.push(`Gain ${formatTagName(tag)}`);
+    lines.push(`${getTagGlyph(tag)} Gain ${formatTagName(tag)}`);
   }
 
   for (const effect of recipe.effects) {
-    if (effect.type === 'vitality') {
-      lines.push(`Restore ${effect.amount} Vitality`);
-      continue;
-    }
-    if (effect.type === 'rescue') {
-      lines.push(`Gain ${effect.amount} Rescue`);
-      continue;
-    }
-    if (effect.type === 'materialGain' && effect.material) {
-      lines.push(`Gain ${effect.amount} ${formatMaterialName(effect.material)}`);
-      continue;
-    }
-    if (effect.type === 'materialIncome' && effect.condition) {
-      lines.push(`+${effect.amount} ${formatMaterialName(effect.condition)} each income`);
-      continue;
-    }
-    if (effect.type === 'costReduction') {
-      if (effect.condition?.startsWith('family:')) {
-        const family = effect.condition.slice('family:'.length);
-        lines.push(`Future ${formatTagName(family)} recipes cost ${effect.amount} less material`);
-      } else if (effect.condition?.startsWith('type:')) {
-        const type = effect.condition.slice('type:'.length);
-        lines.push(`Future ${formatTagName(type)} recipes cost ${effect.amount} less material`);
-      } else {
-        lines.push(`Future recipes cost ${effect.amount} less material`);
-      }
-      continue;
-    }
-    if (effect.type === 'rescueBonus') {
-      if (effect.condition === 'signal') {
-        lines.push(`Future signal recipes gain +${effect.amount} Rescue`);
-      } else {
-        lines.push(`Gain +${effect.amount} Rescue bonus`);
-      }
-      continue;
-    }
-    if (effect.type === 'satisfyCheck' && effect.targetCheck) {
-      lines.push(`Satisfies ${formatCheckName(effect.targetCheck)}`);
-    }
+    lines.push(`${getEffectGlyph(effect)} ${formatEffectShort(effect)}`);
   }
 
   if (recipe.satisfiesCheck) {
-    const line = `Satisfies ${formatCheckName(recipe.satisfiesCheck)}`;
+    const line = `${getSurvivalCheckGlyph(recipe.satisfiesCheck)} Satisfies ${formatCheckName(recipe.satisfiesCheck)}`;
     if (!lines.includes(line)) lines.push(line);
   }
 
@@ -151,7 +128,7 @@ export function summarizeSpecialCardEffects(card: SpecialCardDefinition): string
           ? `${formatTagName(effect.targetFamily)} recipes`
           : 'matching recipes';
       const material = effect.material ? ` ${formatMaterialName(effect.material)}` : '';
-      lines.push(`Reduce ${target} cost by ${effect.amount}${material}`);
+      lines.push(`↘ Reduce ${target} cost by ${effect.amount}${material}`);
       continue;
     }
     if (effect.type === 'recipeRescueBonus') {
@@ -160,7 +137,7 @@ export function summarizeSpecialCardEffects(card: SpecialCardDefinition): string
         : effect.targetFamily
           ? `${formatTagName(effect.targetFamily)} recipes`
           : 'matching recipes';
-      lines.push(`Add +${effect.amount} Rescue to ${target}`);
+      lines.push(`⚑ Add +${effect.amount} Rescue to ${target}`);
       continue;
     }
     if (effect.type === 'recipeVitalityBonus') {
@@ -169,7 +146,7 @@ export function summarizeSpecialCardEffects(card: SpecialCardDefinition): string
         : effect.targetFamily
           ? `${formatTagName(effect.targetFamily)} recipes`
           : 'matching recipes';
-      lines.push(`Add +${effect.amount} Vitality to ${target}`);
+      lines.push(`♥ Add +${effect.amount} Vitality to ${target}`);
       continue;
     }
     if (effect.type === 'recipeMaterialGain') {
@@ -178,7 +155,13 @@ export function summarizeSpecialCardEffects(card: SpecialCardDefinition): string
         : effect.targetFamily
           ? `${formatTagName(effect.targetFamily)} recipes`
           : 'matching recipes';
-      lines.push(`Add +${effect.amount} ${formatMaterialName(effect.material)} to ${target}`);
+      const materialName =
+        effect.material === 'CleanWater'
+          ? `Treated Water slot${effect.amount === 1 ? '' : 's'}`
+          : effect.material === 'Water'
+            ? `Raw Water slot${effect.amount === 1 ? '' : 's'}`
+            : formatMaterialName(effect.material);
+      lines.push(`${getMaterialGlyph(effect.material)} Fill +${effect.amount} ${materialName} on ${target}`);
       continue;
     }
     if (effect.type === 'recipeIncomeBonus') {
@@ -187,16 +170,22 @@ export function summarizeSpecialCardEffects(card: SpecialCardDefinition): string
         : effect.targetFamily
           ? `${formatTagName(effect.targetFamily)} recipes`
           : 'matching recipes';
-      lines.push(`Add +${effect.amount} ${formatMaterialName(effect.material)} income to ${target}`);
+      const materialName =
+        effect.material === 'CleanWater'
+          ? `Treated Water slot${effect.amount === 1 ? '' : 's'}`
+          : effect.material === 'Water'
+            ? `Raw Water slot${effect.amount === 1 ? '' : 's'}`
+            : formatMaterialName(effect.material);
+      lines.push(`${getMaterialGlyph(effect.material)} Fill +${effect.amount} ${materialName} each income on ${target}`);
       continue;
     }
     if (effect.type === 'warmthDamageReduction') {
-      lines.push(`Reduce warmth damage by ${effect.amount}`);
+      lines.push(`☀ Move warmth ${effect.amount} toward comfort`);
       continue;
     }
     if (effect.type === 'unlockRecipe') {
       const target = recipes.find((recipe) => recipe.id === effect.recipeId)?.printTitle ?? titleCase(effect.recipeId);
-      lines.push(`Unlock ${target}`);
+      lines.push(`✦ Unlock ${target}`);
     }
   }
   return lines;
@@ -228,7 +217,7 @@ export function formatRescueThresholds(): string {
       const bNum = b[0] === 'solo' ? 1 : Number(b[0]);
       return aNum - bNum;
     })
-    .map(([seat, value]) => (seat === 'solo' ? `Solo ${value}` : `${seat} players ${value}`));
+    .map(([seat, value]) => (seat === 'solo' ? `⚑ Solo ${value}` : `⚑ ${seat} players ${value}`));
   return entries.join(' · ');
 }
 

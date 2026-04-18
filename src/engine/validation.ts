@@ -103,15 +103,41 @@ export function validateScenarios(): string[] {
 
 export function validateConfig(): string[] {
   const errors: string[] = [];
+  const isWhole = (n: number) => Number.isInteger(n);
 
   if (config.startingVitality <= 0) errors.push('startingVitality must be > 0');
   if (config.simulationCeiling <= 0) errors.push('simulationCeiling must be > 0');
   if (config.marketCapSize <= 0) errors.push('marketCapSize must be > 0');
   if (config.pressureSchedule.length === 0) errors.push('pressureSchedule must not be empty');
   if (Object.keys(config.rescueThresholds).length === 0) errors.push('rescueThresholds must not be empty');
-  if (config.scoring.rescueMultiplier <= 0) errors.push('rescueMultiplier must be > 0');
-  if (config.scoring.persistentBuildBonus < 0) errors.push('persistentBuildBonus must be >= 0');
+  if (Object.keys(config.scoring.craftPointsByTier).length === 0) errors.push('craftPointsByTier must not be empty');
+  for (const [tier, points] of Object.entries(config.scoring.craftPointsByTier)) {
+    if (!isWhole(Number(tier)) || !isWhole(points)) errors.push(`craftPointsByTier[${tier}] must be a whole number`);
+  }
+  if (!isWhole(config.scoring.usePointsPerImmediateEffect)) errors.push('usePointsPerImmediateEffect must be a whole number');
+  if (config.scoring.usePointsPerImmediateEffect < 0) errors.push('usePointsPerImmediateEffect must be >= 0');
+  if (!isWhole(config.scoring.usePointsCap)) errors.push('usePointsCap must be a whole number');
+  if (config.scoring.usePointsCap < 0) errors.push('usePointsCap must be >= 0');
+  if (!isWhole(config.scoring.rescuePointsStep)) errors.push('rescuePointsStep must be a whole number');
+  if (config.scoring.rescuePointsStep <= 0) errors.push('rescuePointsStep must be > 0');
+  if (!isWhole(config.scoring.rescuePointsCap)) errors.push('rescuePointsCap must be a whole number');
+  if (config.scoring.rescuePointsCap < 0) errors.push('rescuePointsCap must be >= 0');
+  if (!isWhole(config.scoring.survivalPointsStep)) errors.push('survivalPointsStep must be a whole number');
+  if (config.scoring.survivalPointsStep <= 0) errors.push('survivalPointsStep must be > 0');
+  if (!isWhole(config.scoring.survivalPointsCap)) errors.push('survivalPointsCap must be a whole number');
+  if (config.scoring.survivalPointsCap < 0) errors.push('survivalPointsCap must be >= 0');
+  if (!isWhole(config.scoring.healthyVitalityThreshold)) errors.push('healthyVitalityThreshold must be a whole number');
   if (config.scoring.healthyVitalityThreshold <= 0) errors.push('healthyVitalityThreshold must be > 0');
+  if (!isWhole(config.scoring.healthyVitalityBonus)) errors.push('healthyVitalityBonus must be a whole number');
+  if (config.scoring.healthyVitalityBonus < 0) errors.push('healthyVitalityBonus must be >= 0');
+  if (!isWhole(config.scoring.lateSurvivalFloorRound)) errors.push('lateSurvivalFloorRound must be a whole number');
+  if (config.scoring.lateSurvivalFloorRound <= 0) errors.push('lateSurvivalFloorRound must be > 0');
+  if (!isWhole(config.scoring.lateSurvivalFloorPoints)) errors.push('lateSurvivalFloorPoints must be a whole number');
+  if (config.scoring.lateSurvivalFloorPoints < 0) errors.push('lateSurvivalFloorPoints must be >= 0');
+  if (!isWhole(config.scoring.persistentBuildBonus)) errors.push('persistentBuildBonus must be a whole number');
+  if (config.scoring.persistentBuildBonus < 0) errors.push('persistentBuildBonus must be >= 0');
+  if (!isWhole(config.scoring.persistentBuildCap)) errors.push('persistentBuildCap must be a whole number');
+  if (config.scoring.persistentBuildCap < 0) errors.push('persistentBuildCap must be >= 0');
 
   return errors;
 }

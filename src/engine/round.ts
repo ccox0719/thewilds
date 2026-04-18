@@ -34,7 +34,7 @@ export function advanceRound(state: GameState): GameState {
 }
 
 export function prepareRound(state: GameState): GameState {
-  const currentEvent = getRoundEventForScenario(state.scenario, state.round, state.rngSeed);
+  const currentEvent = getRoundEventForScenario(state.scenario, state.round);
   let prepared = resetRoundStatus(state);
   prepared = {
     ...prepared,

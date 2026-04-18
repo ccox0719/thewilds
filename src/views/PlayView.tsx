@@ -6,13 +6,14 @@ import { prepareRound, resolveCraftTurn, resolveDraftTurn, resolveIncomePhase, r
 import { runDraftPhase } from '../engine/draft';
 import { canCraftRecipe, getAvailableRecipes } from '../engine/craft';
 import { chooseCraftAction, chooseDraftPick, explainCraftChoice, explainDraftPick } from '../ai/decisions';
+import { getMeterGlyph } from '../data/iconography';
 import { scenarios } from '../data/scenarios';
 import { profiles } from '../data/profiles';
 import { MaterialPill } from '../components/MaterialPill';
 import { RescueBar } from '../components/RescueBar';
 import { PlayerCard } from '../components/PlayerCard';
 import { RecipeCard } from '../components/RecipeCard';
-import { scorePlayer } from '../engine/scoring';
+import { getScoreBreakdown, scorePlayer } from '../engine/scoring';
 import { randomSeed } from '../utils/rng';
 import { formatLogAction, getLogActorLabel } from './insights';
 
@@ -55,6 +56,23 @@ function EventChip({ event }: { event: GameState['currentEvent'] }) {
       </span>
       {tooltip}
     </>
+  );
+}
+
+function LogChip({
+  label,
+  icon,
+  tone = 'neutral',
+}: {
+  label: string;
+  icon: string;
+  tone?: 'neutral' | 'warn' | 'danger' | 'rescue' | 'vitality';
+}) {
+  return (
+    <span className={`log-chip ${tone}`}>
+      <span className="log-chip-icon" aria-hidden="true">{icon}</span>
+      <span>{label}</span>
+    </span>
   );
 }
 
@@ -172,6 +190,14 @@ export function PlayView() {
             <div className="text-xs text-dim">
               {scenarios.find(s => s.id === scenarioId)?.description ?? ''}
             </div>
+            <div className="flex gap-1 wrap">
+              {scenarios.find(s => s.id === scenarioId)?.identityTags?.map((tag) => (
+                <span key={tag} className="tag active">{tag}</span>
+              ))}
+            </div>
+            <div className="text-xs text-muted">
+              {scenarios.find(s => s.id === scenarioId)?.playstyleHint ?? ''}
+            </div>
           </div>
 
           <div className="flex-col gap-2">
@@ -220,11 +246,12 @@ export function PlayView() {
     <div className="play-layout">
       {/* ── Game header ── */}
       <div className="game-header">
-        <div className="game-header-left">
-          <span className="round-badge">Round {game.round}</span>
-          <span className="scenario-name">{game.scenario.name}</span>
-          <EventChip event={game.currentEvent} />
-        </div>
+          <div className="game-header-left">
+            <span className="round-badge">Round {game.round}</span>
+            <span className="scenario-name">{game.scenario.name}</span>
+            <span className="scenario-flavor">{game.scenario.identityTags?.join(' · ') ?? ''}</span>
+            <EventChip event={game.currentEvent} />
+          </div>
 
         <div className="game-header-center">
           <RescueBar current={game.groupRescueTrack} threshold={game.groupRescueThreshold} />
@@ -347,23 +374,32 @@ export function PlayView() {
           {game.gameOver && (
             <div className="card flex-col gap-2">
               <h3>Final Scores</h3>
-              {[...game.players]
-                .sort((a, b) => scorePlayer(b, game) - scorePlayer(a, game))
-                .map((p, rank) => (
-                  <div key={p.id} className="sim-metric">
-                    <span className="sim-metric-label">
-                      {rank === 0 ? '★ ' : ''}
-                      {p.name} · {p.profile.name}
-                      {p.id === game.winner ? ' — WINNER' : ''}
-                    </span>
-                    <span className="flex gap-3 text-xs">
-                      <span className="text-rescue">⚑ {p.rescueScore}</span>
-                      <span className="text-vitality">♥ {p.vitality}</span>
-                      <span className="text-muted">⚒ {p.builtRecipes.length}</span>
-                      <span className="bold">★ {scorePlayer(p, game)}</span>
-                    </span>
-                  </div>
-                ))}
+              <div className="score-chip-grid">
+                {[...game.players]
+                  .sort((a, b) => scorePlayer(b, game) - scorePlayer(a, game))
+                  .map((p, rank) => {
+                    const breakdown = getScoreBreakdown(p, game);
+                    return (
+                    <div key={p.id} className={`score-chip${p.id === game.winner ? ' winner' : ''}`}>
+                      <div className="score-chip__head">
+                        <span className="score-chip__name">
+                          {rank === 0 ? '★ ' : ''}
+                          {p.name}
+                        </span>
+                        <span className="score-chip__profile">{p.profile.name}</span>
+                      </div>
+                      <div className="score-chip__stats">
+                        <span className="score-chip__stat text-muted">C {breakdown.craftPoints}</span>
+                        <span className="score-chip__stat text-muted">U {breakdown.usePoints}</span>
+                        <span className="score-chip__stat text-rescue">{getMeterGlyph('rescue')} {breakdown.rescuePoints}</span>
+                        <span className="score-chip__stat text-vitality">{getMeterGlyph('vitality')} {breakdown.survivalPoints}</span>
+                        <span className="score-chip__stat text-muted">⚙ {breakdown.enginePoints}</span>
+                        <span className="score-chip__stat score-chip__total">★ {scorePlayer(p, game)}</span>
+                      </div>
+                    </div>
+                    );
+                  })}
+              </div>
             </div>
           )}
         </div>
@@ -407,10 +443,18 @@ export function PlayView() {
             <div className="log-entries">
               {recentLog.map((entry, i) => (
                 <div key={i} className="log-entry">
-                  <span className="log-round">[R{entry.round}]</span>
-                  <span className="log-actor">{getLogActorLabel(game, entry)}</span>
-                  <span>{formatLogAction(entry.action)}</span>
-                  {entry.detail && <span className="log-detail">— {entry.detail}</span>}
+                  <LogChip label={`R${entry.round}`} icon="R" />
+                  <LogChip
+                    label={getLogActorLabel(game, entry)}
+                    icon={entry.playerId === 'system' ? '⚑' : entry.playerId === HUMAN_PLAYER_ID ? '◎' : '◦'}
+                    tone={entry.playerId === 'system' ? 'warn' : 'neutral'}
+                  />
+                  <LogChip
+                    label={formatLogAction(entry.action)}
+                    icon={entry.action === 'craft' ? '✦' : entry.action === 'maintenance' ? '↻' : entry.action === 'perk' ? '⟲' : entry.action === 'game-over' ? '⛔' : entry.action === 'pressure' ? '☠' : '•'}
+                    tone={entry.action === 'game-over' ? 'danger' : entry.action === 'pressure' ? 'warn' : entry.action === 'perk' ? 'rescue' : 'neutral'}
+                  />
+                  {entry.detail && <span className="log-detail">{entry.detail}</span>}
                 </div>
               ))}
             </div>

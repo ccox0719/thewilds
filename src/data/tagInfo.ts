@@ -12,7 +12,7 @@ const TAG_TOOLTIPS: Record<Tag, string> = {
 
 const SURVIVAL_TOOLTIPS: Record<SurvivalCheck, string> = {
   hunger: 'Hunger check. Spend 1 Food or take vitality damage.',
-  thirst: 'Thirst check. Spend 1 Water or take vitality damage.',
+  thirst: 'Thirst check. Spend 1 Water or 1 Treated Water; raw Water is unsafe and spoils if unused by round end.',
   warmth: 'Warmth check. Use shelter or fire protection or take temperature damage.',
 };
 
