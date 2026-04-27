@@ -1,5 +1,8 @@
 export type PrintTemplateId =
   | 'crafting-tree'
+  | 'recipe-cards'
+  | 'specialty-cards'
+  | 'tokens'
   | 'full-rules'
   | 'reference-sheet'
   | 'player-boards';
@@ -17,6 +20,24 @@ export const printTemplates: PrintTemplateDefinition[] = [
     label: 'Crafting Tree',
     description: 'All recipes and special cards organized by tier.',
     href: '/crafting_tree_v2.html',
+  },
+  {
+    id: 'recipe-cards',
+    label: 'Recipe Cards',
+    description: 'Printable 2.5 x 3.5 in recipe cards, six per page.',
+    href: '/?print=recipe-cards',
+  },
+  {
+    id: 'specialty-cards',
+    label: 'Specialty Cards',
+    description: 'Printable specialty and blueprint cards, six per page.',
+    href: '/?print=specialty-cards',
+  },
+  {
+    id: 'tokens',
+    label: 'Tokens',
+    description: 'Material, tag, and tracker tokens for tabletop play.',
+    href: '/?print=tokens',
   },
   {
     id: 'full-rules',

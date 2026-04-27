@@ -1,8 +1,13 @@
 import { RulesPrintView } from './RulesPrintView';
 import { ReferenceSheetsPrintView } from './ReferenceSheetsPrintView';
 import { PlayerBoardsPrintView } from './PlayerBoardsPrintView';
+import { CardsPrintView } from './CardsPrintView';
+import { TokensPrintView } from './TokensPrintView';
 
 const PAGES: Record<string, React.ComponentType> = {
+  'recipe-cards': () => <CardsPrintView mode="recipes" />,
+  'specialty-cards': () => <CardsPrintView mode="specialties" />,
+  tokens: TokensPrintView,
   'full-rules': RulesPrintView,
   'reference-sheet': ReferenceSheetsPrintView,
   'player-boards': PlayerBoardsPrintView,
