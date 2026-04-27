@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wilds — Crafting Tree</title>
+<style>
+/* ── TOKENS ── */
+:root {
+  --fire:     #C84B00;
+  --shelter:  #5D4037;
+  --food:     #2E7D32;
+  --water:    #0277BD;
+  --tools:    #37474F;
+  --signal:   #6A1B9A;
+  --special:  #B71C1C;
+
+  --fire-bg:    #FFF3EE;
+  --shelter-bg: #EFEBE9;
+  --food-bg:    #F1F8F2;
+  --water-bg:   #E3F2FD;
+  --tools-bg:   #ECEFF1;
+  --signal-bg:  #F3E5F5;
+  --epic-tint:  #FAFAF8;
+
+  --bg:     #ffffff;
+  --bg2:    #f7f7f5;
+  --text:   #1a1a18;
+  --text2:  #4a4845;
+  --text3:  #8a8782;
+  --border: #e0ddd8;
+  --font:   -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 10px 12px;
+  line-height: 1.3;
+}
+
+/* ── HEADER ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.title-block h1 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.title-block p  { font-size: 9.5px; color: var(--text3); }
+
+/* ── LEGEND ── */
+.legend { display: flex; gap: 16px; flex-wrap: wrap; }
+.legend-col { display: flex; flex-direction: column; gap: 4px; }
+.legend-lbl {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .09em; color: var(--text3);
+}
+.legend-row { display: flex; flex-wrap: wrap; gap: 3px; }
+.lpill {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 8.5px; padding: 1px 5px;
+  border: 0.5px solid var(--border);
+  border-radius: 999px; background: var(--bg);
+  color: var(--text2); white-space: nowrap;
+}
+
+/* ── TREE GRID ── */
+.tree {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 7px;
+  margin-bottom: 10px;
+  align-items: start;
+}
+
+/* ── LANE ── */
+.lane { display: flex; flex-direction: column; }
+
+.lane-hdr {
+  text-align: center;
+  font-size: 8px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: 3px 5px;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 5px;
+  color: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.lh-fire    { background: var(--fire); }
+.lh-shelter { background: var(--shelter); }
+.lh-food    { background: var(--food); }
+.lh-water   { background: var(--water); }
+.lh-tools   { background: var(--tools); }
+.lh-signal  { background: var(--signal); }
+
+/* ── NODES ── */
+.node {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 4px;
+  padding: 5px 6px;
+}
+
+/* Lane left-accent */
+.nf  { border-left: 2.5px solid var(--fire); }
+.ns  { border-left: 2.5px solid var(--shelter); }
+.nfo { border-left: 2.5px solid var(--food); }
+.nw  { border-left: 2.5px solid var(--water); }
+.nt  { border-left: 2.5px solid var(--tools); }
+.nsi { border-left: 2.5px solid var(--signal); }
+
+/* Epic tier */
+.epic {
+  border-width: 1px;
+  background: var(--epic-tint);
+}
+.epic .node-name { font-weight: 700; }
+
+/* One-time recipe tint */
+.onetime { background: var(--bg2); }
+
+/* Node anatomy */
+.node-name {
+  font-size: 10px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 4px; line-height: 1.2; margin-bottom: 2px;
+}
+.type-badge {
+  font-size: 9px; color: var(--text3); flex-shrink: 0; font-weight: 400;
+}
+.epic-mark { color: #B8860B; font-size: 9px; flex-shrink: 0; }
+
+.node-cost {
+  font-size: 8.5px; color: var(--text3); margin-bottom: 2px;
+}
+.node-effect {
+  font-size: 8.5px; color: var(--text2); line-height: 1.3;
+}
+.node-from {
+  font-size: 8px; color: var(--text3);
+  margin-top: 3px; padding-top: 2px;
+  border-top: 0.5px dashed var(--border);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 3px;
+}
+
+/* Cross-lane requirement badge */
+.xreq {
+  display: inline-block; font-size: 7.5px; font-weight: 700;
+  padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.xf { background: var(--fire-bg);    color: var(--fire); }
+.xs { background: var(--signal-bg);  color: var(--signal); }
+
+/* ── CONNECTOR ── */
+.arrow {
+  text-align: center; color: var(--border);
+  font-size: 11px; line-height: 1; margin: 2px 0;
+  user-select: none;
+}
+.arrow-lbl {
+  text-align: center; font-size: 7.5px;
+  color: var(--text3); margin: 0 0 2px; font-style: italic;
+}
+
+/* ── STARTER CLUSTER (3 alt fire starters) ── */
+.cluster-lbl {
+  text-align: center; font-size: 7.5px;
+  color: var(--text3); margin-bottom: 3px; font-style: italic;
+}
+.starter-row {
+  display: flex; gap: 3px; margin-bottom: 0;
+}
+.starter-row .node {
+  flex: 1; min-width: 0; padding: 4px 4px;
+}
+.starter-row .node-name { font-size: 8.5px; margin-bottom: 1px; }
+.starter-row .node-cost { font-size: 7.5px; margin-bottom: 0; }
+
+/* ── BRANCH GROUP (stacked T3 options) ── */
+.branch-group {
+  display: flex; flex-direction: column; gap: 3px;
+  padding-left: 7px;
+  border-left: 1.5px dashed var(--border);
+  margin-left: 5px;
+}
+
+/* ── MINI CHAIN (secondary chain within a lane) ── */
+.mini-chain {
+  margin-top: 7px; padding-top: 6px;
+  border-top: 0.5px dashed var(--border);
+}
+.mini-lbl {
+  font-size: 7.5px; color: var(--text3); margin-bottom: 3px; font-style: italic;
+}
+
+/* ── UTILITY STRIP ── */
+.utility-strip {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 9px;
+}
+.util-title {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .09em; color: var(--text3); margin-bottom: 5px;
+}
+.util-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.util-node {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 7px;
+  flex: 1; min-width: 90px;
+}
+.util-node .node-name  { font-size: 9px; font-weight: 600; margin-bottom: 1px; }
+.util-node .node-cost  { font-size: 8px; color: var(--text3); margin-bottom: 1px; }
+.util-node .node-effect{ font-size: 8px; color: var(--text2); }
+
+/* ── SPECIAL CARDS ── */
+.special-section {
+  padding-top: 7px;
+  border-top: 0.5px solid var(--border);
+}
+.special-title {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .09em; color: var(--special); margin-bottom: 5px;
+}
+.special-sub {
+  font-size: 8px; color: var(--text3); margin-bottom: 4px; font-style: italic;
+}
+.special-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
+.scard {
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-left: 2.5px solid var(--special);
+  border-radius: 4px;
+  padding: 5px 7px;
+  flex: 1; min-width: 110px;
+}
+.scard-badge {
+  font-size: 7.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--special);
+  display: block; margin-bottom: 2px;
+}
+.scard .node-name   { font-size: 9.5px; font-weight: 600; margin-bottom: 2px; }
+.scard .node-effect { font-size: 8.5px; color: var(--text2); }
+.scard .node-from   {
+  font-size: 8px; color: var(--text3); margin-top: 2px;
+  padding-top: 2px; border-top: 0.5px dashed var(--border);
+  display: block;
+}
+
+/* ── PRINT ── */
+@media print {
+  @page { size: A4 landscape; margin: 8mm 10mm; }
+  body { padding: 0; font-size: 10px; }
+  .node, .util-node, .scard { break-inside: avoid; }
+  .utility-strip { break-before: auto; }
+  .special-section { break-before: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<div class="page-header">
+  <div class="title-block">
+    <h1>The Wilds — Crafting Tree</h1>
+    <p>Read each lane top → bottom · cross-lane requirements shown as colored badges · ⌁ engine · ⊡ persistent · ✦ one-time · ★ epic T3</p>
+  </div>
+  <div class="legend">
+    <div class="legend-col">
+      <div class="legend-lbl">Materials</div>
+      <div class="legend-row">
+        <span class="lpill">🪵 Wood</span>
+        <span class="lpill">🌿 Fiber</span>
+        <span class="lpill">🪨 Stone</span>
+        <span class="lpill">🍖 Food</span>
+        <span class="lpill">💧 Water</span>
+        <span class="lpill">🔥 Fuel</span>
+        <span class="lpill">🧵 Cordage</span>
+        <span class="lpill">🥫 Rations</span>
+        <span class="lpill">💦 CleanWater</span>
+      </div>
+    </div>
+    <div class="legend-col">
+      <div class="legend-lbl">Meters</div>
+      <div class="legend-row">
+        <span class="lpill">♥ Vitality</span>
+        <span class="lpill">⚑ Rescue</span>
+        <span class="lpill">🍽 Hunger</span>
+        <span class="lpill">💧 Thirst</span>
+        <span class="lpill">☀ Warmth</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ TREE ════════════════════ -->
+<div class="tree">
+
+  <!-- ══ LANE 1: FIRE / HEARTH ══ -->
+  <div class="lane">
+    <div class="lane-hdr lh-fire">🔥 Fire / Hearth</div>
+
+    <div class="cluster-lbl">any one → HearthActive</div>
+    <div class="starter-row">
+      <div class="node nf">
+        <div class="node-name">Bow Drill</div>
+        <div class="node-cost">🪵 🌿</div>
+      </div>
+      <div class="node nf">
+        <div class="node-name">Flint Spark</div>
+        <div class="node-cost">🪨 🌿</div>
+      </div>
+      <div class="node nf">
+        <div class="node-name">Brush Ember</div>
+        <div class="node-cost">🌿×2</div>
+      </div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nf">
+      <div class="node-name">Campfire <span class="type-badge">⊡</span></div>
+      <div class="node-cost">🪵 🪨</div>
+      <div class="node-effect">Sturdier fire structure</div>
+      <div class="node-from">← HearthActive</div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nf">
+      <div class="node-name">Sustained Fire <span class="type-badge">⊡</span></div>
+      <div class="node-cost">🪨 🔥</div>
+      <div class="node-effect">SustainedFire · cold immune · upkeep 🔥/2r after R7</div>
+      <div class="node-from">← Campfire</div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nf epic">
+      <div class="node-name">Storm Hearth <span class="epic-mark">★</span></div>
+      <div class="node-cost">🪨×2 🪵 🔥</div>
+      <div class="node-effect">SustainedFire · shelter-climate −1 cost</div>
+      <div class="node-from">← Sustained Fire</div>
+    </div>
+  </div>
+
+  <!-- ══ LANE 2: SHELTER ══ -->
+  <div class="lane">
+    <div class="lane-hdr lh-shelter">🏕 Shelter</div>
+
+    <div class="node ns">
+      <div class="node-name">Lean-To <span class="type-badge">⊡</span></div>
+      <div class="node-cost">🪵 🌿</div>
+      <div class="node-effect">Shelter · cold −1 · heat immune</div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node ns">
+      <div class="node-name">Sturdy Shelter <span class="type-badge">⊡</span></div>
+      <div class="node-cost">🪵×2 🪨</div>
+      <div class="node-effect">SturdyShelter · eliminates temp loss</div>
+      <div class="node-from">← Lean-To</div>
+    </div>
+  </div>
+
+  <!-- ══ LANE 3: FOOD ══ -->
+  <div class="lane">
+    <div class="lane-hdr lh-food">🍖 Food</div>
+
+    <div class="node nfo">
+      <div class="node-name">Snare <span class="type-badge">⌁</span></div>
+      <div class="node-cost">🌿×2 🪵</div>
+      <div class="node-effect">FoodSource · +1 Food/income</div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nfo">
+      <div class="node-name">Drying Rack <span class="type-badge">⌁</span></div>
+      <div class="node-cost">🪵×2 🌿</div>
+      <div class="node-effect">+1 Rations/income · frees Hearth</div>
+      <div class="node-from"><span class="xreq xf">+🔥 HearthActive</span></div>
+    </div>
+
+    <div class="arrow">↓</div>
+    <div class="arrow-lbl">T3 — check prereq on each</div>
+
+    <div class="branch-group">
+      <div class="node nfo epic">
+        <div class="node-name">Smokehouse <span class="epic-mark">★ ⌁</span></div>
+        <div class="node-cost">🪵×2 🪨 🍖</div>
+        <div class="node-effect">+1 Rations/income</div>
+        <div class="node-from">← Drying Rack</div>
+      </div>
+
+      <div class="node nfo epic">
+        <div class="node-name">Beast Larder <span class="epic-mark">★ ⌁</span></div>
+        <div class="node-cost">🪵×2 🪨 🧵 🍖</div>
+        <div class="node-effect">FoodSource · +2 Rations · +1/income</div>
+        <div class="node-from">← Drying Rack</div>
+      </div>
+
+      <div class="node nfo epic onetime">
+        <div class="node-name">Medicine Cache <span class="epic-mark">★ ✦</span></div>
+        <div class="node-cost">🍖 💦 🧵 🪨</div>
+        <div class="node-effect">Restore 4 ♥ Vitality</div>
+        <div class="node-from">← Drying Rack</div>
+      </div>
+
+      <div class="node nfo epic">
+        <div class="node-name">Hunter's Blind <span class="epic-mark">★ ⌁</span></div>
+        <div class="node-cost">🪵×2 🌿×2</div>
+        <div class="node-effect">FoodSource · +2 ⚑ · +2 Food/income</div>
+        <div class="node-from">← Snare (not Drying Rack)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LANE 4: WATER ══ -->
+  <div class="lane">
+    <div class="lane-hdr lh-water">💧 Water</div>
+
+    <div class="node nw">
+      <div class="node-name">Water Catcher <span class="type-badge">⌁</span></div>
+      <div class="node-cost">🪵 🌿 🪨</div>
+      <div class="node-effect">+1 Water/income</div>
+      <div class="node-from"><span class="xreq xf">+🔥 HearthActive</span></div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nw epic">
+      <div class="node-name">Rain Still <span class="epic-mark">★ ⌁</span></div>
+      <div class="node-cost">🪵 🪨 🌿 💦</div>
+      <div class="node-effect">+1 Clean Water/income</div>
+      <div class="node-from">← Water Catcher</div>
+    </div>
+  </div>
+
+  <!-- ══ LANE 5: TOOLS / PROCESSING ══ -->
+  <div class="lane">
+    <div class="lane-hdr lh-tools">🛠 Tools</div>
+
+    <div class="node nt">
+      <div class="node-name">Basic Tool <span class="type-badge">⌁</span></div>
+      <div class="node-cost">🪵 🪨</div>
+      <div class="node-effect">Tool · processing −1 cost</div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nt">
+      <div class="node-name">Tool Bench <span class="type-badge">⊡</span></div>
+      <div class="node-cost">🪵 🪨×2</div>
+      <div class="node-effect">Processing −1 cost</div>
+      <div class="node-from">← Basic Tool</div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nt epic onetime">
+      <div class="node-name">Traveler Kit <span class="epic-mark">★ ✦</span></div>
+      <div class="node-cost">🪵 🧵 🌿 🍖</div>
+      <div class="node-effect">+2 ♥ · processing −1 cost</div>
+      <div class="node-from">← Tool Bench</div>
+    </div>
+
+    <div class="mini-chain">
+      <div class="mini-lbl">Cordage chain (req HearthActive)</div>
+
+      <div class="node nt onetime">
+        <div class="node-name">Braided Cordage <span class="type-badge">✦</span></div>
+        <div class="node-cost">🌿×2</div>
+        <div class="node-effect">+2 Cordage</div>
+        <div class="node-from"><span class="xreq xf">+🔥 HearthActive</span></div>
+      </div>
+
+      <div class="arrow">↓</div>
+
+      <div class="node nt epic onetime">
+        <div class="node-name">Master Cordage <span class="epic-mark">★ ✦</span></div>
+        <div class="node-cost">🌿×3 🪵</div>
+        <div class="node-effect">+4 Cordage</div>
+        <div class="node-from">← Braided Cordage</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LANE 6: SIGNAL / RESCUE ══ -->
+  <div class="lane">
+    <div class="lane-hdr lh-signal">⚑ Signal / Rescue</div>
+
+    <div class="node nsi onetime">
+      <div class="node-name">Simple Signal <span class="type-badge">✦</span></div>
+      <div class="node-cost">🪨 🌿</div>
+      <div class="node-effect">+1 ⚑ Rescue</div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="node nsi">
+      <div class="node-name">Signal Platform <span class="type-badge">⌁</span></div>
+      <div class="node-cost">🪵 🪨</div>
+      <div class="node-effect">SignalEngine · +5 ⚑ · future signal +9 · upkeep 🧵/2r after R7</div>
+      <div class="node-from">← Simple Signal <span class="xreq xf">+🔥 HearthActive</span></div>
+    </div>
+
+    <div class="arrow">↓</div>
+    <div class="arrow-lbl">T2 branches — both need SignalEngine</div>
+
+    <div class="branch-group">
+      <div class="node nsi onetime">
+        <div class="node-name">Signal Beacon <span class="type-badge">✦</span></div>
+        <div class="node-cost">🪵 🪨</div>
+        <div class="node-effect">+16 ⚑ Rescue</div>
+        <div class="node-from">← SignalEngine</div>
+      </div>
+
+      <div class="node nsi">
+        <div class="node-name">Signal Lens <span class="type-badge">⌁</span></div>
+        <div class="node-cost">🧵 🪨</div>
+        <div class="node-effect">+4 ⚑ · future signal +8</div>
+        <div class="node-from">← SignalEngine</div>
+      </div>
+    </div>
+
+    <div class="arrow">↓</div>
+    <div class="arrow-lbl">T3 capstones — both need SignalEngine</div>
+
+    <div class="branch-group">
+      <div class="node nsi epic">
+        <div class="node-name">Signal Pyre <span class="epic-mark">★ ⌁</span></div>
+        <div class="node-cost">🪵×2 🔥 🪨</div>
+        <div class="node-effect">SignalEngine · +6 ⚑ · future signal +14</div>
+        <div class="node-from">← SignalEngine <span class="xreq xf">+🔥 SustainedFire</span></div>
+      </div>
+
+      <div class="node nsi epic">
+        <div class="node-name">Ridge Watch <span class="epic-mark">★ ⌁</span></div>
+        <div class="node-cost">🪨×2 🪵 🌿</div>
+        <div class="node-effect">+3 ⚑ · future signal +5</div>
+        <div class="node-from">← SignalEngine</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tree -->
+
+<!-- ════════════════════ HEARTH UTILITY STRIP ════════════════════ -->
+<div class="utility-strip">
+  <div class="util-title">🔥 Hearth Crafts — all require HearthActive · all one-time ✦</div>
+  <div class="util-row">
+    <div class="util-node">
+      <div class="node-name">Cooked Meal</div>
+      <div class="node-cost">🥫×1</div>
+      <div class="node-effect">Satisfy Hunger · +1 ♥</div>
+    </div>
+    <div class="util-node">
+      <div class="node-name">Filtered Water</div>
+      <div class="node-cost">💧 🪵 🪨</div>
+      <div class="node-effect">Fill 3 💦 Clean Water slots</div>
+    </div>
+    <div class="util-node">
+      <div class="node-name">Preserved Rations</div>
+      <div class="node-cost">🍖 🪵 🌿</div>
+      <div class="node-effect">+2 🥫 Rations</div>
+    </div>
+    <div class="util-node">
+      <div class="node-name">Dry Fuel</div>
+      <div class="node-cost">🪵×2 🌿</div>
+      <div class="node-effect">+2 🔥 Fuel</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ SPECIAL CARDS ════════════════════ -->
+<div class="special-section">
+  <div class="special-title">Special Cards</div>
+
+  <div class="special-sub">Starting — 3 drawn at setup, 2 kept · enhance specific recipes</div>
+  <div class="special-row">
+    <div class="scard">
+      <span class="scard-badge">Starting</span>
+      <div class="node-name">Rain Catcher Plan</div>
+      <div class="node-effect">Water Catcher +1 Water/income</div>
+      <div class="node-from">lane: Water</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Starting</span>
+      <div class="node-name">Field Dressing</div>
+      <div class="node-effect">Cooked Meal +1 ♥</div>
+      <div class="node-from">lane: Hearth crafts</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Starting</span>
+      <div class="node-name">Tripwire Snare</div>
+      <div class="node-effect">Snare +1 Food/income</div>
+      <div class="node-from">lane: Food</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Starting</span>
+      <div class="node-name">Signal Mirror Plan</div>
+      <div class="node-effect">Simple Signal −1 Stone · signal recipes +1 ⚑</div>
+      <div class="node-from">lane: Signal</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Starting</span>
+      <div class="node-name">Kindling Method</div>
+      <div class="node-effect">Lean-To −1 Wood · Campfire −1 Wood</div>
+      <div class="node-from">lane: Fire / Shelter</div>
+    </div>
+  </div>
+
+  <div class="special-sub">Earned — awarded after certain T2 builds · apply immediately when earned</div>
+  <div class="special-row">
+    <div class="scard">
+      <span class="scard-badge">Earned</span>
+      <div class="node-name">Water Filter</div>
+      <div class="node-effect">Filtered Water +1 💦</div>
+      <div class="node-from">from: Water Catcher or Filtered Water</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Earned</span>
+      <div class="node-name">Smokehouse Plan</div>
+      <div class="node-effect">Preserved Rations +1 🥫 · Drying Rack +1 Rations/income</div>
+      <div class="node-from">from: Drying Rack, Preserved Rations, or Snare</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Earned</span>
+      <div class="node-name">Repair Bench</div>
+      <div class="node-effect">Processing recipes cost 1 less material</div>
+      <div class="node-from">from: Tool Bench, Braided Cordage, or Dry Fuel</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Earned</span>
+      <div class="node-name">Beacon Lens</div>
+      <div class="node-effect">Signal recipes +4 ⚑ Rescue</div>
+      <div class="node-from">from: Signal Platform, Signal Lens, or Signal Beacon</div>
+    </div>
+    <div class="scard">
+      <span class="scard-badge">Earned</span>
+      <div class="node-name">Insulated Bedding</div>
+      <div class="node-effect">Warmth damage −1</div>
+      <div class="node-from">from: Sturdy Shelter, Sustained Fire, Lean-To, or Campfire</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
